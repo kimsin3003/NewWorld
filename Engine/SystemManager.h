@@ -18,10 +18,10 @@ public:
 	bool Tick();
 	void Initialize();
 
-	LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
 private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
+	Renderer* m_renderer = nullptr;
 };
 
 

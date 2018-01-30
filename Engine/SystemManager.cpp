@@ -1,11 +1,7 @@
 #include "SystemManager.h"
-#include "Managers.h"
+#include "Declares.h"
+#include "Renderer.h"
 
-
-bool SystemManager::Tick()
-{
-	return true;
-}
 
 void SystemManager::Initialize()
 {
@@ -91,6 +87,8 @@ void SystemManager::Initialize()
 
 	// Hide the mouse cursor.
 	ShowCursor(true);
+	m_renderer = new Renderer();
+	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
 	return;
 }
@@ -148,3 +146,11 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 	}
 	}
 }
+
+
+bool SystemManager::Tick()
+{
+	m_renderer->Tick(0);
+	return true;
+}
+

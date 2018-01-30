@@ -119,13 +119,15 @@
     <ClCompile Include="Engine\SystemManager.cpp" />
     <ClCompile Include="Engine\InputManger.cpp" />
     <ClCompile Include="Engine\WinMain.cpp" />
-    <ClCompile Include="Engine\Managers.cpp" />
+    <ClCompile Include="Engine\Declares.cpp" />
+    <ClCompile Include="LogManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Renderer.h" />
     <ClInclude Include="Engine\SystemManager.h" />
     <ClInclude Include="Engine\InputManger.h" />
-    <ClInclude Include="Engine\Managers.h" />
+    <ClInclude Include="Engine\Declares.h" />
+    <ClInclude Include="LogManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
