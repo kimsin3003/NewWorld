@@ -125,10 +125,10 @@ HRESULT Renderer::SetVertexShader()
 {
 	// load and compile the two shaders
 	ID3D10Blob *vsBlob, *psBlob, *errorblob;
-	HRESULT hr = D3DCompileFromFile(L"Default.fx", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "vs_4_0", NULL, NULL, &vsBlob, &errorblob);
+	HRESULT hr = D3DCompileFromFile(L"Engine/Default.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
 	if (FAILED(hr))
 		return hr;
-	hr = D3DCompileFromFile(L"Default.fx", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "ps_4_0", NULL, NULL, &psBlob, &errorblob);
+	hr = D3DCompileFromFile(L"Engine/Default.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "vs_5_0", NULL, NULL, &psBlob, &errorblob);
 	if (FAILED(hr))
 		return hr;
 
