@@ -125,12 +125,34 @@ HRESULT Renderer::SetVertexShader()
 {
 	// load and compile the two shaders
 	ID3D10Blob *vsBlob, *psBlob, *errorblob;
-	HRESULT hr = D3DCompileFromFile(L"Engine/Default.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
+	HRESULT hr = D3DCompileFromFile(L"Engine/Default_VS.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSShader", "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
 	if (FAILED(hr))
+	{
+		if (errorblob)
+		{
+			OutputDebugStringA((char*)errorblob->GetBufferPointer());
+			errorblob->Release();
+		}
+
+		if (vsBlob)
+			vsBlob->Release();
+
 		return hr;
-	hr = D3DCompileFromFile(L"Engine/Default.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "vs_5_0", NULL, NULL, &psBlob, &errorblob);
+	}
+	hr = D3DCompileFromFile(L"Engine/Default_PS.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSShader", "ps_5_0", NULL, NULL, &psBlob, &errorblob);
 	if (FAILED(hr))
+	{
+		if (errorblob)
+		{
+			OutputDebugStringA((char*)errorblob->GetBufferPointer());
+			errorblob->Release();
+		}
+
+		if (psBlob)
+			psBlob->Release();
+
 		return hr;
+	}
 
 	// encapsulate both shaders into shader objects
 	ID3D11VertexShader* vertexShader = nullptr;
@@ -145,23 +167,23 @@ HRESULT Renderer::SetVertexShader()
 	return hr;
 
 // 	create the input layout object
-// 		D3D11_INPUT_ELEMENT_DESC ied[] =
-// 		{
-// 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-// 			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-// 		};
-// 	
-// 		ID3D11InputLayout* inputLayout = nullptr;
-// 		m_device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
-// 		m_immediateContext->IASetInputLayout(inputLayout);
+		D3D11_INPUT_ELEMENT_DESC ied[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+	
+		ID3D11InputLayout* inputLayout = nullptr;
+		m_device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
+		m_immediateContext->IASetInputLayout(inputLayout);
 }
 
 bool Renderer::SetVertexBuffer()
 {
 	struct Vertex
 	{
-		XMFLOAT3 Pos;
-		XMFLOAT3 Col;
+		XMFLOAT4 Pos;
+		XMFLOAT4 Col;
 	};
 
 	// Supply the actual vertex data.

@@ -6,22 +6,22 @@ cbuffer cbPerObject : register(b0)
 
 struct VS_INPUT
 {
-	float4 vPosition    : POSITION;
-	float3 vNormal        : NORMAL;
+	float4 Position    : POSITION;
+	float4 Color        : COLOR;
 	float2 vTexcoord    : TEXCOORD0;
 };
 
 struct VS_OUTPUT
 {
-	float3 vNormal        : NORMAL;
-	float2 vTexcoord    : TEXCOORD0;
+	float4 Position        : NORMAL;
+	float4 Color			: TEXCOORD0;
 	float4 vPosition    : SV_POSITION;
 };
 
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT main(VS_INPUT Input)
+VS_OUTPUT VSShader(VS_INPUT Input)
 {
 	VS_OUTPUT Output;
 
