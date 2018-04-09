@@ -167,23 +167,23 @@ HRESULT Renderer::SetVertexShader()
 	return hr;
 
 // 	create the input layout object
-		D3D11_INPUT_ELEMENT_DESC ied[] =
-		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		};
-	
-		ID3D11InputLayout* inputLayout = nullptr;
-		m_device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
-		m_immediateContext->IASetInputLayout(inputLayout);
+	D3D11_INPUT_ELEMENT_DESC ied[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+
+	ID3D11InputLayout* inputLayout = nullptr;
+	m_device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
+	m_immediateContext->IASetInputLayout(inputLayout);
 }
 
 bool Renderer::SetVertexBuffer()
 {
 	struct Vertex
 	{
-		XMFLOAT4 Pos;
-		XMFLOAT4 Col;
+		XMFLOAT3 Pos;
+		XMFLOAT3 Col;
 	};
 
 	// Supply the actual vertex data.
