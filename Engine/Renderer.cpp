@@ -100,32 +100,33 @@ HRESULT Renderer::InitDevice(HWND hwnd, int winWidth, int winHeight)
 	m_immediateContext->RSSetViewports(1, &vp); // 뷰포트가 여러개면 개수와, 배열의 주소를 넣는다.
 
 
-	if (!SetVertexBuffer())
-		return false;
-	if (!SetIndexBuffer())
-		return false;
-	if (!SetVertexShader())
-		return false;
 	return hr;
 
 }
 
 bool Renderer::Tick(float deltaTime)
 {
-	//m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForNormalModel, 0);
-	m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
+	float ClearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f };
+	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
+	m_immediateContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_immediateContext->DrawIndexed(3, 0, 0);
+	if (!SetVertexShader())
+		return false;
+	if (!SetVertexBuffer())
+		return false;
+	if (!SetIndexBuffer())
+		return false;
+	m_immediateContext->DrawIndexed(4, 0, 0);
 
 	m_swapChain->Present(0, 0);
 	return true;
 }
 
-HRESULT Renderer::SetVertexShader()
+bool Renderer::SetVertexShader()
 {
 	// load and compile the two shaders
 	ID3D10Blob *vsBlob, *psBlob, *errorblob;
-	HRESULT hr = D3DCompileFromFile(L"Engine/Default_VS.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSShader", "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
+	HRESULT hr = D3DCompileFromFile(L"Engine/Default_VS.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
 	if (FAILED(hr))
 	{
 		if (errorblob)
@@ -137,9 +138,9 @@ HRESULT Renderer::SetVertexShader()
 		if (vsBlob)
 			vsBlob->Release();
 
-		return hr;
+		return false;
 	}
-	hr = D3DCompileFromFile(L"Engine/Default_PS.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSShader", "ps_5_0", NULL, NULL, &psBlob, &errorblob);
+	hr = D3DCompileFromFile(L"Engine/Default_PS.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", NULL, NULL, &psBlob, &errorblob);
 	if (FAILED(hr))
 	{
 		if (errorblob)
@@ -151,7 +152,7 @@ HRESULT Renderer::SetVertexShader()
 		if (psBlob)
 			psBlob->Release();
 
-		return hr;
+		return false;
 	}
 
 	// encapsulate both shaders into shader objects
@@ -164,8 +165,6 @@ HRESULT Renderer::SetVertexShader()
 	m_immediateContext->VSSetShader(vertexShader, 0, 0);
 	m_immediateContext->PSSetShader(pixelShader, 0, 0);
 
-	return hr;
-
 // 	create the input layout object
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
@@ -176,6 +175,8 @@ HRESULT Renderer::SetVertexShader()
 	ID3D11InputLayout* inputLayout = nullptr;
 	m_device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
 	m_immediateContext->IASetInputLayout(inputLayout);
+
+	return true;
 }
 
 bool Renderer::SetVertexBuffer()
@@ -229,12 +230,12 @@ bool Renderer::SetIndexBuffer()
 {
 
 	// Create indices.
-	unsigned int indices[] = { 0, 1, 2 };
+	unsigned int indices[] = { 0, 1, 2, 0 };
 
 	// Fill in a buffer description.
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * 3;
+	bufferDesc.ByteWidth = sizeof(unsigned int) * 4;
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;

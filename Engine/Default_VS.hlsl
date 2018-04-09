@@ -1,9 +1,3 @@
-cbuffer cbPerObject : register(b0)
-{
-	matrix        g_mWorldViewProjection    : packoffset(c0);
-	matrix        g_mWorld                : packoffset(c4);
-};
-
 struct VS_INPUT
 {
 	float4 Position    : POSITION;
@@ -19,11 +13,11 @@ struct VS_OUTPUT
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VSShader(VS_INPUT Input)
+VS_OUTPUT VS(VS_INPUT Input)
 {
 	VS_OUTPUT Output;
 
-	Output.Position = mul(Input.Position, g_mWorldViewProjection);
+	Output.Position = Input.Position;
 	Output.Color = Input.Color;
 
 	return Output;

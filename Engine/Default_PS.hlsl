@@ -10,7 +10,7 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
-float4 PSShader(PS_INPUT Input) : SV_TARGET
+float4 PS(PS_INPUT Input) : SV_TARGET
 {
 	return Input.Color;
 }
