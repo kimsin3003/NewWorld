@@ -12,7 +12,8 @@ bool Renderer::Initialize(HWND hwnd, int winWidth, int winHeight)
 {
 	InitDevice(hwnd, winWidth, winHeight);
 
-	//CreateShader();
+	if (!SetShaders())
+		return false;
 // 	CreateDepthStencilTexture();
 // 	CreateDepthStencilState();
 // 	CreateBlendState();
@@ -83,6 +84,7 @@ HRESULT Renderer::InitDevice(HWND hwnd, int winWidth, int winHeight)
 		NULL,
 		&m_renderTargetView);
 
+	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, NULL);
 	pBackBuffer->Release();
 
 	if (FAILED(hr))
@@ -110,8 +112,6 @@ bool Renderer::Tick(float deltaTime)
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 	m_immediateContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	if (!SetVertexShader())
-		return false;
 	if (!SetVertexBuffer())
 		return false;
 	if (!SetIndexBuffer())
@@ -122,7 +122,7 @@ bool Renderer::Tick(float deltaTime)
 	return true;
 }
 
-bool Renderer::SetVertexShader()
+bool Renderer::SetShaders()
 {
 	// load and compile the two shaders
 	ID3D10Blob *vsBlob, *psBlob, *errorblob;
@@ -158,9 +158,16 @@ bool Renderer::SetVertexShader()
 	// encapsulate both shaders into shader objects
 	ID3D11VertexShader* vertexShader = nullptr;
 	ID3D11PixelShader* pixelShader = nullptr;
-	m_device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &vertexShader);
-	m_device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &pixelShader);
-
+	hr = m_device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &vertexShader);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+	hr = m_device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &pixelShader);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	// set the shader objects
 	m_immediateContext->VSSetShader(vertexShader, 0, 0);
 	m_immediateContext->PSSetShader(pixelShader, 0, 0);
@@ -173,7 +180,11 @@ bool Renderer::SetVertexShader()
 	};
 
 	ID3D11InputLayout* inputLayout = nullptr;
-	m_device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
+	hr = m_device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	m_immediateContext->IASetInputLayout(inputLayout);
 
 	return true;
@@ -190,12 +201,18 @@ bool Renderer::SetVertexBuffer()
 	// Supply the actual vertex data.
 	Vertex sampleVerticies[] =
 	{
-		XMFLOAT3(0.0f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f, 0.0f, 0.5f),
-		XMFLOAT3(0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.5f, 0.0f, 0.0f),
-		XMFLOAT3(-0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.0f, 0.5f, 0.0f),
+		{
+			XMFLOAT3(-10.0f, 0.0f, 10.0f),
+			XMFLOAT3(0.0f, 0.0f, 0.5f)
+		},
+		{
+			XMFLOAT3(10.0f, 0.f, 10.f),
+			XMFLOAT3(0.5f, 0.0f, 0.0f)
+		},
+		{
+			XMFLOAT3(0, 10.0f, 10.f),
+			XMFLOAT3(0.0f, 0.5f, 0.0f)
+		}
 	};
 
 	// Fill in a buffer description.

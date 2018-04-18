@@ -16,7 +16,7 @@ private:
 	HRESULT InitDevice(HWND hwnd, int winWidth, int winHeight);
 	bool SetVertexBuffer();
 	bool SetIndexBuffer();
-	bool SetVertexShader();
+	bool SetShaders();
 	IDXGISwapChain*									m_swapChain = nullptr; //DC 바꾸기
 	ID3D11Device*									m_device = nullptr;
 	ID3D11DeviceContext*							m_immediateContext = nullptr; //Dx용 DC
