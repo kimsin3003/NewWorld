@@ -1,3 +1,10 @@
+cbuffer MatrixBuffer 
+{ 
+	matrix worldMatrix; 
+	matrix viewMatrix; 
+	matrix projectionMatrix; 
+};
+
 struct VS_INPUT
 {
 	float4 Position    : POSITION;
@@ -15,9 +22,12 @@ struct VS_OUTPUT
 //--------------------------------------------------------------------------------------
 VS_OUTPUT VS(VS_INPUT Input)
 {
+	
 	VS_OUTPUT Output;
-
-	Output.Position = Input.Position;
+	Input.Position.w = 1;
+	Output.Position = mul(Input.Position, worldMatrix);
+	Output.Position = mul(Output.Position, viewMatrix);
+	Output.Position = mul(Output.Position, projectionMatrix);
 	Output.Color = Input.Color;
 
 	return Output;
