@@ -12,6 +12,10 @@ bool Renderer::Initialize(HWND hwnd, int winWidth, int winHeight)
 {
 	InitDevice(hwnd, winWidth, winHeight);
 
+	if (!SetVertexBuffer())
+		return false;
+	if (!SetIndexBuffer())
+		return false;
 	if (!SetShaders())
 		return false;
 // 	CreateDepthStencilTexture();
@@ -110,13 +114,9 @@ bool Renderer::Tick(float deltaTime)
 {
 	float ClearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
-	m_immediateContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	if (!SetVertexBuffer())
-		return false;
-	if (!SetIndexBuffer())
-		return false;
-	m_immediateContext->DrawIndexed(4, 0, 0);
+	m_immediateContext->DrawIndexed(3, 0, 0);
 
 	m_swapChain->Present(0, 0);
 	return true;
@@ -202,15 +202,15 @@ bool Renderer::SetVertexBuffer()
 	Vertex sampleVerticies[] =
 	{
 		{
-			XMFLOAT3(-10.0f, 0.0f, 10.0f),
+			XMFLOAT3(-0.5f, 0.0f, 0.f),
 			XMFLOAT3(0.0f, 0.0f, 0.5f)
 		},
 		{
-			XMFLOAT3(10.0f, 0.f, 10.f),
+			XMFLOAT3(0.5f, 0.f, 0.f),
 			XMFLOAT3(0.5f, 0.0f, 0.0f)
 		},
 		{
-			XMFLOAT3(0, 10.0f, 10.f),
+			XMFLOAT3(0, 0.5f, 0.f),
 			XMFLOAT3(0.0f, 0.5f, 0.0f)
 		}
 	};
@@ -247,12 +247,12 @@ bool Renderer::SetIndexBuffer()
 {
 
 	// Create indices.
-	unsigned int indices[] = { 0, 1, 2, 0 };
+	unsigned int indices[] = { 0, 2, 1 };
 
 	// Fill in a buffer description.
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * 4;
+	bufferDesc.ByteWidth = sizeof(unsigned int) * 3;
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
@@ -270,6 +270,6 @@ bool Renderer::SetIndexBuffer()
 		return false;
 
 	// Set the buffer.
-	m_immediateContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	m_immediateContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	return true;
 }
