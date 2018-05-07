@@ -16,15 +16,14 @@ bool Renderer::Initialize(HWND hwnd, int winWidth, int winHeight)
 	CreateDepthStencilState();
 
 	CreateMatrices();
-	if (!SetShaders())
-		return false;
-	if (!SetConstantBuffers())
-		return false;
 	if (!SetVertexBuffer())
 		return false;
 	if (!SetIndexBuffer())
 		return false;
-// 	CreateBlendState();
+	if (!SetShaders())
+		return false;
+	if (!SetConstantBuffers())
+		return false;
 
 	return true;
 }
@@ -321,16 +320,16 @@ bool Renderer::SetVertexBuffer()
 	Vertex sampleVerticies[] =
 	{
 		{
-			XMFLOAT3(-10.0f, 0.0f, 10.0f),
-			XMFLOAT3(0.0f, 0.0f, 1.0f)
+			XMFLOAT3(-0.5f, 0.0f, 0.f),
+			XMFLOAT3(0.0f, 0.0f, 0.5f)
 		},
 		{
-			XMFLOAT3(10.0f, 0.f, 10.f),
-			XMFLOAT3(1.0, 0.0f, 0.0f)
+			XMFLOAT3(0.5f, 0.f, 0.f),
+			XMFLOAT3(0.5f, 0.0f, 0.0f)
 		},
 		{
-			XMFLOAT3(0, 10.0f, 10.f),
-			XMFLOAT3(0.0f, 1.0f, 0.0f)
+			XMFLOAT3(0, 0.5f, 0.f),
+			XMFLOAT3(0.0f, 0.5f, 0.0f)
 		}
 	};
 
@@ -366,12 +365,12 @@ bool Renderer::SetIndexBuffer()
 {
 
 	// Create indices.
-	unsigned int indices[] = { 0, 1, 2, 0 };
+	unsigned int indices[] = { 0, 2, 1 };
 
 	// Fill in a buffer description.
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(unsigned int) * 4;
+	bufferDesc.ByteWidth = sizeof(unsigned int) * 3;
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
@@ -389,6 +388,6 @@ bool Renderer::SetIndexBuffer()
 		return false;
 
 	// Set the buffer.
-	m_immediateContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	m_immediateContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	return true;
 }
