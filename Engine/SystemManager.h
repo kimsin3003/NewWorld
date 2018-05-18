@@ -1,11 +1,5 @@
 #pragma once
-
 #include <windows.h>
-class Scene;
-class InputClass;
-class Renderer;
-#include <string>
-#include <unordered_map>
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -21,7 +15,8 @@ public:
 private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
-	Renderer* m_renderer = nullptr;
+	class ObjectManager* m_objectManager = nullptr;
+	class Renderer* m_renderer = nullptr;
 };
 
 

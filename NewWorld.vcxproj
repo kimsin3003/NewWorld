@@ -124,12 +124,10 @@
     <ClCompile Include="Engine\InputManger.cpp" />
     <ClCompile Include="Engine\WinMain.cpp" />
     <ClCompile Include="Engine\Declares.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Engine\Renderer.h" />
-    <ClInclude Include="Engine\SystemManager.h" />
-    <ClInclude Include="Engine\InputManger.h" />
-    <ClInclude Include="Engine\Declares.h" />
+    <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Engine\ObjectManager.cpp" />
+    <ClCompile Include="Engine\Mesh.cpp" />
+    <ClCompile Include="Engine\Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Default_VS.hlsl">
