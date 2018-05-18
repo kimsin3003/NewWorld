@@ -1,6 +1,7 @@
 #include "SystemManager.h"
 #include "Declares.h"
 #include "Renderer.h"
+#include "ObjectManager.h"
 
 
 void SystemManager::Initialize()
@@ -87,6 +88,8 @@ void SystemManager::Initialize()
 
 	// Hide the mouse cursor.
 	ShowCursor(true);
+	m_objectManager = new ObjectManager();
+	m_objectManager->Start();
 	m_renderer = new Renderer();
 	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
@@ -150,7 +153,8 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 
 bool SystemManager::Tick()
 {
-	m_renderer->Tick(0);
+	m_objectManager->Tick(0);
+	m_renderer->Render(m_hwnd, m_objectManager, 0);
 	return true;
 }
 

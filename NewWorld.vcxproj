@@ -124,14 +124,24 @@
     <ClCompile Include="Engine\InputManger.cpp" />
     <ClCompile Include="Engine\WinMain.cpp" />
     <ClCompile Include="Engine\Declares.cpp" />
+    <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Engine\ObjectManager.cpp" />
     <ClCompile Include="LogManager.cpp" />
+    <ClCompile Include="Engine\Mesh.cpp" />
+    <ClCompile Include="Engine\Material.cpp" />
+    <ClCompile Include="Medium.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Renderer.h" />
     <ClInclude Include="Engine\SystemManager.h" />
     <ClInclude Include="Engine\InputManger.h" />
     <ClInclude Include="Engine\Declares.h" />
+    <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\ObjectManager.h" />
     <ClInclude Include="LogManager.h" />
+    <ClInclude Include="Engine\Mesh.h" />
+    <ClInclude Include="Engine\Material.h" />
+    <ClInclude Include="Medium.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Default_VS.hlsl">

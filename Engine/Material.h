@@ -1,0 +1,19 @@
+#pragma once
+#include <windows.h>
+class Material
+{
+public:
+	Material(const WCHAR* vsFileName, const WCHAR* psFileName) : m_vsFileName(vsFileName), m_psFileName(psFileName) {}
+	bool IsInitialized() { return VertexShader && PixelShader && InputLayout; }
+	bool Initialize(struct ID3D11Device* device, HWND hwnd);
+	virtual ~Material();
+
+	struct ID3D11VertexShader*		VertexShader	= nullptr;
+	struct ID3D11PixelShader*		PixelShader		= nullptr;
+	struct ID3D11InputLayout*		InputLayout		= nullptr;
+
+private:
+	const WCHAR * m_vsFileName;
+	const WCHAR* m_psFileName;
+};
+
