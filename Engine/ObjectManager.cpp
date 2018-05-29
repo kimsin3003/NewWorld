@@ -20,7 +20,10 @@ void ObjectManager::Start()
 
 void ObjectManager::Tick(float deltaTime)
 {
-
+	for(int i : m_indiciesOnUse)
+	{
+		m_gameObjectPool[i]->Tick();
+	}
 }
 
 GameObject* const ObjectManager::NewObject()
@@ -28,6 +31,8 @@ GameObject* const ObjectManager::NewObject()
 	int indexToUse = m_indiciesNotOnUse.front();
 	m_indiciesNotOnUse.pop();
 	m_indiciesOnUse.insert(indexToUse);
+
+	m_gameObjectPool[indexToUse]->Start();
 	return m_gameObjectPool[indexToUse];
 }
 

@@ -119,6 +119,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\CameraManager.cpp" />
+    <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Renderer.cpp" />
     <ClCompile Include="Engine\SystemManager.cpp" />
     <ClCompile Include="Engine\InputManger.cpp" />
@@ -158,6 +160,18 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PS</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\CameraManager.h" />
+    <ClInclude Include="Engine\Camera.h" />
+    <ClInclude Include="Engine\Declares.h" />
+    <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\InputManger.h" />
+    <ClInclude Include="Engine\Material.h" />
+    <ClInclude Include="Engine\Mesh.h" />
+    <ClInclude Include="Engine\ObjectManager.h" />
+    <ClInclude Include="Engine\Renderer.h" />
+    <ClInclude Include="Engine\SystemManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

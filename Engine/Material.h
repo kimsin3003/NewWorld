@@ -1,11 +1,21 @@
 #pragma once
 #include <windows.h>
+#include <directxmath.h>
+using namespace DirectX;
 class Material
 {
 public:
+
+	struct ConstBuffer
+	{
+		XMMATRIX world;
+		XMMATRIX view;
+		XMMATRIX projection;
+	};
 	Material(const WCHAR* vsFileName, const WCHAR* psFileName) : m_vsFileName(vsFileName), m_psFileName(psFileName) {}
 	bool IsInitialized() { return VertexShader && PixelShader && InputLayout; }
 	bool Initialize(struct ID3D11Device* device, HWND hwnd);
+	virtual ConstBuffer* CreateConstBuffer(const XMMATRIX& projectionMatrix, const XMMATRIX& viewMatrix, class GameObject* gameObject);
 	virtual ~Material();
 
 	struct ID3D11VertexShader*		VertexShader	= nullptr;

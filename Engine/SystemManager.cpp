@@ -2,6 +2,7 @@
 #include "Declares.h"
 #include "Renderer.h"
 #include "ObjectManager.h"
+#include "CameraManager.h"
 
 
 void SystemManager::Initialize()
@@ -89,9 +90,12 @@ void SystemManager::Initialize()
 	// Hide the mouse cursor.
 	ShowCursor(true);
 	m_objectManager = new ObjectManager();
-	m_objectManager->Start();
+	m_cameraManager = new CameraManager();
+	m_cameraManager->Initialize();
 	m_renderer = new Renderer();
 	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
+
+	m_objectManager->Start();
 
 	return;
 }
@@ -151,10 +155,9 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 }
 
 
-bool SystemManager::Tick()
+void SystemManager::Tick()
 {
 	m_objectManager->Tick(0);
-	m_renderer->Render(m_hwnd, m_objectManager, 0);
-	return true;
+	m_renderer->Render(m_hwnd, m_cameraManager, m_objectManager, 0);
 }
 

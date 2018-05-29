@@ -9,12 +9,13 @@ const float SCREEN_NEAR = 0.1f;
 class SystemManager
 {
 public:
-	bool Tick();
 	void Initialize();
+	void Tick();
 
 private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
+	class CameraManager* m_cameraManager = nullptr;
 	class ObjectManager* m_objectManager = nullptr;
 	class Renderer* m_renderer = nullptr;
 };

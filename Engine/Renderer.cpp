@@ -11,18 +11,18 @@
 #include "GameObject.h"
 #include "ObjectManager.h"
 
-bool Renderer::Initialize(HWND hwnd, int winWidth, int winHeight)
+bool Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
 {
-	if (!InitDevice(hwnd, winWidth, winHeight))
+	if (!InitDevice(hwnd))
 		return false;
 	if (!SetRenderTargets())
 		return false;
-	SetViewports(winWidth, winHeight);
+	SetViewports();
 
 	return true;
 }
 
-bool Renderer::InitDevice(HWND hwnd, int winWidth, int winHeight)
+bool Renderer::InitDevice(HWND hwnd)
 {
 	HRESULT hr = S_OK;
 
@@ -44,8 +44,8 @@ bool Renderer::InitDevice(HWND hwnd, int winWidth, int winHeight)
 	ZeroMemory(&sd, sizeof(sd));
 	sd.BufferCount = 1;		// 백 버퍼 갯수
 
-	sd.BufferDesc.Width = winWidth;
-	sd.BufferDesc.Height = winHeight;
+	sd.BufferDesc.Width = m_winWidth;
+	sd.BufferDesc.Height = m_winHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;	//백버퍼 포맷
 	sd.BufferDesc.RefreshRate.Numerator = 60;	//분자
 	sd.BufferDesc.RefreshRate.Denominator = 1;	//분모
@@ -100,13 +100,13 @@ bool Renderer::SetRenderTargets()
 	return true;
 }
 
-void Renderer::SetViewports(float winWidth, float winHeight)
+void Renderer::SetViewports()
 {
 	//여기에 원래는 depthbuffer의 뷰를 넣어야함.
 
 	D3D11_VIEWPORT	vp; // 한 윈도우에 여러개의 화면을 그릴 수 있는 박스들. ex)레이싱 게임 2player모드.
-	vp.Width = winWidth;
-	vp.Height = winHeight;
+	vp.Width = m_winWidth;
+	vp.Height = m_winHeight;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
@@ -115,10 +115,10 @@ void Renderer::SetViewports(float winWidth, float winHeight)
 }
 
 
-bool Renderer::Render(HWND hwnd, class ObjectManager* const objectManager, float deltaTime)
+bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* objectManager, float deltaTime)
 {
-	float ClearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f };
-	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
+	float clearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f };
+	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 
 	auto indiciesOnUse = objectManager->GetIndiciesOnUse();
 	auto gameObjectPool = objectManager->GetGameObjectPool();
@@ -148,7 +148,7 @@ bool Renderer::Render(HWND hwnd, class ObjectManager* const objectManager, float
 			UINT stride = sizeof(Vertex);
 			UINT offset = 0;
 			ID3D11Buffer* const buffers[] = { mesh->GetVertexBuffer() };
-			m_immediateContext->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
+			m_immediateContext->IASetVertexBuffers(0, sizeof(buffers) / sizeof(ID3D11Buffer), buffers, &stride, &offset);
 			m_immediateContext->IASetIndexBuffer(mesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 
 			m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -207,55 +207,10 @@ bool Renderer::Render(HWND hwnd, class ObjectManager* const objectManager, float
 // 	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 // }
 // 
-// void Renderer::CreateMatrices()
-// {
-// 	float fieldOfView = (float) 3.14 / 4.0f; 
-// 	float screenAspect = (float)m_width / (float)m_height;
-// 	m_projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, 0.1f, 1000.0f);
-// 	m_worldMatrix = DirectX::XMMatrixIdentity();
-// 	m_viewMatrix = DirectX::XMMatrixOrthographicLH(m_width, m_height, 0.1f, 1000.0f);
-// }
-//
-// bool Renderer::SetConstantBuffers()
-// {
-// 	HRESULT result;
-// 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-// 	MatrixBuffer* dataPtr;
-// 	unsigned int bufferNumber;
-// 
-// 
-// 	// 행렬을 transpose하여 셰이더에서 사용할 수 있게 합니다.
-// 	m_worldMatrix = DirectX::XMMatrixTranspose(m_worldMatrix);
-// 	m_viewMatrix = DirectX::XMMatrixTranspose(m_viewMatrix);
-// 	m_projectionMatrix = DirectX::XMMatrixTranspose(m_projectionMatrix);
-// 
-// 
-// 	// 상수 버퍼의 내용을 쓸 수 있도록 잠급니다.
-// 	result = m_immediateContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-// 	if (FAILED(result))
-// 	{
-// 		return false;
-// 	}
-// 
-// 	// 상수 버퍼의 데이터에 대한 포인터를 가져옵니다.
-// 	dataPtr = (MatrixBuffer*)mappedResource.pData;
-// 
-// 	// 상수 버퍼에 행렬을 복사합니다.
-// 	dataPtr->world = m_worldMatrix;
-// 	dataPtr->view = m_viewMatrix;
-// 	dataPtr->projection = m_projectionMatrix;
-// 
-// 	// 상수 버퍼의 잠금을 풉니다.
-// 	m_immediateContext->Unmap(m_matrixBuffer, 0);
-// 
-// 	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
-// 	bufferNumber = 0;
-// 
-// 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
-// 	m_immediateContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-// 
-// 	return true;
-// 
-// }
+void Renderer::SetMVPMatrix(GameObject* gameObject)
+{
+	
+
+}
 
 
