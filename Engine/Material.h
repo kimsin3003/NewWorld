@@ -15,7 +15,8 @@ public:
 	Material(const WCHAR* vsFileName, const WCHAR* psFileName) : m_vsFileName(vsFileName), m_psFileName(psFileName) {}
 	bool IsInitialized() { return VertexShader && PixelShader && InputLayout; }
 	bool Initialize(struct ID3D11Device* device, HWND hwnd);
-	virtual ConstBuffer* CreateConstBuffer(const XMMATRIX& projectionMatrix, const XMMATRIX& viewMatrix, class GameObject* gameObject);
+	void Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	virtual ConstBuffer* CreateConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX projectionMatrix, XMMATRIX viewMatrix, class GameObject* gameObject);
 	virtual ~Material();
 
 	struct ID3D11VertexShader*		VertexShader	= nullptr;
@@ -25,5 +26,6 @@ public:
 private:
 	const WCHAR * m_vsFileName;
 	const WCHAR* m_psFileName;
+	ID3D11Buffer* m_constBuffer;
 };
 

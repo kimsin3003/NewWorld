@@ -128,31 +128,12 @@ bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* ob
 		Mesh* mesh = gameObject->Mesh;
 		if (mesh)
 		{
+			mesh->Render(m_device, m_immediateContext);
 			Material* mat = mesh->Mat;
-			if (!mat->IsInitialized())
-				mat->Initialize(m_device, hwnd);
-			if (!mesh->IsInitialized())
-				mesh->Initialize(m_device);
-
-			if (mat->VertexShader)
+			if (mat)
 			{
-				m_immediateContext->VSSetShader(mat->VertexShader, 0, 0);
+				mat->Render(hwnd, m_device, m_immediateContext);
 			}
-
-			if (mat->PixelShader)
-			{
-				m_immediateContext->PSSetShader(mat->PixelShader, 0, 0);
-			}
-			m_immediateContext->IASetInputLayout(mat->InputLayout);
-
-			UINT stride = sizeof(Vertex);
-			UINT offset = 0;
-			ID3D11Buffer* const buffers[] = { mesh->GetVertexBuffer() };
-			m_immediateContext->IASetVertexBuffers(0, sizeof(buffers) / sizeof(ID3D11Buffer), buffers, &stride, &offset);
-			m_immediateContext->IASetIndexBuffer(mesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-
-			m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 			m_immediateContext->DrawIndexed(3, 0, 0);
 		}
 	}

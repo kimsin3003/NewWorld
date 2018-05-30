@@ -13,8 +13,7 @@ class Mesh
 public:
 	bool IsInitialized();
 	bool Initialize(struct ID3D11Device* device);
-	struct ID3D11Buffer* GetVertexBuffer() { return m_vertexBuffer; }
-	struct ID3D11Buffer* GetIndexBuffer() { return m_indexBuffer; }
+	void Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	virtual ~Mesh();
 	class Material*			Mat = nullptr;
 

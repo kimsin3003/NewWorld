@@ -4,7 +4,7 @@
 
 bool Mesh::IsInitialized()
 { 
-	return Mat && Mat->IsInitialized() && m_vertexBuffer && m_indexBuffer;
+	return m_vertexBuffer && m_indexBuffer;
 }
 
 bool Mesh::Initialize(ID3D11Device* device)
@@ -20,6 +20,20 @@ bool Mesh::Initialize(ID3D11Device* device)
 			return false;
 	}
 	return true;
+}
+
+void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+{
+
+	if (IsInitialized())
+		Initialize(device);
+
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	ID3D11Buffer* const buffers[] = { m_vertexBuffer };
+	deviceContext->IASetVertexBuffers(0, sizeof(buffers) / sizeof(ID3D11Buffer), buffers, &stride, &offset);
+	deviceContext->IASetIndexBuffer( m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 bool Mesh::CreateVertexBuffer(ID3D11Device* device)

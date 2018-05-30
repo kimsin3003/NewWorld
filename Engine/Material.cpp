@@ -66,19 +66,47 @@ bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 	if (errorblob)
 		errorblob->Release();
 
+	D3D11_BUFFER_DESC matrixBufferDesc;
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(ConstBuffer);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.StructureByteStride = 0;
+
+	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	hr = device->CreateBuffer(&matrixBufferDesc, NULL, &m_constBuffer);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
 	return true;
 }
 
-Material::ConstBuffer* Material::CreateConstBuffer(const XMMATRIX& projectionMatrix, const XMMATRIX& viewMatrix, class GameObject* gameObject)
+void Material::Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	float fieldOfView = (float) 3.14 / 4.0f;
-	float screenAspect = (float)m_winWidth / (float)m_winHeight;
-	XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, 0.1f, 1000.0f);
+	if (!IsInitialized())
+		Initialize(device, hwnd);
+
+	if (VertexShader)
+	{
+		deviceContext->VSSetShader(VertexShader, 0, 0);
+	}
+
+	if (PixelShader)
+	{
+		deviceContext->PSSetShader(PixelShader, 0, 0);
+	}
+	deviceContext->IASetInputLayout(InputLayout);
+}
+
+Material::ConstBuffer* Material::CreateConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX projectionMatrix, XMMATRIX viewMatrix, class GameObject* gameObject)
+{
 	XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
-	XMMATRIX viewMatrix = camera->GetViewMatrix(); 
-	ID3D11Buffer matrixBuffer;
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	ConstBuffer* dataPtr;
 	
 	unsigned int bufferNumber;
 
@@ -90,29 +118,29 @@ Material::ConstBuffer* Material::CreateConstBuffer(const XMMATRIX& projectionMat
 
 
 	// 상수 버퍼의 내용을 쓸 수 있도록 잠급니다.
-	result = m_immediateContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(m_constBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 	// 상수 버퍼의 데이터에 대한 포인터를 가져옵니다.
-	matrixBuffer = (MatrixBuffer*)mappedResource.pData;
+	dataPtr = (ConstBuffer*)mappedResource.pData;
 
 	// 상수 버퍼에 행렬을 복사합니다.
-	matrixBuffer->world = worldMatrix;
-	matrixBuffer->view = viewMatrix;
-	matrixBuffer->projection = projectionMatrix;
+	dataPtr->world = worldMatrix;
+	dataPtr->view = viewMatrix;
+	dataPtr->projection = projectionMatrix;
 
 	// 상수 버퍼의 잠금을 풉니다.
-	m_immediateContext->Unmap(matrixBuffer, 0);
+	deviceContext->Unmap(m_constBuffer, 0);
 
 
 	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
 	bufferNumber = 0;
 
 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
-	m_immediateContext->VSSetConstantBuffers(bufferNumber, 1, &matrixBuffer);
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_constBuffer);
 
 	return true;
 }

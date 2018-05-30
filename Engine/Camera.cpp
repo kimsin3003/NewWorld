@@ -4,6 +4,10 @@
 
 Camera::Camera()
 {
+	m_position.x = 0;
+	m_position.y = 0;
+	m_position.z = 0;
+
 	m_lookAt.x = 0;
 	m_lookAt.y = 0;
 	m_lookAt.z = 1;
@@ -11,6 +15,8 @@ Camera::Camera()
 	m_up.x = 0;
 	m_up.y = 1;
 	m_up.z = 0;
+
+	CreateViewMatrix();
 }
 
 
