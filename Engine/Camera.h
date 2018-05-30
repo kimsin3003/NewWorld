@@ -8,6 +8,7 @@ class Camera
 public:
 	Camera();
 	~Camera();
+	void Initialize(float screenWidth, float screenHeight, float  screenNear, float screenDepth);
 
 	void SetPosition(float x, float y, float z);
 	void SetRotation(float x, float y, float z) { m_rotation.x = x; m_rotation.y = y; m_rotation.z = z; }
@@ -15,12 +16,12 @@ public:
 	XMFLOAT3 GetPosition() { return m_position; }
 	XMFLOAT3 GetRotation() { return m_rotation; }
 
-	void Tick();
-	const XMMATRIX& GetViewMatrix();
+	const XMMATRIX& GetViewMatrix() { return m_viewMatrix; }
+	const XMMATRIX& GetProjectionMatrix() { return m_projectionMatrix; }
 
 private:
 	void CreateViewMatrix();
-	void CreateProjectionMatrix();
+	void CreateProjectionMatrix(float screenWidth, float screenHeight, float  screenNear, float screenDepth);
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_lookAt;
 	XMFLOAT3 m_up;

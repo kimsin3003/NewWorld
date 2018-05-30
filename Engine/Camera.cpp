@@ -4,19 +4,6 @@
 
 Camera::Camera()
 {
-	m_position.x = 0;
-	m_position.y = 0;
-	m_position.z = 0;
-
-	m_lookAt.x = 0;
-	m_lookAt.y = 0;
-	m_lookAt.z = 1;
-
-	m_up.x = 0;
-	m_up.y = 1;
-	m_up.z = 0;
-
-	CreateViewMatrix();
 }
 
 
@@ -30,9 +17,31 @@ void Camera::SetPosition(float x, float y, float z)
 	CreateViewMatrix();
 }
 
-const DirectX::XMMATRIX& Camera::GetViewMatrix()
+void Camera::Initialize(float screenWidth, float screenHeight, float  screenNear, float screenDepth)
 {
-	return m_viewMatrix;
+	m_position.x = 0;
+	m_position.y = 0;
+	m_position.z = 0;
+
+	m_lookAt.x = 0;
+	m_lookAt.y = 0;
+	m_lookAt.z = 1;
+
+	m_up.x = 0;
+	m_up.y = 1;
+	m_up.z = 0;
+
+	CreateViewMatrix();
+	CreateProjectionMatrix(screenWidth, screenHeight, screenNear, screenDepth);
+}
+
+void Camera::CreateProjectionMatrix(float screenWidth, float screenHeight, float screenNear, float screenDepth)
+{
+	float fieldOfView = 3.141592654f / 4.0f;
+	float screenAspect = (float)screenWidth / (float)screenHeight;
+
+	// Create the projection matrix for 3D rendering.
+	m_projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
 }
 
 void Camera::CreateViewMatrix()
@@ -47,7 +56,7 @@ void Camera::CreateViewMatrix()
 	float roll = m_rotation.z * 0.0174532925f;
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
-	XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+	XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	focusPosition = XMVector3TransformCoord(focusPosition, rotationMatrix);
@@ -57,5 +66,5 @@ void Camera::CreateViewMatrix()
 	eyePosition = XMVectorAdd(eyePosition, focusPosition);
 
 	// Finally create the view matrix from the three updated vectors.
-	m_viewMatrix = XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
+	m_viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
 }

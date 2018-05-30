@@ -91,7 +91,7 @@ void SystemManager::Initialize()
 	ShowCursor(true);
 	m_objectManager = new ObjectManager();
 	m_cameraManager = new CameraManager();
-	m_cameraManager->Initialize();
+	m_cameraManager->Initialize(screenWidth, screenHeight, 0.1f, 1);
 	m_renderer = new Renderer();
 	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 

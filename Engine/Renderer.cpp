@@ -10,6 +10,8 @@
 #include "Material.h"
 #include "GameObject.h"
 #include "ObjectManager.h"
+#include "Camera.h"
+#include "CameraManager.h"
 
 bool Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
 {
@@ -122,6 +124,8 @@ bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* ob
 
 	auto indiciesOnUse = objectManager->GetIndiciesOnUse();
 	auto gameObjectPool = objectManager->GetGameObjectPool();
+
+	Camera* currentCamera = cameraManager->GetCurrentCamera();
 	for (int index : indiciesOnUse)
 	{
 		GameObject* gameObject = gameObjectPool[index];
@@ -132,7 +136,7 @@ bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* ob
 			Material* mat = mesh->Mat;
 			if (mat)
 			{
-				mat->Render(hwnd, m_device, m_immediateContext);
+				mat->Render(hwnd, m_device, m_immediateContext, XMMatrixIdentity(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
 			}
 			m_immediateContext->DrawIndexed(3, 0, 0);
 		}
@@ -188,10 +192,5 @@ bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* ob
 // 	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 // }
 // 
-void Renderer::SetMVPMatrix(GameObject* gameObject)
-{
-	
-
-}
 
 

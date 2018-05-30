@@ -18,7 +18,7 @@ private:
 	bool InitDevice(HWND hwnd);
 	bool SetRenderTargets();
 	void SetViewports();
-	void SetMVPMatrix(GameObject* gameObject);
+	void SetMVPMatrix(class GameObject* gameObject);
 	struct IDXGISwapChain*									m_swapChain = nullptr; //DC 바꾸기
 	struct ID3D11Device*										m_device = nullptr;
 	struct ID3D11DeviceContext*								m_immediateContext = nullptr; //Dx용 DC

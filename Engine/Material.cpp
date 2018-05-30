@@ -84,7 +84,7 @@ bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-void Material::Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+void Material::Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
 	if (!IsInitialized())
 		Initialize(device, hwnd);
@@ -99,16 +99,16 @@ void Material::Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* devi
 		deviceContext->PSSetShader(PixelShader, 0, 0);
 	}
 	deviceContext->IASetInputLayout(InputLayout);
+
+	SetConstBuffer(deviceContext, worldMatrix, projectionMatrix, viewMatrix);
 }
 
-Material::ConstBuffer* Material::CreateConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX projectionMatrix, XMMATRIX viewMatrix, class GameObject* gameObject)
+void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX projectionMatrix, XMMATRIX viewMatrix)
 {
-	XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	ConstBuffer* dataPtr;
 	
-	unsigned int bufferNumber;
 
 
 	// 행렬을 transpose하여 셰이더에서 사용할 수 있게 합니다.
@@ -121,7 +121,7 @@ Material::ConstBuffer* Material::CreateConstBuffer(ID3D11DeviceContext* deviceCo
 	result = deviceContext->Map(m_constBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
-		return false;
+		return;
 	}
 
 	// 상수 버퍼의 데이터에 대한 포인터를 가져옵니다.
@@ -137,12 +137,12 @@ Material::ConstBuffer* Material::CreateConstBuffer(ID3D11DeviceContext* deviceCo
 
 
 	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
-	bufferNumber = 0;
+
+	unsigned int bufferNumber = 0;
 
 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_constBuffer);
 
-	return true;
 }
 
 Material::~Material()

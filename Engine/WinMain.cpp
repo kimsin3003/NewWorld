@@ -27,11 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 		}
 		else
 		{
-			result = gSystemManager->Tick();
-			if (!result)
-			{
-				done = true;
-			}
+			gSystemManager->Tick();
 		}
 
 	}
