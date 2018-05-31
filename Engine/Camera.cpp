@@ -59,11 +59,11 @@ void Camera::CreateViewMatrix()
 	XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
-	focusPosition = XMVector3TransformCoord(focusPosition, rotationMatrix);
-	upDirection = XMVector3TransformCoord(upDirection, rotationMatrix);
+	focusPosition = DirectX::XMVector3TransformCoord(focusPosition, rotationMatrix);
+	upDirection = DirectX::XMVector3TransformCoord(upDirection, rotationMatrix);
 
 	// Translate the rotated camera position to the location of the viewer.
-	eyePosition = XMVectorAdd(eyePosition, focusPosition);
+	focusPosition = DirectX::XMVectorAdd(eyePosition, focusPosition);
 
 	// Finally create the view matrix from the three updated vectors.
 	m_viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);

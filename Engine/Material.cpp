@@ -37,12 +37,12 @@ bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 	}
 
 	// encapsulate both shaders into shader objects
-	hr = device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &VertexShader);
+	hr = device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &m_vertexShader);
 	if (FAILED(hr))
 	{
 		return false;
 	}
-	hr = device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &PixelShader);
+	hr = device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &m_pixelShader);
 	if (FAILED(hr))
 	{
 		return false;
@@ -56,7 +56,7 @@ bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	hr = device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &InputLayout);
+	hr = device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_inputLayout);
 	if (FAILED(hr))
 	{
 		return false;
@@ -89,16 +89,16 @@ void Material::Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* devi
 	if (!IsInitialized())
 		Initialize(device, hwnd);
 
-	if (VertexShader)
+	if (m_vertexShader)
 	{
-		deviceContext->VSSetShader(VertexShader, 0, 0);
+		deviceContext->VSSetShader(m_vertexShader, 0, 0);
 	}
 
-	if (PixelShader)
+	if (m_pixelShader)
 	{
-		deviceContext->PSSetShader(PixelShader, 0, 0);
+		deviceContext->PSSetShader(m_pixelShader, 0, 0);
 	}
-	deviceContext->IASetInputLayout(InputLayout);
+	deviceContext->IASetInputLayout(m_inputLayout);
 
 	SetConstBuffer(deviceContext, worldMatrix, projectionMatrix, viewMatrix);
 }
@@ -147,7 +147,7 @@ void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX world
 
 Material::~Material()
 {
-	VertexShader->Release();
-	PixelShader->Release();
-	InputLayout->Release();
+	m_vertexShader->Release();
+	m_pixelShader->Release();
+	m_inputLayout->Release();
 }
