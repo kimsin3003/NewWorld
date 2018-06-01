@@ -18,7 +18,7 @@ public:
 	class Material*			Mat = nullptr;
 
 private:
-	bool CreateVertexBuffer(struct ID3D11Device* device);
+	void CreateVertexBuffer(struct ID3D11Device* device);
 	bool CreateIndexBuffer(struct ID3D11Device* device);
 	struct ID3D11Buffer*		m_vertexBuffer	= nullptr;
 	struct ID3D11Buffer*		m_indexBuffer	= nullptr;
