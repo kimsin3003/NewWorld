@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include "Logger.h"
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -9,6 +10,7 @@ const float SCREEN_NEAR = 0.1f;
 class SystemManager
 {
 public:
+	~SystemManager() { Logger::Finalize(); }
 	void Initialize();
 	void Tick();
 

@@ -1,9 +1,10 @@
-#include "Declares.h"
+#include "SystemManager.h"
+#include "InputManger.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 	MSG msg;
-	bool done, result;
+	bool done;
 
 	// Initialize the message structure.
 	ZeroMemory(&msg, sizeof(MSG));
@@ -11,8 +12,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	// Loop until there is a quit message from the window or the user.
 	done = false;
 
-	gSystemManager->Initialize();
-	gInputManager->Initialize();
+	SystemManager systemManager;
+	systemManager.Initialize();
+	InputManager::Initialize();
 	while (!done)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -27,10 +29,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 		}
 		else
 		{
-			gSystemManager->Tick();
+			systemManager.Tick();
 		}
 
 	}
-
 	return 0;
 }

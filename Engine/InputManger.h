@@ -1,17 +1,16 @@
 #pragma once
 #include <vector>
 
-class InputManger
+class InputManager
 {
 public:
-	void Initialize();
-	void Reset();
-	void KeyDown(unsigned int input);
-	void KeyUp(unsigned int input);
-	bool IsKeyDown(unsigned int key);
+	static void Initialize();
+	static void Reset();
+	static void KeyDown(unsigned int input);
+	static void KeyUp(unsigned int input);
+	static bool IsKeyDown(unsigned int key);
 
 private:
-	bool m_keys[256];
-	std::vector<int> m_pressedKeys;
+	static bool* m_keys;
+	static std::vector<int> m_pressedKeys;
 };
-

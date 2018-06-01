@@ -3,8 +3,9 @@
 #include <D3Dcompiler.h>
 #include "Material.h"
 #include "Camera.h"
+#include "Logger.h"
 
-bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
+void Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 {
 	ID3D10Blob *vsBlob, *psBlob, *errorblob;
 	HRESULT hr = D3DCompileFromFile(m_vsFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
@@ -12,40 +13,42 @@ bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 	{
 		if (errorblob)
 		{
-			OutputDebugStringA((char*)errorblob->GetBufferPointer());
+			Logger::Log((char*)errorblob->GetBufferPointer());
 			errorblob->Release();
 		}
 
 		if (vsBlob)
 			vsBlob->Release();
 
-		return false;
+		return;
 	}
 	hr = D3DCompileFromFile(m_psFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", NULL, NULL, &psBlob, &errorblob);
 	if (FAILED(hr))
 	{
 		if (errorblob)
 		{
-			OutputDebugStringA((char*)errorblob->GetBufferPointer());
+			Logger::Log((char*)errorblob->GetBufferPointer());
 			errorblob->Release();
 		}
 
 		if (psBlob)
 			psBlob->Release();
 
-		return false;
+		return;
 	}
 
 	// encapsulate both shaders into shader objects
 	hr = device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &m_vertexShader);
 	if (FAILED(hr))
 	{
-		return false;
+		Logger::Log("VertexShader 持失 神嫌");
+		return;
 	}
 	hr = device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &m_pixelShader);
 	if (FAILED(hr))
 	{
-		return false;
+		Logger::Log("PixelShader 持失 神嫌");
+		return;
 	}
 	// set the shader objects
 
@@ -59,7 +62,8 @@ bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 	hr = device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_inputLayout);
 	if (FAILED(hr))
 	{
-		return false;
+		Logger::Log(hr);
+		return;
 	}
 	vsBlob->Release();
 	psBlob->Release();
@@ -78,10 +82,9 @@ bool Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 	hr = device->CreateBuffer(&matrixBufferDesc, NULL, &m_constBuffer);
 	if (FAILED(hr))
 	{
-		return false;
+		Logger::Log(hr);
+		return;
 	}
-
-	return true;
 }
 
 void Material::Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
@@ -121,6 +124,7 @@ void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX world
 	result = deviceContext->Map(m_constBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 	{
+		Logger::Log(result);
 		return;
 	}
 

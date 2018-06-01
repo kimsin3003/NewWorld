@@ -125,11 +125,11 @@
     <ClCompile Include="Engine\SystemManager.cpp" />
     <ClCompile Include="Engine\InputManger.cpp" />
     <ClCompile Include="Engine\WinMain.cpp" />
-    <ClCompile Include="Engine\Declares.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\ObjectManager.cpp" />
     <ClCompile Include="Engine\Mesh.cpp" />
     <ClCompile Include="Engine\Material.cpp" />
+    <ClCompile Include="Engine\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Default_VS.hlsl">
@@ -164,7 +164,6 @@
   <ItemGroup>
     <ClInclude Include="Engine\CameraManager.h" />
     <ClInclude Include="Engine\Camera.h" />
-    <ClInclude Include="Engine\Declares.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\InputManger.h" />
     <ClInclude Include="Engine\Material.h" />
@@ -172,6 +171,7 @@
     <ClInclude Include="Engine\ObjectManager.h" />
     <ClInclude Include="Engine\Renderer.h" />
     <ClInclude Include="Engine\SystemManager.h" />
+    <ClInclude Include="Engine\Logger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

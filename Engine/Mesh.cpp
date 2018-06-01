@@ -1,6 +1,7 @@
 #include <d3d11.h>
 #include "Mesh.h"
 #include "Material.h"
+#include "Logger.h"
 
 bool Mesh::IsInitialized()
 { 
@@ -36,7 +37,7 @@ void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Mesh::CreateVertexBuffer(ID3D11Device* device)
+void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 {
 
 	Vertex	vertices[] =
@@ -73,9 +74,10 @@ bool Mesh::CreateVertexBuffer(ID3D11Device* device)
 	hr = device->CreateBuffer(&bufferDesc, &InitData, &m_vertexBuffer);
 
 	if (FAILED(hr))
-		return false;
-
-	return true;
+	{
+		Logger::Log(hr);
+		return;
+	}
 }
 
 bool Mesh::CreateIndexBuffer(ID3D11Device* device)

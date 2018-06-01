@@ -1,8 +1,9 @@
 #include "SystemManager.h"
-#include "Declares.h"
 #include "Renderer.h"
 #include "ObjectManager.h"
 #include "CameraManager.h"
+#include "Logger.h"
+#include "InputManger.h"
 
 
 void SystemManager::Initialize()
@@ -89,6 +90,9 @@ void SystemManager::Initialize()
 
 	// Hide the mouse cursor.
 	ShowCursor(true);
+
+	Logger::Initialize("log.txt");
+	Logger::Log("·Î±ë ½ÃÀÛ");
 	m_objectManager = new ObjectManager();
 	m_cameraManager = new CameraManager();
 	m_cameraManager->Initialize(screenWidth, screenHeight, 0.1f, 1);
@@ -134,7 +138,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 	case WM_KEYDOWN:
 	{
 		// If a key is pressed send it to the input object so it can record that state.
-		gInputManager->KeyDown((unsigned int)wparam);
+		InputManager::KeyDown((unsigned int)wparam);
 		return 0;
 	}
 
@@ -142,7 +146,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 	case WM_KEYUP:
 	{
 		// If a key is released then send it to the input object so it can unset the state for that key.
-		gInputManager->KeyUp((unsigned int)wparam);
+		InputManager::KeyUp((unsigned int)wparam);
 		return 0;
 	}
 

@@ -1,6 +1,10 @@
 #include "InputManger.h"
 
-void InputManger::Initialize()
+
+bool* InputManager::m_keys = new bool[256];
+std::vector<int> InputManager::m_pressedKeys = std::vector<int>();
+
+void InputManager::Initialize()
 {
 	int i;
 
@@ -14,7 +18,7 @@ void InputManger::Initialize()
 }
 
 //set pressed keys up.
-void InputManger::Reset()
+void InputManager::Reset()
 {
 	for(int key : m_pressedKeys)
 	{
@@ -24,7 +28,7 @@ void InputManger::Reset()
 }
 
 
-void InputManger::KeyDown(unsigned int input)
+void InputManager::KeyDown(unsigned int input)
 {
 	// If a key is pressed then save that state in the key array.
 	m_keys[input] = true;
@@ -33,7 +37,7 @@ void InputManger::KeyDown(unsigned int input)
 }
 
 
-void InputManger::KeyUp(unsigned int input)
+void InputManager::KeyUp(unsigned int input)
 {
 	// If a key is released then clear that state in the key array.
 	m_keys[input] = false;
@@ -41,7 +45,7 @@ void InputManger::KeyUp(unsigned int input)
 }
 
 
-bool InputManger::IsKeyDown(unsigned int key)
+bool InputManager::IsKeyDown(unsigned int key)
 {
 	// Return what state the key is in (pressed/not pressed).
 	return m_keys[key];
