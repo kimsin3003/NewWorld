@@ -12,6 +12,7 @@
 #include "ObjectManager.h"
 #include "Camera.h"
 #include "CameraManager.h"
+#include "Logger.h"
 
 bool Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
 {
@@ -74,8 +75,10 @@ bool Renderer::InitDevice(HWND hwnd)
 		&m_immediateContext);
 
 	if (FAILED(hr))
+	{
+		Logger::Log(hr);
 		return false;
-
+	}
 	return true;
 }
 
@@ -87,14 +90,22 @@ bool Renderer::SetRenderTargets()
 		(LPVOID*)&pBackBuffer);
 
 	if (FAILED(hr))
+	{
+		Logger::Log(hr);
 		return false;
+	}
+	return true;
 
 	hr = m_device->CreateRenderTargetView(pBackBuffer,
 		NULL,
 		&m_renderTargetView);
 
 	if (FAILED(hr))
+	{
+		Logger::Log(hr);
 		return false;
+	}
+	return true;
 
 	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, NULL);
 	pBackBuffer->Release();
@@ -117,7 +128,7 @@ void Renderer::SetViewports()
 }
 
 
-bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* objectManager, float deltaTime)
+void Renderer::Render(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime)
 {
 	float clearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
@@ -136,7 +147,7 @@ bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* ob
 			Material* mat = mesh->Mat;
 			if (mat)
 			{
-				mat->Render(hwnd, m_device, m_immediateContext, XMMatrixIdentity(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
+				mat->Render(m_device, m_immediateContext, XMMatrixIdentity(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
 			}
 			m_immediateContext->DrawIndexed(3, 0, 0);
 		}
@@ -144,7 +155,7 @@ bool Renderer::Render(HWND hwnd, CameraManager* cameraManager, ObjectManager* ob
 
 	m_swapChain->Present(0, 0);
 
-	return true;
+	return;
 }
 // void Renderer::CreateDepthStencilState()
 // {

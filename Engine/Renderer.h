@@ -7,7 +7,7 @@ class Renderer
 {
 public:
 	bool Initialize(HWND hwnd, float winWidth, float winHeight);
-	bool Render(HWND hwnd, class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime);
+	void Render(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime);
 private:
 	struct MatrixBuffer
 	{ 

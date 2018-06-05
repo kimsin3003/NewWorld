@@ -8,19 +8,16 @@ bool Mesh::IsInitialized()
 	return m_vertexBuffer && m_indexBuffer;
 }
 
-bool Mesh::Initialize(ID3D11Device* device)
+void Mesh::Initialize(struct ID3D11Device* device)
 {
 	if (!m_vertexBuffer)
 	{
-		if (!CreateVertexBuffer(device))
-			return false;
+		CreateVertexBuffer(device);
 	}
 	if(!m_indexBuffer)
 	{
-		if (!CreateIndexBuffer(device))
-			return false;
+		CreateIndexBuffer(device);
 	}
-	return true;
 }
 
 void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -80,7 +77,7 @@ void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 	}
 }
 
-bool Mesh::CreateIndexBuffer(ID3D11Device* device)
+void Mesh::CreateIndexBuffer(struct ID3D11Device* device)
 {
 
 	// Create indices.
@@ -104,8 +101,9 @@ bool Mesh::CreateIndexBuffer(ID3D11Device* device)
 	HRESULT hr = S_OK;
 	hr = device->CreateBuffer(&bufferDesc, &InitData, &m_indexBuffer);
 	if (FAILED(hr))
-		return false;
-	return true;
+	{
+		Logger::Log(hr);
+	}
 }
 
 

@@ -14,8 +14,8 @@ public:
 	};
 	Material(const WCHAR* vsFileName, const WCHAR* psFileName) : m_vsFileName(vsFileName), m_psFileName(psFileName) {}
 	bool IsInitialized() { return m_vertexShader && m_pixelShader && m_inputLayout; }
-	void Initialize(struct ID3D11Device* device, HWND hwnd);
-	void Render(HWND hwnd, struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+	void Initialize(struct ID3D11Device* device);
+	void Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
 	void SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX projectionMatrix, XMMATRIX viewMatrix);
 	virtual ~Material();
 

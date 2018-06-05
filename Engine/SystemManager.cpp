@@ -162,6 +162,6 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 void SystemManager::Tick()
 {
 	m_objectManager->Tick(0);
-	m_renderer->Render(m_hwnd, m_cameraManager, m_objectManager, 0);
+	m_renderer->Render(m_cameraManager, m_objectManager, 0);
 }
 

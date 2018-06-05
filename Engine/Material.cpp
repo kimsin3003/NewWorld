@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "Logger.h"
 
-void Material::Initialize(struct ID3D11Device* device, HWND hwnd)
+void Material::Initialize(struct ID3D11Device* device)
 {
 	ID3D10Blob *vsBlob, *psBlob, *errorblob;
 	HRESULT hr = D3DCompileFromFile(m_vsFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
@@ -87,10 +87,10 @@ void Material::Initialize(struct ID3D11Device* device, HWND hwnd)
 	}
 }
 
-void Material::Render(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
 	if (!IsInitialized())
-		Initialize(device, hwnd);
+		Initialize(device);
 
 	if (m_vertexShader)
 	{
