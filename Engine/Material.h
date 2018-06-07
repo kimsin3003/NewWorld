@@ -16,7 +16,7 @@ public:
 	bool IsInitialized() { return m_vertexShader && m_pixelShader && m_inputLayout; }
 	void Initialize(struct ID3D11Device* device);
 	void Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
-	void SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX projectionMatrix, XMMATRIX viewMatrix);
+	void SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
 	virtual ~Material();
 
 private:

@@ -5,7 +5,7 @@
 class ObjectManager
 {
 public:
-	void Start();
+	void Initialize();
 	void Tick(float deltaTime);
 	class GameObject* const NewObject();
 	void RemoveGameObject(class GameObject* gameObject);

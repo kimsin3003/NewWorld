@@ -94,12 +94,12 @@ void SystemManager::Initialize()
 	Logger::Initialize("log.txt");
 	Logger::Log("·Î±ë ½ÃÀÛ");
 	m_objectManager = new ObjectManager();
+	m_objectManager->Initialize();
 	m_cameraManager = new CameraManager();
 	m_cameraManager->Initialize(screenWidth, screenHeight, 0.1f, 1);
 	m_renderer = new Renderer();
 	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
-	m_objectManager->Start();
 
 	return;
 }
@@ -162,6 +162,6 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 void SystemManager::Tick()
 {
 	m_objectManager->Tick(0);
-	m_renderer->Render(m_cameraManager, m_objectManager, 0);
+	m_renderer->Tick(m_cameraManager, m_objectManager, 0);
 }
 

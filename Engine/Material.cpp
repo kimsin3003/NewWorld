@@ -70,16 +70,16 @@ void Material::Initialize(struct ID3D11Device* device)
 	if (errorblob)
 		errorblob->Release();
 
-	D3D11_BUFFER_DESC matrixBufferDesc;
-	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(ConstBuffer);
-	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	matrixBufferDesc.MiscFlags = 0;
-	matrixBufferDesc.StructureByteStride = 0;
+	D3D11_BUFFER_DESC constBufferDesc;
+	constBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	constBufferDesc.ByteWidth = sizeof(ConstBuffer);
+	constBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	constBufferDesc.MiscFlags = 0;
+	constBufferDesc.StructureByteStride = 0;
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	hr = device->CreateBuffer(&matrixBufferDesc, NULL, &m_constBuffer);
+	hr = device->CreateBuffer(&constBufferDesc, NULL, &m_constBuffer);
 	if (FAILED(hr))
 	{
 		Logger::Log(hr);
@@ -92,6 +92,8 @@ void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* d
 	if (!IsInitialized())
 		Initialize(device);
 
+	deviceContext->IASetInputLayout(m_inputLayout);
+
 	if (m_vertexShader)
 	{
 		deviceContext->VSSetShader(m_vertexShader, 0, 0);
@@ -101,12 +103,11 @@ void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* d
 	{
 		deviceContext->PSSetShader(m_pixelShader, 0, 0);
 	}
-	deviceContext->IASetInputLayout(m_inputLayout);
 
-	SetConstBuffer(deviceContext, worldMatrix, projectionMatrix, viewMatrix);
+	SetConstBuffer(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 }
 
-void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX projectionMatrix, XMMATRIX viewMatrix)
+void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;

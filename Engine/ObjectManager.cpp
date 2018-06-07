@@ -3,7 +3,7 @@
 #include "Mesh.h"
 #include "Material.h"
 
-void ObjectManager::Start()
+void ObjectManager::Initialize()
 {
 	m_gameObjectPool.reserve(1000);
 	for (int i = 0; i < 1000; i++)
@@ -11,7 +11,7 @@ void ObjectManager::Start()
 		m_gameObjectPool.emplace_back(new GameObject(i));
 		m_indiciesNotOnUse.push(i);
 	}
-	GameObject* const gameObject1 = NewObject();
+	GameObject* gameObject1 = NewObject();
 	Mesh* triangleMesh = new Mesh();
 	Material* defaultMaterial = new Material(L"Engine/Default_VS.hlsl", L"Engine/Default_PS.hlsl");
 	triangleMesh->Mat = defaultMaterial;

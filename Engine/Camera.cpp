@@ -31,6 +31,10 @@ void Camera::Initialize(float screenWidth, float screenHeight, float  screenNear
 	m_up.y = 1;
 	m_up.z = 0;
 
+	m_rotation.x = 0;
+	m_rotation.y = 0;
+	m_rotation.z = 0;
+
 	CreateViewMatrix();
 	CreateProjectionMatrix(screenWidth, screenHeight, screenNear, screenDepth);
 }

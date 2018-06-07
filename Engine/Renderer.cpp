@@ -14,15 +14,13 @@
 #include "CameraManager.h"
 #include "Logger.h"
 
-bool Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
+void Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
 {
 	if (!InitDevice(hwnd))
-		return false;
+		return;
 	if (!SetRenderTargets())
-		return false;
+		return;
 	SetViewports();
-
-	return true;
 }
 
 bool Renderer::InitDevice(HWND hwnd)
@@ -94,7 +92,6 @@ bool Renderer::SetRenderTargets()
 		Logger::Log(hr);
 		return false;
 	}
-	return true;
 
 	hr = m_device->CreateRenderTargetView(pBackBuffer,
 		NULL,
@@ -105,7 +102,6 @@ bool Renderer::SetRenderTargets()
 		Logger::Log(hr);
 		return false;
 	}
-	return true;
 
 	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, NULL);
 	pBackBuffer->Release();
@@ -128,7 +124,7 @@ void Renderer::SetViewports()
 }
 
 
-void Renderer::Render(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime)
+void Renderer::Tick(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime)
 {
 	float clearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);

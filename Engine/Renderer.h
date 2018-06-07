@@ -6,8 +6,8 @@
 class Renderer
 {
 public:
-	bool Initialize(HWND hwnd, float winWidth, float winHeight);
-	void Render(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime);
+	void Initialize(HWND hwnd, float winWidth, float winHeight);
+	void Tick(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime);
 private:
 	struct MatrixBuffer
 	{ 
@@ -18,7 +18,6 @@ private:
 	bool InitDevice(HWND hwnd);
 	bool SetRenderTargets();
 	void SetViewports();
-	void SetMVPMatrix(class GameObject* gameObject);
 	struct IDXGISwapChain*									m_swapChain = nullptr; //DC 바꾸기
 	struct ID3D11Device*										m_device = nullptr;
 	struct ID3D11DeviceContext*								m_immediateContext = nullptr; //Dx용 DC

@@ -1,4 +1,5 @@
 #include <d3d11.h>
+#include <string>
 #include "Mesh.h"
 #include "Material.h"
 #include "Logger.h"
@@ -23,7 +24,7 @@ void Mesh::Initialize(struct ID3D11Device* device)
 void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 
-	if (IsInitialized())
+	if (!IsInitialized())
 		Initialize(device);
 
 	UINT stride = sizeof(Vertex);
@@ -40,22 +41,23 @@ void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 	Vertex	vertices[] =
 	{
 		{
-			XMFLOAT3(-0.5f, 0.0f, 0.f),
+			XMFLOAT3(-0.5f, 0.0f, 0.5f),
 			XMFLOAT3(0.0f, 0.0f, 0.5f)
 		},
 		{
-			XMFLOAT3(0.5f, 0.f, 0.f),
+			XMFLOAT3(0.5f, 0.f, 0.5f),
 			XMFLOAT3(0.5f, 0.0f, 0.0f)
 		},
 		{
-			XMFLOAT3(0, 0.5f, 0.f),
+			XMFLOAT3(0, 0.5f, 0.5f),
 			XMFLOAT3(0.0f, 0.5f, 0.0f)
 		}
 	};
 	// Fill in a buffer description.
+
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(Vertex) * 3;
+	bufferDesc.ByteWidth = sizeof(vertices);
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;

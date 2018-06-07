@@ -1,4 +1,4 @@
-cbuffer MatrixBuffer 
+cbuffer ConstBuffer 
 { 
 	matrix worldMatrix; 
 	matrix viewMatrix; 
