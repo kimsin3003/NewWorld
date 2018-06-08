@@ -24,9 +24,10 @@ VS_OUTPUT VS(VS_INPUT Input)
 {
 	
 	VS_OUTPUT Output;
-	Output.Position = mul(Input.Position, worldMatrix);
-	Output.Position = mul(Output.Position, viewMatrix);
-	Output.Position = mul(Output.Position, projectionMatrix);
+	Output.Position = Input.Position;
+	//Output.Position = mul(Input.Position, worldMatrix);
+	//Output.Position = mul(Output.Position, viewMatrix);
+	//Output.Position = mul(Output.Position, projectionMatrix);
 	Output.Color = Input.Color;
 
 	return Output;

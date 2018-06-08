@@ -14,5 +14,4 @@ void GameObject::Start()
 
 void GameObject::Tick()
 {
-
 }

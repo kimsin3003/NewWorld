@@ -22,6 +22,15 @@ void Material::Initialize(struct ID3D11Device* device)
 
 		return;
 	}
+
+	// encapsulate both shaders into shader objects
+	hr = device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &m_vertexShader);
+	if (FAILED(hr))
+	{
+		Logger::Log("VertexShader 생성 오류");
+		return;
+	}
+
 	hr = D3DCompileFromFile(m_psFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", NULL, NULL, &psBlob, &errorblob);
 	if (FAILED(hr))
 	{
@@ -37,26 +46,20 @@ void Material::Initialize(struct ID3D11Device* device)
 		return;
 	}
 
-	// encapsulate both shaders into shader objects
-	hr = device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &m_vertexShader);
-	if (FAILED(hr))
-	{
-		Logger::Log("VertexShader 생성 오류");
-		return;
-	}
 	hr = device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &m_pixelShader);
 	if (FAILED(hr))
 	{
 		Logger::Log("PixelShader 생성 오류");
 		return;
 	}
-	// set the shader objects
+
+	Logger::Log("Shader 생성 성공");
 
 	// 	create the input layout object
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	hr = device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_inputLayout);
@@ -67,8 +70,6 @@ void Material::Initialize(struct ID3D11Device* device)
 	}
 	vsBlob->Release();
 	psBlob->Release();
-	if (errorblob)
-		errorblob->Release();
 
 	D3D11_BUFFER_DESC constBufferDesc;
 	constBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -85,6 +86,7 @@ void Material::Initialize(struct ID3D11Device* device)
 		Logger::Log(hr);
 		return;
 	}
+	Logger::Log("ConstBuffer 생성 성공");
 }
 
 void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
@@ -143,10 +145,10 @@ void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX world
 
 	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
 
-	unsigned int bufferNumber = 0;
+	unsigned int bufferSlot = 0;
 
 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_constBuffer);
+	deviceContext->VSSetConstantBuffers(bufferSlot, 1, &m_constBuffer);
 
 }
 

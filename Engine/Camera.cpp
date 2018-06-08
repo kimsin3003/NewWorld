@@ -50,9 +50,9 @@ void Camera::CreateProjectionMatrix(float screenWidth, float screenHeight, float
 
 void Camera::CreateViewMatrix()
 {
-	XMVECTOR eyePosition = XMLoadFloat3(&m_position);
-	XMVECTOR focusPosition = XMLoadFloat3(&m_lookAt);
-	XMVECTOR upDirection = XMLoadFloat3(&m_up);
+	XMVECTOR positionVector = XMLoadFloat3(&m_position);
+	XMVECTOR lookVector = XMLoadFloat3(&m_lookAt);
+	XMVECTOR upVector = XMLoadFloat3(&m_up);
 	
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
 	float pitch = m_rotation.x * 0.0174532925f;
@@ -63,12 +63,12 @@ void Camera::CreateViewMatrix()
 	XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
-	focusPosition = DirectX::XMVector3TransformCoord(focusPosition, rotationMatrix);
-	upDirection = DirectX::XMVector3TransformCoord(upDirection, rotationMatrix);
+	lookVector = DirectX::XMVector3TransformCoord(lookVector, rotationMatrix);
+	upVector = DirectX::XMVector3TransformCoord(upVector, rotationMatrix);
 
 	// Translate the rotated camera position to the location of the viewer.
-	focusPosition = DirectX::XMVectorAdd(eyePosition, focusPosition);
+	lookVector = DirectX::XMVectorAdd(positionVector, lookVector);
 
 	// Finally create the view matrix from the three updated vectors.
-	m_viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
+	m_viewMatrix = DirectX::XMMatrixLookAtLH(positionVector, lookVector, upVector);
 }
