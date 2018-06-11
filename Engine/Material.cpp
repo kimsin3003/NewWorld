@@ -94,6 +94,8 @@ void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* d
 	if (!IsInitialized())
 		Initialize(device);
 
+	SetConstBuffer(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
+
 	deviceContext->IASetInputLayout(m_inputLayout);
 
 	if (m_vertexShader)
@@ -106,7 +108,6 @@ void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* d
 		deviceContext->PSSetShader(m_pixelShader, 0, 0);
 	}
 
-	SetConstBuffer(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 }
 
 void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)

@@ -14,10 +14,14 @@ void Mesh::Initialize(struct ID3D11Device* device)
 	if (!m_vertexBuffer)
 	{
 		CreateVertexBuffer(device);
+
+		Logger::Log("VertexBuffer 持失 失因");
 	}
 	if(!m_indexBuffer)
 	{
 		CreateIndexBuffer(device);
+
+		Logger::Log("IndexBuffer 持失 失因");
 	}
 }
 
