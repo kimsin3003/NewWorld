@@ -46,16 +46,16 @@ void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 	Vertex	vertices[] =
 	{
 		{
-			XMFLOAT4(-0.5f, 0.0f, 0.5f, 1),
-			XMFLOAT4(0.0f, 0.0f, 0.5f, 1)
+			XMFLOAT3(-0.5f, -0.5f, 10),
+			XMFLOAT3(0.0f, 0.0f, 1)
+		},		   
+		{		   
+			XMFLOAT3(0.5f, -0.5f, 10),
+			XMFLOAT3(1, 0.0f, 0.0f)
 		},
 		{
-			XMFLOAT4(0.5f, 0.f, 0.5f, 1),
-			XMFLOAT4(0.5f, 0.0f, 0.0f, 1)
-		},
-		{
-			XMFLOAT4(0, 0.5f, 0.5f, 1),
-			XMFLOAT4(0.0f, 0.5f, 0.0f, 1)
+			XMFLOAT3(0, 0.5, 10),
+			XMFLOAT3(0.0f, 1, 0.0f)
 		}
 	};
 	// Fill in a buffer description.

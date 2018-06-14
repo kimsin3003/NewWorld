@@ -4,8 +4,8 @@
 using namespace DirectX;
 struct Vertex
 {
-	XMFLOAT4 Pos;
-	XMFLOAT4 Col;
+	XMFLOAT3 Pos;
+	XMFLOAT3 Col;
 };
 
 class Mesh
