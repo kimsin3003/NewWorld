@@ -16,13 +16,16 @@
 
 void Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
 {
+	m_winWidth = winWidth;
+	m_winHeight = winHeight;
+
 	if (!InitDevice(hwnd))
 		return;
 	if (!SetRenderTargets())
 		return;
 	SetViewports();
-	CreateDepthStencilState();
- 	CreateDepthStencilTexture();
+ 	CreateDepthStencilState();
+  	CreateDepthStencilTexture();
 }
 
 bool Renderer::InitDevice(HWND hwnd)
