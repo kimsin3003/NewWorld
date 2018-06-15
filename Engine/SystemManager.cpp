@@ -40,7 +40,7 @@ void SystemManager::Initialize()
 
 	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
 
-	int screenWidth = 1024, screenHeight = 768;
+	int screenWidth = 1600, screenHeight = 900;
 	if (FULL_SCREEN)
 	{
 		// If full screen set the screen to maximum size of the users desktop and 32bit.
@@ -96,7 +96,7 @@ void SystemManager::Initialize()
 	m_objectManager = new ObjectManager();
 	m_objectManager->Initialize();
 	m_cameraManager = new CameraManager();
-	m_cameraManager->Initialize(screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
+	m_cameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
 	m_renderer = new Renderer();
 	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 

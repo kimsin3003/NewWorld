@@ -14,10 +14,10 @@
 #include "CameraManager.h"
 #include "Logger.h"
 
-void Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
+void Renderer::Initialize(HWND hwnd, float bufferWidth, float bufferHeight)
 {
-	m_winWidth = winWidth;
-	m_winHeight = winHeight;
+	m_bufferWidth = bufferWidth;
+	m_bufferHeight = bufferHeight;
 
 	if (!InitDevice(hwnd))
 		return;
@@ -82,8 +82,8 @@ bool Renderer::InitDevice(HWND hwnd)
 	ZeroMemory(&sd, sizeof(sd));
 	sd.BufferCount = 1;		// 백 버퍼 갯수
 
-	sd.BufferDesc.Width = m_winWidth;
-	sd.BufferDesc.Height = m_winHeight;
+	sd.BufferDesc.Width = m_bufferWidth;
+	sd.BufferDesc.Height = m_bufferHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;	//백버퍼 포맷
 	sd.BufferDesc.RefreshRate.Numerator = 60;	//분자
 	sd.BufferDesc.RefreshRate.Denominator = 1;	//분모
@@ -144,8 +144,8 @@ void Renderer::SetRenderTargets()
 	//Create depth stencil texture
 	D3D11_TEXTURE2D_DESC descDepth;
 	ZeroMemory(&descDepth, sizeof(descDepth));
-	descDepth.Width = m_winWidth;
-	descDepth.Height = m_winHeight;
+	descDepth.Width = m_bufferWidth;
+	descDepth.Height = m_bufferHeight;
 	descDepth.MipLevels = 1; //밉맵은 쓰지 않는다.
 	descDepth.ArraySize = 1; //따라서 하나의 스탠실 버퍼 사용
 	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -174,8 +174,8 @@ void Renderer::SetViewports()
 	//여기에 원래는 depthbuffer의 뷰를 넣어야함.
 
 	D3D11_VIEWPORT	vp; // 한 윈도우에 여러개의 화면을 그릴 수 있는 박스들. ex)레이싱 게임 2player모드.
-	vp.Width = m_winWidth;
-	vp.Height = m_winHeight;
+	vp.Width = m_bufferWidth;
+	vp.Height = m_bufferHeight;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;

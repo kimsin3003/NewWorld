@@ -6,7 +6,7 @@
 class Renderer
 {
 public:
-	void Initialize(HWND hwnd, float winWidth, float winHeight);
+	void Initialize(HWND hwnd, float bufferWidth, float bufferHeight);
 	void Tick(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime);
 private:
 	struct MatrixBuffer
@@ -26,7 +26,7 @@ private:
 	struct ID3D11DepthStencilState*					m_depthStencilState = nullptr;
 	struct ID3D11Texture2D*							m_depthStencilTexture = nullptr;
 	struct ID3D11DepthStencilView*					m_depthStencilView = nullptr;
-	float m_winWidth;
-	float m_winHeight;
+	float m_bufferWidth;
+	float m_bufferHeight;
 };
 
