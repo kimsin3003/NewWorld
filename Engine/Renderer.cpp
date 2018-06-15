@@ -21,12 +21,44 @@ void Renderer::Initialize(HWND hwnd, float winWidth, float winHeight)
 
 	if (!InitDevice(hwnd))
 		return;
-	if (!SetRenderTargets())
-		return;
+	SetDepthStencilState();
+	SetRenderTargets();
 	SetViewports();
-//  	CreateDepthStencilState();
-//   	CreateDepthStencilTexture();
 }
+
+
+void Renderer::Tick(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime)
+{
+	float clearColor[4] = { 1.f, 1.0f, 1.0f, 1.0f };
+	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
+	m_immediateContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	auto indiciesOnUse = objectManager->GetIndiciesOnUse();
+	auto gameObjectPool = objectManager->GetGameObjectPool();
+
+	Camera* currentCamera = cameraManager->GetCurrentCamera();
+	for (int index : indiciesOnUse)
+	{
+		GameObject* gameObject = gameObjectPool[index];
+		Mesh* mesh = gameObject->Mesh;
+		if (mesh)
+		{
+
+			Material* mat = mesh->Mat;
+			if (mat)
+			{
+				mat->Render(m_device, m_immediateContext, XMMatrixIdentity(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
+			}
+			mesh->Render(m_device, m_immediateContext);
+			m_immediateContext->DrawIndexed(3, 0, 0);
+		}
+	}
+
+	m_swapChain->Present(0, 0);
+
+	return;
+}
+
 
 bool Renderer::InitDevice(HWND hwnd)
 {
@@ -85,97 +117,29 @@ bool Renderer::InitDevice(HWND hwnd)
 	return true;
 }
 
-bool Renderer::SetRenderTargets()
+void Renderer::SetRenderTargets()
 {
-	ID3D11Texture2D* pBackBuffer = NULL;
+	ID3D11Texture2D* backBuffer = NULL;
 	HRESULT hr = m_swapChain->GetBuffer(0,							 // 후면 버퍼 인덱스, 여러개일 때 중요, 지금은 1개 이므로 0.
 		__uuidof(ID3D11Texture2D),
-		(LPVOID*)&pBackBuffer);
+		(LPVOID*)&backBuffer);
 
 	if (FAILED(hr))
 	{
 		Logger::Log(hr);
-		return false;
+		return;
 	}
 
-	hr = m_device->CreateRenderTargetView(pBackBuffer,
+	hr = m_device->CreateRenderTargetView(backBuffer,
 		NULL,
 		&m_renderTargetView);
 
 	if (FAILED(hr))
 	{
 		Logger::Log(hr);
-		return false;
+		return;
 	}
-
-	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, NULL);
-	pBackBuffer->Release();
-
-	return true;
-}
-
-void Renderer::SetViewports()
-{
-	//여기에 원래는 depthbuffer의 뷰를 넣어야함.
-
-	D3D11_VIEWPORT	vp; // 한 윈도우에 여러개의 화면을 그릴 수 있는 박스들. ex)레이싱 게임 2player모드.
-	vp.Width = m_winWidth;
-	vp.Height = m_winHeight;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	m_immediateContext->RSSetViewports(1, &vp); // 뷰포트가 여러개면 개수와, 배열의 주소를 넣는다.
-}
-
-
-void Renderer::Tick(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime)
-{
-	float clearColor[4] = { 1.f, 1.0f, 1.0f, 1.0f };
-	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
-
-	auto indiciesOnUse = objectManager->GetIndiciesOnUse();
-	auto gameObjectPool = objectManager->GetGameObjectPool();
-
-	Camera* currentCamera = cameraManager->GetCurrentCamera();
-	for (int index : indiciesOnUse)
-	{
-		GameObject* gameObject = gameObjectPool[index];
-		Mesh* mesh = gameObject->Mesh;
-		if (mesh)
-		{
-
-			Material* mat = mesh->Mat;
-			if (mat)
-			{
-				mat->Render(m_device, m_immediateContext, XMMatrixIdentity(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
-			}
-			mesh->Render(m_device, m_immediateContext);
-			m_immediateContext->DrawIndexed(3, 0, 0);
-		}
-	}
-
-	m_swapChain->Present(0, 0);
-
-	return;
-}
-
-
-void Renderer::CreateDepthStencilState()
-{
-	D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-
-	depthStencilDesc.DepthEnable = true;    // Depth Test 활성화
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;   // Depth 쓰기 기능 활성화.
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  	// Z 값이 작으면 통과. 즉 그린다.
-
-	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
-	m_immediateContext->OMSetDepthStencilState(m_depthStencilState, 1);
-}
-
-void Renderer::CreateDepthStencilTexture()
-{
+	backBuffer->Release();
 
 	//Create depth stencil texture
 	D3D11_TEXTURE2D_DESC descDepth;
@@ -194,17 +158,58 @@ void Renderer::CreateDepthStencilTexture()
 	m_device->CreateTexture2D(&descDepth, NULL, &m_depthStencilTexture);
 
 	//Create depth stencil view
-
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
 	ZeroMemory(&descDSV, sizeof(descDSV));
-	descDSV.Format = descDepth.Format;
+	descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0;
 	m_device->CreateDepthStencilView(m_depthStencilTexture, &descDSV, &m_depthStencilView);
 
-
 	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+}
+
+void Renderer::SetViewports()
+{
+	//여기에 원래는 depthbuffer의 뷰를 넣어야함.
+
+	D3D11_VIEWPORT	vp; // 한 윈도우에 여러개의 화면을 그릴 수 있는 박스들. ex)레이싱 게임 2player모드.
+	vp.Width = m_winWidth;
+	vp.Height = m_winHeight;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	m_immediateContext->RSSetViewports(1, &vp); // 뷰포트가 여러개면 개수와, 배열의 주소를 넣는다.
+}
+
+void Renderer::SetDepthStencilState()
+{
+	D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+	depthStencilDesc.DepthEnable = true;    // Depth Test 활성화
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;   // Depth 쓰기 기능 활성화.
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  	// Z 값이 작으면 통과. 즉 그린다.
+
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
+
+	// Stencil operations if pixel is front-facing.
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// Stencil operations if pixel is back-facing.
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
+	m_immediateContext->OMSetDepthStencilState(m_depthStencilState, 1);
 }
 
 
