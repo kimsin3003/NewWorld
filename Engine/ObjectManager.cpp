@@ -2,9 +2,15 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "ResourceLoader.h"
 
 void ObjectManager::Initialize()
 {
+	ResourceLoader loader;
+	std::vector<Vertex> outVertexVector;
+	std::vector<int> outIndexVector;
+	loader.LoadFBX("Resource/car.fbx", outVertexVector, outIndexVector);
+
 	m_gameObjectPool.reserve(1000);
 	for (int i = 0; i < 1000; i++)
 	{
@@ -13,6 +19,7 @@ void ObjectManager::Initialize()
 	}
 	GameObject* gameObject1 = NewObject();
 	Mesh* triangleMesh = new Mesh();
+	triangleMesh->SetData(outVertexVector, outIndexVector);
 	Material* defaultMaterial = new Material(L"Engine/Default_VS.hlsl", L"Engine/Default_PS.hlsl");
 	triangleMesh->Mat = defaultMaterial;
 	gameObject1->Mesh = triangleMesh;

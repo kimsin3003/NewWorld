@@ -27,16 +27,14 @@ void Mesh::Initialize(struct ID3D11Device* device)
 
 void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-
 	if (!IsInitialized())
 		Initialize(device);
-
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	ID3D11Buffer* const buffers[] = { m_vertexBuffer };
 	int numOfBuffers = sizeof(buffers) / sizeof(ID3D11Buffer);
 	deviceContext->IASetVertexBuffers(0, numOfBuffers, buffers, &stride, &offset);
-	deviceContext->IASetIndexBuffer( m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer( m_indexBuffer, DXGI_FORMAT_R32_SINT, 0);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
@@ -47,29 +45,29 @@ void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 	{
 		{
 			XMFLOAT3(-0.5f, -0.5f, 10),
-			XMFLOAT3(0.0f, 0.0f, 1)
+			XMFLOAT4(0.0f, 0.0f, 1, 1)
 		},		   
 		{		   
 			XMFLOAT3(0.5f, -0.5f, 10),
-			XMFLOAT3(1, 0.0f, 0.0f)
+			XMFLOAT4(1, 0.0f, 0.0f, 1)
 		},
 		{
 			XMFLOAT3(0, 0.5, 10),
-			XMFLOAT3(0.0f, 1, 0.0f)
+			XMFLOAT4(0.0f, 1, 0.0f, 1)
 		}
 	};
 	// Fill in a buffer description.
 
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(vertices);
+	bufferDesc.ByteWidth = m_verticies.size() * sizeof(Vertex);
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 
 	// Fill in the subresource data.
 	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = vertices;
+	InitData.pSysMem = const_cast<Vertex*>(m_verticies.data());
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
 
@@ -93,14 +91,14 @@ void Mesh::CreateIndexBuffer(struct ID3D11Device* device)
 	// Fill in a buffer description.
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(indices);
+	bufferDesc.ByteWidth = m_indicies.size() * sizeof(int);
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 
 	// Define the resource data.
 	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = indices;
+	initData.pSysMem = const_cast<int*>(m_indicies.data());
 	initData.SysMemPitch = 0;
 	initData.SysMemSlicePitch = 0;
 
