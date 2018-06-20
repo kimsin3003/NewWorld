@@ -146,7 +146,7 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVe
 
 	}
 
-	if (outVertexVector.size() == 0 || outVertexVector.size() == 0)
+	if (outVertexVector.size() == 0 || outIndexVector.size() == 0)
 	{
 		Logger::Log("loading failed");
 		return false;

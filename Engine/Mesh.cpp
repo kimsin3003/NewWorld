@@ -36,6 +36,7 @@ void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetVertexBuffers(0, numOfBuffers, buffers, &stride, &offset);
 	deviceContext->IASetIndexBuffer( m_indexBuffer, DXGI_FORMAT_R32_SINT, 0);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->DrawIndexed(m_indicies.size(), 0, 0);
 }
 
 void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
@@ -67,7 +68,7 @@ void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 
 	// Fill in the subresource data.
 	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = const_cast<Vertex*>(m_verticies.data());
+	InitData.pSysMem = &(m_verticies.front());
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
 
@@ -98,7 +99,7 @@ void Mesh::CreateIndexBuffer(struct ID3D11Device* device)
 
 	// Define the resource data.
 	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = const_cast<int*>(m_indicies.data());
+	initData.pSysMem = &(m_indicies.front());
 	initData.SysMemPitch = 0;
 	initData.SysMemSlicePitch = 0;
 

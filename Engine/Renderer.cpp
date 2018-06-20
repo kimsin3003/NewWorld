@@ -47,10 +47,9 @@ void Renderer::Tick(class CameraManager* cameraManager, class ObjectManager* obj
 			Material* mat = mesh->Mat;
 			if (mat)
 			{
-				mat->Render(m_device, m_immediateContext, XMMatrixIdentity(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
+				mat->Render(m_device, m_immediateContext, gameObject->GetWorldMatrix(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
 			}
 			mesh->Render(m_device, m_immediateContext);
-			m_immediateContext->DrawIndexed(3, 0, 0);
 		}
 	}
 

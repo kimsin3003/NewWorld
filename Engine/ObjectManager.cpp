@@ -18,6 +18,7 @@ void ObjectManager::Initialize()
 		m_indiciesNotOnUse.push(i);
 	}
 	GameObject* gameObject1 = NewObject();
+	gameObject1->SetPosition(0, 0, 10);
 	Mesh* triangleMesh = new Mesh();
 	triangleMesh->SetData(outVertexVector, outIndexVector);
 	Material* defaultMaterial = new Material(L"Engine/Default_VS.hlsl", L"Engine/Default_PS.hlsl");

@@ -6,7 +6,7 @@ using namespace DirectX;
 struct Vertex
 {
 	XMFLOAT3 Pos;
-	XMFLOAT4 Col;
+	XMFLOAT4 Col = { 1,0,0,1 };
 };
 
 class Mesh
