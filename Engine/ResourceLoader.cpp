@@ -7,7 +7,7 @@
 
 FbxManager* g_pFbxSdkManager = nullptr;
 
-bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVertexVector, std::vector<int>& outIndexVector)
+bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVertexVector, std::vector<unsigned int>& outIndexVector)
 {
 	if (g_pFbxSdkManager == nullptr)
 	{
@@ -59,7 +59,7 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVe
 			if (!controlPoints)
 				continue;
 
-			for (int j = 0; j < controlPoints->Length(); j++)
+			for (int j = 0; j < pMesh->GetControlPointsCount(); j++)
 			{
 				Vertex vertex;
 				vertex.Pos.x = (float)controlPoints[j].mData[0];
@@ -129,21 +129,13 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVe
 				}
 			}
 
-			for (int j = 0; j < pMesh->GetPolygonCount(); j++)
+			int* iControlPointIndicies = pMesh->GetPolygonVertices();
+			for (int j = 0; j < pMesh->GetPolygonVertexCount(); j++)
 			{
-				int iNumVertices = pMesh->GetPolygonSize(j);
-				assert(iNumVertices == 3);
 
-				for (int k = 0; k < iNumVertices; k++) {
-					int iControlPointIndex = pMesh->GetPolygonVertex(j, k);
-
-					outIndexVector.push_back(iControlPointIndex);
-				}
+				outIndexVector.push_back(iControlPointIndicies[j]);
 			}
-
-				
 		}
-
 	}
 
 	if (outVertexVector.size() == 0 || outIndexVector.size() == 0)

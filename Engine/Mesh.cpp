@@ -34,7 +34,7 @@ void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	ID3D11Buffer* const buffers[] = { m_vertexBuffer };
 	int numOfBuffers = sizeof(buffers) / sizeof(ID3D11Buffer);
 	deviceContext->IASetVertexBuffers(0, numOfBuffers, buffers, &stride, &offset);
-	deviceContext->IASetIndexBuffer( m_indexBuffer, DXGI_FORMAT_R32_SINT, 0);
+	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	deviceContext->DrawIndexed(m_indicies.size(), 0, 0);
 }

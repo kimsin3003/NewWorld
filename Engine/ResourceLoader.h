@@ -5,6 +5,6 @@
 class ResourceLoader
 {
 public:
-	bool LoadFBX(std::string fbxFileName, std::vector<struct Vertex>& outVertexVector, std::vector<int>& outIndexVector);
+	bool LoadFBX(std::string fbxFileName, std::vector<struct Vertex>& outVertexVector, std::vector<unsigned int>& outIndexVector);
 };
 

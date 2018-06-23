@@ -1,9 +1,11 @@
 #include "SystemManager.h"
+#include <chrono>
 #include "Renderer.h"
 #include "ObjectManager.h"
 #include "CameraManager.h"
 #include "Logger.h"
 #include "InputManger.h"
+
 
 
 void SystemManager::Initialize()
@@ -161,7 +163,11 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 
 void SystemManager::Tick()
 {
-	m_objectManager->Tick(0);
+	static auto lastTime = std::chrono::system_clock::now();
+	auto now = std::chrono::system_clock::now();
+	std::chrono::duration<double> diff = now - lastTime;
+	lastTime = now;
+	m_objectManager->Tick(diff.count());
 	m_renderer->Tick(m_cameraManager, m_objectManager, 0);
 }
 

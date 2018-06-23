@@ -8,8 +8,8 @@ void ObjectManager::Initialize()
 {
 	ResourceLoader loader;
 	std::vector<Vertex> outVertexVector;
-	std::vector<int> outIndexVector;
-	loader.LoadFBX("Resource/car.fbx", outVertexVector, outIndexVector);
+	std::vector<unsigned int> outIndexVector;
+	loader.LoadFBX("Resource/rectangle.FBX", outVertexVector, outIndexVector);
 
 	m_gameObjectPool.reserve(1000);
 	for (int i = 0; i < 1000; i++)
@@ -18,7 +18,6 @@ void ObjectManager::Initialize()
 		m_indiciesNotOnUse.push(i);
 	}
 	GameObject* gameObject1 = NewObject();
-	gameObject1->SetPosition(0, 0, 10);
 	Mesh* triangleMesh = new Mesh();
 	triangleMesh->SetData(outVertexVector, outIndexVector);
 	Material* defaultMaterial = new Material(L"Engine/Default_VS.hlsl", L"Engine/Default_PS.hlsl");
@@ -32,6 +31,12 @@ void ObjectManager::Tick(float deltaTime)
 	{
 		m_gameObjectPool[i]->Tick();
 	}
+	m_gameObjectPool[0]->SetPosition(0, 0, 10);
+	static float rotX = 0;
+	rotX += 100 * deltaTime;
+	static float rotY = 0;
+	rotY += 100 * deltaTime;
+	m_gameObjectPool[0]->SetRotation(rotX, 0, rotY);
 }
 
 GameObject* const ObjectManager::NewObject()
