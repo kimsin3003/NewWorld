@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -148,6 +148,7 @@
     <ClCompile Include="Engine\Mesh.cpp" />
     <ClCompile Include="Engine\Material.cpp" />
     <ClCompile Include="Engine\Logger.cpp" />
+    <ClCompile Include="Engine\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Default_VS.hlsl">
@@ -191,6 +192,7 @@
     <ClInclude Include="Engine\Renderer.h" />
     <ClInclude Include="Engine\SystemManager.h" />
     <ClInclude Include="Engine\Logger.h" />
+    <ClInclude Include="Engine\Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

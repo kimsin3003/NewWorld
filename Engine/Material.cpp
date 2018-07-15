@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "Camera.h"
 #include "Logger.h"
+#include "Texture.h"
 
 void Material::Initialize(struct ID3D11Device* device)
 {
@@ -59,7 +60,7 @@ void Material::Initialize(struct ID3D11Device* device)
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	hr = device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_inputLayout);
@@ -87,14 +88,40 @@ void Material::Initialize(struct ID3D11Device* device)
 		return;
 	}
 	Logger::Log("ConstBuffer 생성 성공");
+
+	// Create a texture sampler state description.
+	D3D11_SAMPLER_DESC samplerDesc;
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Create the texture sampler state.
+	hr = device->CreateSamplerState(&samplerDesc, &m_sampleState);
+	if (FAILED(hr))
+	{
+		Logger::Log(hr);
+		return;
+	}
+	Logger::Log("SamplerState 생성 성공");
 }
 
-void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	if (!IsInitialized())
 		Initialize(device);
 
-	SetConstBuffer(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
+	SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 
 	deviceContext->IASetInputLayout(m_inputLayout);
 
@@ -108,9 +135,15 @@ void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* d
 		deviceContext->PSSetShader(m_pixelShader, 0, 0);
 	}
 
+	if (m_pixelShader)
+	{
+		deviceContext->PSSetSamplers(0, 1, &m_sampleState);
+	}
+
+
 }
 
-void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+void Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -145,11 +178,12 @@ void Material::SetConstBuffer(ID3D11DeviceContext* deviceContext, XMMATRIX world
 
 
 	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
-
 	unsigned int bufferSlot = 0;
 
 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
 	deviceContext->VSSetConstantBuffers(bufferSlot, 1, &m_constBuffer);
+
+	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 }
 

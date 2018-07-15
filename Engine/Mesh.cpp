@@ -41,24 +41,6 @@ void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 
 void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 {
-
-	Vertex	vertices[] =
-	{
-		{
-			XMFLOAT3(-0.5f, -0.5f, 10),
-			XMFLOAT4(0.0f, 0.0f, 1, 1)
-		},		   
-		{		   
-			XMFLOAT3(0.5f, -0.5f, 10),
-			XMFLOAT4(1, 0.0f, 0.0f, 1)
-		},
-		{
-			XMFLOAT3(0, 0.5, 10),
-			XMFLOAT4(0.0f, 1, 0.0f, 1)
-		}
-	};
-	// Fill in a buffer description.
-
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.ByteWidth = m_verticies.size() * sizeof(Vertex);
@@ -85,10 +67,6 @@ void Mesh::CreateVertexBuffer(struct ID3D11Device* device)
 
 void Mesh::CreateIndexBuffer(struct ID3D11Device* device)
 {
-
-	// Create indices.
-	unsigned int indices[] = { 0, 2, 1 };
-
 	// Fill in a buffer description.
 	D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;

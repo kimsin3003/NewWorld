@@ -7,14 +7,14 @@ cbuffer ConstBuffer
 
 struct VS_INPUT
 {
-	float4 Position    : POSITION;
-	float4 Color        : COLOR;
+	float4 Pos  : POSITION;
+	float2 UV	: TEXCOORD0;
 };
 
 struct VS_OUTPUT
 {
-	float4 Position        : SV_POSITION;
-	float4 Color			: COLOR;
+	float4 Pos     : SV_POSITION;
+	float2 UV			: TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
@@ -24,11 +24,11 @@ VS_OUTPUT VS(VS_INPUT Input)
 {
 	
 	VS_OUTPUT Output;
-	Output.Position = Input.Position;
-	Output.Position = mul(Input.Position, worldMatrix);
-	Output.Position = mul(Output.Position, viewMatrix);
-	Output.Position = mul(Output.Position, projectionMatrix);
-	Output.Color = Input.Color;
+	Output.Pos = Input.Pos;
+	Output.Pos = mul(Input.Pos, worldMatrix);
+	Output.Pos = mul(Output.Pos, viewMatrix);
+	Output.Pos = mul(Output.Pos, projectionMatrix);
+	Output.UV = Input.UV;
 
 	return Output;
 }
