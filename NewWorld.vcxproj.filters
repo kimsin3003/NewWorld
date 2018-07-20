@@ -31,4 +31,7 @@
     <ClInclude Include="Engine\Logger.h" />
     <ClInclude Include="Engine\ResourceLoader.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

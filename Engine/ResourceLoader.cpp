@@ -1,11 +1,13 @@
 
 #include "ResourceLoader.h"
-#include <fbxsdk.h>
-#include <cassert>
+#include <string.h>
 #include "Mesh.h"
 #include "Logger.h"
 
 FbxManager* g_pFbxSdkManager = nullptr;
+
+static void LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex>& outVertexVector, std::vector<unsigned int>& outIndexVector);
+static void LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outVertexVector);
 
 bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVertexVector, std::vector<unsigned int>& outIndexVector)
 {
@@ -43,20 +45,12 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVe
 		{
 			FbxNode* pFbxChildNode = pFbxRootNode->GetChild(i);
 
-			if (pFbxChildNode->GetNodeAttribute() == NULL)
-				continue;
-
-			FbxNodeAttribute::EType AttributeType = pFbxChildNode->GetNodeAttribute()->GetAttributeType();
-
-			if (AttributeType != FbxNodeAttribute::eMesh)
-				continue;
-
-			FbxMesh* pMesh = (FbxMesh*)pFbxChildNode->GetNodeAttribute();
+			FbxMesh* pMesh = pFbxChildNode->GetMesh();
 			if (!pMesh)
 				continue;
 
 			LoadVertexInformation(pMesh, outVertexVector, outIndexVector);
-			LoadUVInformation(pMesh, outVertexVector);
+			//LoadUVInformation(pMesh, outVertexVector);
 		}
 	}
 
@@ -68,7 +62,7 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVe
 	return true;
 }
 
-void ResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex>& outVertexVector, std::vector<unsigned int>& outIndexVector)
+static void LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex>& outVertexVector, std::vector<unsigned int>& outIndexVector)
 {
 	FbxVector4* controlPoints = pMesh->GetControlPoints();
 	if (!controlPoints)
@@ -90,7 +84,7 @@ void ResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex>& 
 	}
 }
 
-void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outVertexVector)
+static void LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outVertexVector)
 {
 	//get all UV set names
 	FbxStringList lUVSetNameList;
@@ -170,13 +164,35 @@ void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outV
 	}
 }
 
-
-FbxLayerElementTexture* ResourceLoader::GetTextures(FbxMesh *mesh, FbxLayerElement::EType type)
-{
-	// Get first available layer
-	for (int i = 0; i < mesh->GetLayerCount(); i++)
-		if (mesh->GetLayer(i)->GetTextures(type))
-			return mesh->GetLayer(i)->GetTextures(type);
-
-	return NULL;
-}
+// static void LoadTextureInformation(class FbxMesh* pMesh, TextureInfo* diffuse)
+// {
+// 	int lMaterialIndex;
+// 	FbxProperty lProperty;
+// 	if (pMesh->GetNode() == NULL)
+// 		return;
+// 	int lNbMat = pMesh->GetNode()->GetSrcObjectCount<FbxSurfaceMaterial>();
+// 	for (lMaterialIndex = 0; lMaterialIndex < lNbMat; lMaterialIndex++) {
+// 		FbxSurfaceMaterial *lMaterial = pMesh->GetNode()->GetSrcObject<FbxSurfaceMaterial>(lMaterialIndex);
+// 		bool lDisplayHeader = true;
+// 		if (lMaterial) {
+// 			int lTextureIndex;
+// 			FBXSDK_FOR_EACH_TEXTURE(lTextureIndex)
+// 			{
+// 				lProperty = lMaterial->FindProperty(FbxLayerElement::sTextureChannelNames[lTextureIndex]);
+// 				int lTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+// 				for (int j = 0; j < lTextureCount; ++j)
+// 				{
+// 					FbxFileTexture* lTexture = lProperty.GetSrcObject<FbxFileTexture>(j);
+// 					if (lTexture)
+// 					{
+// 						std::string filename = lTexture->GetFileName();
+// 						std::wstring temp(filename.length(), L' ');
+// 						std::copy(filename.begin(), filename.end(), temp.begin());
+// 						diffuse->filename = temp;
+// 						diffuse->type = TextureInfo::DIFFUSE;
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }

@@ -1,10 +1,11 @@
-
 #include <d3d11.h>
 #include <D3Dcompiler.h>
+#include <DirectXTex.h>
 #include "Material.h"
 #include "Camera.h"
 #include "Logger.h"
-#include "Texture.h"
+
+static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, LPCWSTR filename, ID3D11ShaderResourceView** pSRV);
 
 void Material::Initialize(struct ID3D11Device* device)
 {
@@ -113,10 +114,16 @@ void Material::Initialize(struct ID3D11Device* device)
 		Logger::Log(hr);
 		return;
 	}
+	for (auto texInfo : m_textures)
+	{
+		if (texInfo.type == TextureInfo::DIFFUSE);
+			CreateShaderResourceViewFromFile(device, texInfo.filename.c_str(), &m_textureView);
+	}
+
 	Logger::Log("SamplerState 생성 성공");
 }
 
-void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
 	if (!IsInitialized())
 		Initialize(device);
@@ -183,8 +190,40 @@ void Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX 
 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
 	deviceContext->VSSetConstantBuffers(bufferSlot, 1, &m_constBuffer);
 
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 1, &m_textureView);
 
+}
+
+static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, LPCWSTR filename, ID3D11ShaderResourceView** pSRV)
+{
+
+	TexMetadata imageMetadata;
+
+	ScratchImage* pScratchImage = new ScratchImage();
+
+	HRESULT hr = LoadFromWICFile(filename, WIC_FLAGS_NONE, &imageMetadata, *pScratchImage);
+
+	if (SUCCEEDED(hr))
+
+	{
+
+		hr = CreateShaderResourceView(
+
+			device,
+
+			pScratchImage->GetImages(),
+
+			pScratchImage->GetImageCount(),
+
+			imageMetadata,
+
+			pSRV);
+
+	}
+
+	delete pScratchImage;
+
+	return hr;
 }
 
 Material::~Material()
