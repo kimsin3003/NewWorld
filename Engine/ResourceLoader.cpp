@@ -48,8 +48,6 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVe
 
 			LoadVertexInformation(pMesh, outVertexVector, outIndexVector);
 			LoadUVInformation(pMesh, outVertexVector);
-			TextureInfo info;
-			//LoadTextureInformation(pMesh, &info);
 		}
 	}
 
@@ -129,8 +127,8 @@ void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outV
 
 					lUVValue = lUVElement->GetDirectArray().GetAt(lUVIndex);
 
-					outVertexVector[lPolyVertIndex].UV.x = lUVValue.mData[0];
-					outVertexVector[lPolyVertIndex].UV.y = lUVValue.mData[1];
+					outVertexVector[lPolyVertIndex].UV.x = lUVValue[0];
+					outVertexVector[lPolyVertIndex].UV.y = lUVValue[1];
 				}
 			}
 		}
@@ -153,8 +151,8 @@ void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outV
 						lUVValue = lUVElement->GetDirectArray().GetAt(lUVIndex);
 						int lPolyVertIndex = pMesh->GetPolygonVertex(lPolyIndex, lVertIndex);
 
-						outVertexVector[lPolyVertIndex].UV.x = lUVValue.mData[0];
-						outVertexVector[lPolyVertIndex].UV.y = lUVValue.mData[1];
+						outVertexVector[lPolyVertIndex].UV.x = lUVValue[0];
+						outVertexVector[lPolyVertIndex].UV.y = lUVValue[1];
 
 						lPolyIndexCounter++;
 					}
