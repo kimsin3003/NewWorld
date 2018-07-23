@@ -24,7 +24,6 @@ VS_OUTPUT VS(VS_INPUT Input)
 {
 	
 	VS_OUTPUT Output;
-	Output.Pos = Input.Pos;
 	Output.Pos = mul(Input.Pos, worldMatrix);
 	Output.Pos = mul(Output.Pos, viewMatrix);
 	Output.Pos = mul(Output.Pos, projectionMatrix);

@@ -12,7 +12,7 @@ public:
 	virtual void Start();
 	virtual void Tick();
 	inline int GetIndex() { return m_index; }
-	const XMMATRIX& GetWorldMatrix();
+	const XMMATRIX GetWorldMatrix();
 
 	inline void SetPosition(float x, float y, float z) { m_position.x = x, m_position.y = y, m_position.z = z; }
 	inline void SetRotation(float x, float y, float z) { m_rotation.x = x, m_rotation.y = y, m_rotation.z = z; }

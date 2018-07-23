@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "Logger.h"
 
-static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, LPCWSTR filename, ID3D11ShaderResourceView** pSRV);
+static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::wstring filename, ID3D11ShaderResourceView** pSRV);
 
 void Material::Initialize(struct ID3D11Device* device)
 {
@@ -116,8 +116,8 @@ void Material::Initialize(struct ID3D11Device* device)
 	}
 	for (auto texInfo : m_textures)
 	{
-		if (texInfo.type == TextureInfo::DIFFUSE);
-			CreateShaderResourceViewFromFile(device, texInfo.filename.c_str(), &m_textureView);
+		if (texInfo.type == TextureInfo::DIFFUSE)
+			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_textureView);
 	}
 
 	Logger::Log("SamplerState 생성 성공");
@@ -194,17 +194,29 @@ void Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX 
 
 }
 
-static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, LPCWSTR filename, ID3D11ShaderResourceView** pSRV)
+static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::wstring filename, ID3D11ShaderResourceView** pSRV)
 {
 
 	TexMetadata imageMetadata;
 
 	ScratchImage* pScratchImage = new ScratchImage();
 
-	HRESULT hr = LoadFromWICFile(filename, WIC_FLAGS_NONE, &imageMetadata, *pScratchImage);
+	HRESULT hr;
+
+	if (filename.find(L".dds") != std::string::npos)
+	{
+		hr = LoadFromDDSFile(filename.c_str(), DDS_FLAGS_NONE, &imageMetadata, *pScratchImage);
+	}
+	else if (filename.find(L".tga") != std::string::npos)
+	{
+		hr = LoadFromTGAFile(filename.c_str(), &imageMetadata, *pScratchImage);
+	}
+	else
+	{
+		hr = LoadFromWICFile(filename.c_str(), WIC_FLAGS_NONE, &imageMetadata, *pScratchImage);
+	}
 
 	if (SUCCEEDED(hr))
-
 	{
 
 		hr = CreateShaderResourceView(

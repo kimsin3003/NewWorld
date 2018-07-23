@@ -16,7 +16,7 @@ void GameObject::Tick()
 {
 }
 
-const DirectX::XMMATRIX& GameObject::GetWorldMatrix()
+const DirectX::XMMATRIX GameObject::GetWorldMatrix()
 {
 	XMVECTOR positionVector = XMLoadFloat3(&m_position);
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
