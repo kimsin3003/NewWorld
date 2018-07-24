@@ -6,28 +6,27 @@
 
 void ObjectManager::Initialize()
 {
-	ResourceLoader loader;
-	std::vector<Vertex> outVertexVector;
-	std::vector<unsigned int> outIndexVector;
-	loader.LoadFBX("Resource/Sword.FBX", outVertexVector, outIndexVector);
-
 	m_gameObjectPool.reserve(1000);
 	for (int i = 0; i < 1000; i++)
 	{
 		m_gameObjectPool.emplace_back(new GameObject(i));
 		m_indiciesNotOnUse.push(i);
 	}
-	GameObject* gameObject1 = NewObject();
-	Mesh* triangleMesh = new Mesh();
-	triangleMesh->SetData(outVertexVector, outIndexVector);
 	TextureInfo info;
 	info.filename = L"C:/Users/kimsi/Desktop/NewWorld/Resource/Sword.png";
 	info.type = TextureInfo::TextureType::DIFFUSE;
 	std::vector<TextureInfo> infos;
 	infos.emplace_back(info);
+
+	ResourceLoader loader;
+	GameObject* gameObject1 = NewObject();
+	loader.LoadFBX("Resource/ybot.fbx", gameObject1->Meshes);
+
 	Material* defaultMaterial = new Material(L"Engine/Default_VS.hlsl", L"Engine/Default_PS.hlsl", infos);
-	triangleMesh->Mat = defaultMaterial;
-	gameObject1->Mesh = triangleMesh;
+	for (auto mesh : gameObject1->Meshes)
+	{
+		mesh->Mat = defaultMaterial;
+	}
 }
 
 void ObjectManager::Tick(float deltaTime)
@@ -36,7 +35,7 @@ void ObjectManager::Tick(float deltaTime)
 	{
 		m_gameObjectPool[i]->Tick();
 	}
-	m_gameObjectPool[0]->SetPosition(0, 0, 1000);
+	m_gameObjectPool[0]->SetPosition(0, 0, 500);
 	static float rotX = 0;
 	rotX = 100 *deltaTime;
 	static float rotY = 0;

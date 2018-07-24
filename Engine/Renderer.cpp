@@ -40,16 +40,17 @@ void Renderer::Tick(class CameraManager* cameraManager, class ObjectManager* obj
 	for (int index : indiciesOnUse)
 	{
 		GameObject* gameObject = gameObjectPool[index];
-		Mesh* mesh = gameObject->Mesh;
-		if (mesh)
+		for (Mesh* mesh : gameObject->Meshes)
 		{
-
-			Material* mat = mesh->Mat;
-			if (mat)
+			if (mesh)
 			{
-				mat->Render(m_device, m_immediateContext, gameObject->GetWorldMatrix(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
+				Material* mat = mesh->Mat;
+				if (mat)
+				{
+					mat->Render(m_device, m_immediateContext, gameObject->GetWorldMatrix(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
+				}
+				mesh->Render(m_device, m_immediateContext);
 			}
-			mesh->Render(m_device, m_immediateContext);
 		}
 	}
 

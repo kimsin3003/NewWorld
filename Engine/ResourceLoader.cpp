@@ -1,12 +1,11 @@
 #include "ResourceLoader.h"
 #include <string.h>
-#include "Mesh.h"
 #include "Material.h"
 #include "Logger.h"
 
 FbxManager* g_pFbxSdkManager = nullptr;
 
-bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVertexVector, std::vector<unsigned int>& outIndexVector)
+bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Mesh*>& outMeshes)
 {
 	if (g_pFbxSdkManager == nullptr)
 	{
@@ -46,12 +45,14 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Vertex>& outVe
 			if (!pMesh)
 				continue;
 
-			LoadVertexInformation(pMesh, outVertexVector, outIndexVector);
-			LoadUVInformation(pMesh, outVertexVector);
+			Mesh* mesh = new Mesh();
+			LoadVertexInformation(pMesh, mesh->Verticies, mesh->Indicies);
+			LoadUVInformation(pMesh, mesh->Verticies);
+			outMeshes.emplace_back(mesh);
 		}
 	}
 
-	if (outVertexVector.size() == 0 || outIndexVector.size() == 0)
+	if (outMeshes.size() == 0)
 	{
 		Logger::Log("loading failed");
 		return false;
@@ -64,6 +65,8 @@ void ResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex>& 
 	FbxVector4* controlPoints = pMesh->GetControlPoints();
 	if (!controlPoints)
 		return;
+	outVertexVector.clear();
+	outIndexVector.clear();
 
 	for (int j = 0; j < pMesh->GetControlPointsCount(); j++)
 	{

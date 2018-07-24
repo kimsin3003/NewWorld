@@ -1,5 +1,6 @@
 #pragma once
 #include <directxmath.h>
+#include <vector>
 using namespace DirectX;
 
 class GameObject
@@ -16,7 +17,7 @@ public:
 
 	inline void SetPosition(float x, float y, float z) { m_position.x = x, m_position.y = y, m_position.z = z; }
 	inline void SetRotation(float x, float y, float z) { m_rotation.x = x, m_rotation.y = y, m_rotation.z = z; }
-	class Mesh* Mesh = nullptr;
+	std::vector<class Mesh*> Meshes;
 private:
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_rotation;
