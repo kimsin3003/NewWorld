@@ -211,6 +211,3 @@ void Renderer::SetDepthStencilState()
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
 	m_immediateContext->OMSetDepthStencilState(m_depthStencilState, 1);
 }
-
-
-
