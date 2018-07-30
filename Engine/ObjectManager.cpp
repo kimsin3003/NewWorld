@@ -13,14 +13,14 @@ void ObjectManager::Initialize()
 		m_indiciesNotOnUse.push(i);
 	}
 	TextureInfo info;
-	info.filename = L"Resource/Sword.png";
+	info.filename = L"Resource/warzombie_f_pedroso.fbm/world_war_zombie_diffuse.png";
 	info.type = TextureInfo::TextureType::DIFFUSE;
 	std::vector<TextureInfo> infos;
 	infos.emplace_back(info);
 
 	ResourceLoader loader;
 	GameObject* gameObject1 = NewObject();
-	loader.LoadFBX("Resource/Sword.FBX", gameObject1->Meshes);
+	loader.LoadFBX("Resource/warzombie_f_pedroso.fbx", gameObject1->Meshes);
 
 	for (auto mesh : gameObject1->Meshes)
 	{
@@ -35,12 +35,12 @@ void ObjectManager::Tick(float deltaTime)
 	{
 		m_gameObjectPool[i]->Tick();
 	}
-	m_gameObjectPool[0]->SetPosition(0, 0, 500);
+	m_gameObjectPool[0]->SetPosition(0, -100, 500);
 	static float rotX = 0;
 	rotX += 100 *deltaTime;
 	static float rotY = 0;
 	rotY += 100 *deltaTime;
-	m_gameObjectPool[0]->SetRotation(-90, 0, 0);
+	m_gameObjectPool[0]->SetRotation(90, 180, 0);
 }
 
 GameObject* const ObjectManager::NewObject()

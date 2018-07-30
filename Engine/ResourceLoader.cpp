@@ -33,6 +33,8 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Mesh*>& outMes
 
 	pImporter->Destroy();
 
+	FbxGeometryConverter lGeomConverter(g_pFbxSdkManager);
+	lGeomConverter.Triangulate(pFbxScene, true);
 	FbxNode* pFbxRootNode = pFbxScene->GetRootNode();
 
 	if (pFbxRootNode)
