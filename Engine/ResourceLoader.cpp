@@ -44,20 +44,11 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<Mesh*>& outMes
 			FbxMesh* pMesh = pFbxChildNode->GetMesh();
 			if (!pMesh)
 				continue;
+
 			Mesh* mesh = new Mesh();
 			LoadVertexInformation(pMesh, mesh->Verticies, mesh->Indicies);
-			unsigned int triCount = pMesh->GetPolygonCount(); 
-			unsigned int vertexCount = 0; // 정점의 개수 
-			for(unsigned int i = 0; i < triCount; ++i) // 삼각형의 개수 
-			{ 
-				for (unsigned int j = 0; j < 3; ++j) // 삼각형은 세 개의 정점으로 구성 
-				{
-					int controlPointIndex = pMesh->GetPolygonVertex(i, j); // 제어점 인덱스를 가져온다. 
-					LoadUVElement(pMesh, controlPointIndex, pMesh->GetTextureUVIndex(i, j), mesh);
-				}
-			}
 
-			//LoadUVInformation(pMesh, mesh->Verticies);
+			LoadUVInformation(pMesh, mesh->Verticies);
 			outMeshes.emplace_back(mesh);
 		}
 	}
@@ -82,8 +73,8 @@ void ResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex>& 
 	{
 		Vertex vertex;
 		vertex.Pos.x = (float)controlPoints[j].mData[0];
-		vertex.Pos.y = (float)controlPoints[j].mData[1];
-		vertex.Pos.z = (float)controlPoints[j].mData[2];
+		vertex.Pos.y = (float)controlPoints[j].mData[2];
+		vertex.Pos.z = -(float)controlPoints[j].mData[1];
 		outVertexVector.emplace_back(vertex);
 	}
 
@@ -97,7 +88,10 @@ void ResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex>& 
 void ResourceLoader::LoadUVElement(FbxMesh* mesh, int controlPointIndex, int vertexCounter, Mesh* outMesh)
 {
 	if (mesh->GetElementUVCount() < 1)
+	{
 		Logger::Log("Invalid ****** Number");
+		return;
+	}
 	FbxGeometryElementUV* vertexUV = mesh->GetElementUV(0);
 
 	switch (vertexUV->GetMappingMode())
@@ -109,7 +103,7 @@ void ResourceLoader::LoadUVElement(FbxMesh* mesh, int controlPointIndex, int ver
 		case FbxGeometryElement::eDirect:
 		{
 			outMesh->Verticies[controlPointIndex].UV.x = static_cast<float>(vertexUV->GetDirectArray().GetAt(controlPointIndex).mData[0]);
-			outMesh->Verticies[controlPointIndex].UV.y = static_cast<float>(vertexUV->GetDirectArray().GetAt(controlPointIndex).mData[1]);
+			outMesh->Verticies[controlPointIndex].UV.y = 1 - static_cast<float>(vertexUV->GetDirectArray().GetAt(controlPointIndex).mData[1]);
 		}
 		break;
 
@@ -117,7 +111,7 @@ void ResourceLoader::LoadUVElement(FbxMesh* mesh, int controlPointIndex, int ver
 		{
 			int index = vertexUV->GetIndexArray().GetAt(controlPointIndex);
 			outMesh->Verticies[controlPointIndex].UV.x = static_cast<float>(vertexUV->GetDirectArray().GetAt(index).mData[0]);
-			outMesh->Verticies[controlPointIndex].UV.y = static_cast<float>(vertexUV->GetDirectArray().GetAt(index).mData[1]);
+			outMesh->Verticies[controlPointIndex].UV.y = 1 - static_cast<float>(vertexUV->GetDirectArray().GetAt(index).mData[1]);
 		}
 		break;
 		default:
@@ -131,7 +125,7 @@ void ResourceLoader::LoadUVElement(FbxMesh* mesh, int controlPointIndex, int ver
 		case FbxGeometryElement::eDirect:
 		{
 			outMesh->Verticies[controlPointIndex].UV.x = static_cast<float>(vertexUV->GetDirectArray().GetAt(vertexCounter).mData[0]);
-			outMesh->Verticies[controlPointIndex].UV.y = static_cast<float>(vertexUV->GetDirectArray().GetAt(vertexCounter).mData[1]);
+			outMesh->Verticies[controlPointIndex].UV.y = 1 - static_cast<float>(vertexUV->GetDirectArray().GetAt(vertexCounter).mData[1]);
 		}
 		break;
 
@@ -139,7 +133,7 @@ void ResourceLoader::LoadUVElement(FbxMesh* mesh, int controlPointIndex, int ver
 		{
 			int index = vertexUV->GetIndexArray().GetAt(vertexCounter);
 			outMesh->Verticies[controlPointIndex].UV.x = static_cast<float>(vertexUV->GetDirectArray().GetAt(index).mData[0]);
-			outMesh->Verticies[controlPointIndex].UV.y = static_cast<float>(vertexUV->GetDirectArray().GetAt(index).mData[1]);
+			outMesh->Verticies[controlPointIndex].UV.y = 1 - static_cast<float>(vertexUV->GetDirectArray().GetAt(index).mData[1]);
 		}
 		break;
 		default:
@@ -196,7 +190,7 @@ void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outV
 					lUVValue = lUVElement->GetDirectArray().GetAt(lUVIndex);
 
 					outVertexVector[lPolyVertIndex].UV.x = lUVValue[0];
-					outVertexVector[lPolyVertIndex].UV.y = lUVValue[1];
+					outVertexVector[lPolyVertIndex].UV.y = 1 - lUVValue[1];
 				}
 			}
 		}
@@ -220,7 +214,7 @@ void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<Vertex>& outV
 						int lPolyVertIndex = pMesh->GetPolygonVertex(lPolyIndex, lVertIndex);
 
 						outVertexVector[lPolyVertIndex].UV.x = lUVValue[0];
-						outVertexVector[lPolyVertIndex].UV.y = lUVValue[1];
+						outVertexVector[lPolyVertIndex].UV.y = 1 - lUVValue[1];
 
 						lPolyIndexCounter++;
 					}

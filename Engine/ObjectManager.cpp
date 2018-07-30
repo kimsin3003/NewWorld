@@ -35,12 +35,12 @@ void ObjectManager::Tick(float deltaTime)
 	{
 		m_gameObjectPool[i]->Tick();
 	}
-	m_gameObjectPool[0]->SetPosition(0, 200, 500);
+	m_gameObjectPool[0]->SetPosition(0, 0, 500);
 	static float rotX = 0;
 	rotX += 100 *deltaTime;
 	static float rotY = 0;
 	rotY += 100 *deltaTime;
-	m_gameObjectPool[0]->SetRotation(rotX, rotY, 0);
+	m_gameObjectPool[0]->SetRotation(-90, 0, 0);
 }
 
 GameObject* const ObjectManager::NewObject()
