@@ -15,8 +15,8 @@
     <ClCompile Include="Engine\ObjectManager.cpp" />
     <ClCompile Include="Engine\Mesh.cpp" />
     <ClCompile Include="Engine\Material.cpp" />
-    <ClCompile Include="Engine\Logger.cpp" />
     <ClCompile Include="Engine\ResourceLoader.cpp" />
+    <ClCompile Include="Engine\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\CameraManager.h" />
@@ -28,8 +28,8 @@
     <ClInclude Include="Engine\ObjectManager.h" />
     <ClInclude Include="Engine\Renderer.h" />
     <ClInclude Include="Engine\SystemManager.h" />
-    <ClInclude Include="Engine\Logger.h" />
     <ClInclude Include="Engine\ResourceLoader.h" />
+    <ClInclude Include="Engine\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
