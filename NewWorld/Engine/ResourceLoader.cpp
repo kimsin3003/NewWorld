@@ -1,5 +1,4 @@
 #include "ResourceLoader.h"
-#include <string.h>
 #include "Material.h"
 #include "Logger.h"
 

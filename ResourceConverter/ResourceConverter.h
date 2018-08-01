@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <fbxsdk.h>
+#include <string>
 #include "ResouceInfo.h"
 using namespace fbxsdk;
 

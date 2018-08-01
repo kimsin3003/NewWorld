@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include <fbxsdk.h>
 #include "Mesh.h"
 using namespace fbxsdk;

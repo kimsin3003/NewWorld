@@ -1,4 +1,5 @@
 #include "ResourceConverter.h"
+#include <iostream>
 #include "Logger.h"
 
 FbxManager* g_pFbxSdkManager = nullptr;
@@ -20,13 +21,13 @@ bool ResourceConverter::LoadFBX(std::string fbxFileName, std::vector<MeshInfo*>&
 	bool bSuccess = pImporter->Initialize(fbxFileName.c_str(), -1, g_pFbxSdkManager->GetIOSettings());
 	if (!bSuccess)
 	{
-		Logger::Log("importer initialize failed");
+		std::cout << ("importer initialize failed") << std::endl;
 		return false;
 	}
 	bSuccess = pImporter->Import(pFbxScene);
 	if (!bSuccess)
 	{
-		Logger::Log("importer import failed");
+		std::cout << ("importer import failed") << std::endl;
 		return false;
 	}
 
@@ -56,7 +57,7 @@ bool ResourceConverter::LoadFBX(std::string fbxFileName, std::vector<MeshInfo*>&
 
 	if (outMeshes.size() == 0)
 	{
-		Logger::Log("loading failed");
+		std::cout << "loading failed" << std::endl;
 		return false;
 	}
 	return true;
