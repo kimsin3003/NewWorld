@@ -1,11 +1,12 @@
-#include "ResourceConverter.h"
+#include "ResourceLoader.h"
 #include <iostream>
 #include "Logger.h"
+#include "Share/ResouceInfo.h"
 
 FbxManager* g_pFbxSdkManager = nullptr;
 
 
-bool ResourceConverter::LoadFBX(std::string fbxFileName, std::vector<MeshInfo*>& outMeshes)
+bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<MeshInfo*>& outMeshes)
 {
 	if (g_pFbxSdkManager == nullptr)
 	{
@@ -63,7 +64,7 @@ bool ResourceConverter::LoadFBX(std::string fbxFileName, std::vector<MeshInfo*>&
 	return true;
 }
 
-void ResourceConverter::LoadVertexInformation(FbxMesh* pMesh, std::vector<VertexInfo>& outVertexVector, std::vector<unsigned int>& outIndexVector)
+void ResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<VertexInfo>& outVertexVector, std::vector<unsigned int>& outIndexVector)
 {
 	FbxVector4* controlPoints = pMesh->GetControlPoints();
 	if (!controlPoints)
@@ -87,7 +88,7 @@ void ResourceConverter::LoadVertexInformation(FbxMesh* pMesh, std::vector<Vertex
 	}
 }
 
-void ResourceConverter::LoadUVInformation(FbxMesh* pMesh, std::vector<VertexInfo>& outVertexVector)
+void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<VertexInfo>& outVertexVector)
 {
 	//get all UV set names
 	FbxStringList lUVSetNameList;

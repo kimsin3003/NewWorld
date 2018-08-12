@@ -7,13 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NewWorld", "NewWorld\NewWor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceConverter", "ResourceConverter\ResourceConverter.vcxproj", "{4AB7F1BF-A122-4699-9642-BAE9520F875C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Share", "Share\Share.vcxitems", "{9E020E77-5EFF-42AD-93C7-DA84C04BB48D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Share", "Share\Share.vcxproj", "{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Share\Share.vcxitems*{4ab7f1bf-a122-4699-9642-bae9520f875c}*SharedItemsImports = 4
-		Share\Share.vcxitems*{9e020e77-5eff-42ad-93c7-da84c04bb48d}*SharedItemsImports = 9
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
@@ -37,6 +33,14 @@ Global
 		{4AB7F1BF-A122-4699-9642-BAE9520F875C}.Release|x64.Build.0 = Release|x64
 		{4AB7F1BF-A122-4699-9642-BAE9520F875C}.Release|x86.ActiveCfg = Release|Win32
 		{4AB7F1BF-A122-4699-9642-BAE9520F875C}.Release|x86.Build.0 = Release|Win32
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Debug|x64.ActiveCfg = Debug|x64
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Debug|x64.Build.0 = Debug|x64
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Debug|x86.ActiveCfg = Debug|Win32
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Debug|x86.Build.0 = Debug|Win32
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Release|x64.ActiveCfg = Release|x64
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Release|x64.Build.0 = Release|x64
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Release|x86.ActiveCfg = Release|Win32
+		{02EA49D9-E72B-4AD6-8265-89D0B3E86C71}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
