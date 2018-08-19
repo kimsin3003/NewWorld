@@ -69,10 +69,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\include;;$(SolutionDir)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\include;;$(SolutionDir)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -138,7 +138,6 @@
     <ClCompile Include="Engine\CameraManager.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Logger.cpp" />
-    <ClCompile Include="Engine\ResourceLoader.cpp" />
     <ClCompile Include="Engine\Renderer.cpp" />
     <ClCompile Include="Engine\SystemManager.cpp" />
     <ClCompile Include="Engine\InputManger.cpp" />
@@ -181,7 +180,6 @@
   <ItemGroup>
     <ClInclude Include="Engine\CameraManager.h" />
     <ClInclude Include="Engine\Camera.h" />
-    <ClInclude Include="Engine\ResourceLoader.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\InputManger.h" />
     <ClInclude Include="Engine\Material.h" />
@@ -193,6 +191,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Share\Share.vcxproj">
+      <Project>{02ea49d9-e72b-4ad6-8265-89d0b3e86c71}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,10 +1,13 @@
 #include "Logger.h"
 #include "ResourceLoader.h"
-#include "Share/ResouceInfo.h"
+#include "Share/ResourceInfo.h"
+#include "Share/JsonUtility.h"
 
 void main()
 {
 	ResourceLoader converter;
-	std::vector<MeshInfo*> infos;
-	converter.LoadFBX("C:/Users/kimsi/Desktop/NewWorld/Resource/warzombie_f_pedroso.fbx", infos);
+	ModelInfo info;
+	converter.LoadFBX("C:/Users/kimsin3003/Desktop/NewWorld/Resource/warzombie_f_pedroso.fbx", &info);
+
+	JsonUtility::WriteModelToFIle(&info, "../Resource/zombie.json");
 }

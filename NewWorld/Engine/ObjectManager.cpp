@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Material.h"
-#include "ResourceLoader.h"
+#include "Share/JsonUtility.h"
 
 void ObjectManager::Initialize()
 {
@@ -13,19 +13,22 @@ void ObjectManager::Initialize()
 		m_indiciesNotOnUse.push(i);
 	}
 	TextureInfo info;
-	info.filename = L"Resource/warzombie_f_pedroso.fbm/world_war_zombie_diffuse.png";
+	info.filename = L"../Resource/warzombie_f_pedroso.fbm/world_war_zombie_diffuse.png";
 	info.type = TextureInfo::TextureType::DIFFUSE;
-	std::vector<TextureInfo> infos;
-	infos.emplace_back(info);
+	std::vector<TextureInfo> texture;
+	texture.emplace_back(info);
 
-	ResourceLoader loader;
 	GameObject* gameObject1 = NewObject();
-	loader.LoadFBX("Resource/warzombie_f_pedroso.fbx", gameObject1->Meshes);
+	ModelInfo modelInfo;
+	JsonUtility::ReadModelFromFile(&modelInfo, "../Resource/zombie.json");
 
-	for (auto mesh : gameObject1->Meshes)
+	for (auto& meshInfo : modelInfo.meshInfos)
 	{
-		Material* defaultMaterial = new Material(L"Engine/Default_VS.hlsl", L"Engine/Default_PS.hlsl", infos);
+		Mesh* mesh = new Mesh();
+		mesh->SetData(meshInfo);
+		Material* defaultMaterial = new Material(L"Engine/Default_VS.hlsl", L"Engine/Default_PS.hlsl", texture);
 		mesh->Mat = defaultMaterial;
+		gameObject1->Meshes.push_back(mesh);
 	}
 }
 

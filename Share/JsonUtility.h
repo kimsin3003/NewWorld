@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "ResouceInfo.h"
 
 class JsonUtility
 {
 public:
-	static void WriteFBXToFIle(std::vector<MeshInfo*> infos, std::string filename);
+	static void WriteModelToFIle(class ModelInfo* modelInfo, std::string filename);
+	static void ReadModelFromFile(class ModelInfo* outModelInfo, std::string filename);
 };
 

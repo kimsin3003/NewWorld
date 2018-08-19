@@ -1,7 +1,5 @@
 #include <vector>
-#include <string>
-#include <sstream>
-#include <iostream>
+
 struct Vector3
 {
 	float x;
@@ -27,4 +25,10 @@ class MeshInfo
 public:
 	std::vector<VertexInfo>	Verticies;
 	std::vector<unsigned int> Indicies;
+};
+
+class ModelInfo
+{
+public:
+	std::vector<class MeshInfo*> meshInfos;
 };

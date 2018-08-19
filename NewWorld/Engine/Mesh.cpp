@@ -25,6 +25,19 @@ void Mesh::Initialize(struct ID3D11Device* device)
 	}
 }
 
+void Mesh::SetData(MeshInfo* meshInfo)
+{
+	for (const VertexInfo& vertexInfo : meshInfo->Verticies)
+	{
+		Verticies.emplace_back(vertexInfo);
+	}
+
+	for (unsigned int index : meshInfo->Indicies)
+	{
+		Indicies.emplace_back(index);
+	}
+}
+
 void Mesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 	if (!IsInitialized())

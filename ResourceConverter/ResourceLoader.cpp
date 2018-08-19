@@ -1,12 +1,12 @@
 #include "ResourceLoader.h"
 #include <iostream>
 #include "Logger.h"
-#include "Share/ResouceInfo.h"
+#include "Share/ResourceInfo.h"
 
 FbxManager* g_pFbxSdkManager = nullptr;
 
 
-bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<MeshInfo*>& outMeshes)
+bool ResourceLoader::LoadFBX(std::string fbxFileName, ModelInfo* outModelInfo)
 {
 	if (g_pFbxSdkManager == nullptr)
 	{
@@ -52,11 +52,11 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, std::vector<MeshInfo*>& ou
 			LoadVertexInformation(pMesh, mesh->Verticies, mesh->Indicies);
 
 			LoadUVInformation(pMesh, mesh->Verticies);
-			outMeshes.emplace_back(mesh);
+			outModelInfo->meshInfos.emplace_back(mesh);
 		}
 	}
 
-	if (outMeshes.size() == 0)
+	if (outModelInfo->meshInfos.size() == 0)
 	{
 		std::cout << "loading failed" << std::endl;
 		return false;

@@ -7,7 +7,7 @@ using namespace fbxsdk;
 class ResourceLoader
 {
 public:
-	bool LoadFBX(std::string fbxFileName, std::vector<class MeshInfo*>& outMeshes);
+	bool LoadFBX(std::string fbxFileName, class ModelInfo* outMeshes);
 private:
 	void LoadVertexInformation(FbxMesh* pMesh, std::vector<class VertexInfo>& outVertexVector, std::vector<unsigned int>& outIndexVector);
 	void LoadUVInformation(FbxMesh* pMesh, std::vector<class VertexInfo>& outVertexVector);
