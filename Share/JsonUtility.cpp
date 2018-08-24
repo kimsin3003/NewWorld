@@ -28,9 +28,15 @@ static Value MeshInfoToJsonValue(class MeshInfo* meshInfo, Document::AllocatorTy
 		uv.AddMember("u", vertexInfo.UV.x, allocator);
 		uv.AddMember("v", vertexInfo.UV.y, allocator);
 
+		Value normal(kObjectType);
+		normal.AddMember("x", vertexInfo.Normal.x, allocator);
+		normal.AddMember("y", vertexInfo.Normal.y, allocator);
+		normal.AddMember("z", vertexInfo.Normal.z, allocator);
+
 		Value vertex(kObjectType);
 		vertex.AddMember("pos", pos, allocator);
 		vertex.AddMember("uv", uv, allocator);
+		vertex.AddMember("normal", normal, allocator);
 
 		verticies.PushBack(vertex, allocator);
 	}
@@ -83,6 +89,7 @@ static MeshInfo* JsonValueToMeshInfo(Value jsonValue)
 			const Value& vertex = itr->GetObject();
 			const Value& pos = vertex["pos"];
 			const Value& uv = vertex["uv"];
+			const Value& normal = vertex["normal"];
 
 			VertexInfo vertexInfo;
 			vertexInfo.Pos.x = pos["x"].GetFloat();
@@ -90,6 +97,9 @@ static MeshInfo* JsonValueToMeshInfo(Value jsonValue)
 			vertexInfo.Pos.z = pos["z"].GetFloat();
 			vertexInfo.UV.x = uv["u"].GetFloat();
 			vertexInfo.UV.y = uv["v"].GetFloat();
+			vertexInfo.Normal.x = normal["x"].GetFloat();
+			vertexInfo.Normal.y = normal["y"].GetFloat();
+			vertexInfo.Normal.z = normal["z"].GetFloat();
 			meshInfo->Verticies.push_back(vertexInfo);
 		}
 	}

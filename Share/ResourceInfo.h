@@ -18,6 +18,7 @@ class VertexInfo
 public:
 	Vector3 Pos;
 	Vector2 UV;
+	Vector3 Normal;
 };
 
 class MeshInfo

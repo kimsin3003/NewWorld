@@ -14,9 +14,13 @@ struct Vertex
 		Pos.z = vertexInfo.Pos.z;
 		UV.x = vertexInfo.UV.x;
 		UV.y = vertexInfo.UV.y;
+		Normal.x = vertexInfo.Normal.x;
+		Normal.y = vertexInfo.Normal.y;
+		Normal.z = vertexInfo.Normal.z;
 	}
 	XMFLOAT3 Pos;
 	XMFLOAT2 UV;
+	XMFLOAT3 Normal;
 };
 
 class Mesh

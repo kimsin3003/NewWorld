@@ -52,6 +52,7 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, ModelInfo* outModelInfo)
 			LoadVertexInformation(pMesh, mesh->Verticies, mesh->Indicies);
 
 			LoadUVInformation(pMesh, mesh->Verticies);
+			LoadNormalInformation(pMesh, mesh->Verticies);
 			outModelInfo->meshInfos.emplace_back(mesh);
 		}
 	}
@@ -134,8 +135,8 @@ void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<VertexInfo>& 
 
 					lUVValue = lUVElement->GetDirectArray().GetAt(lUVIndex);
 
-					outVertexVector[lPolyVertIndex].UV.x = lUVValue[0];
-					outVertexVector[lPolyVertIndex].UV.y = 1 - lUVValue[1];
+					outVertexVector[lUVIndex].UV.x = lUVValue[0];
+					outVertexVector[lUVIndex].UV.y = 1 - lUVValue[1];
 				}
 			}
 		}
@@ -167,4 +168,72 @@ void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<VertexInfo>& 
 			}
 		}
 	}
+}
+
+void ResourceLoader::LoadNormalInformation(FbxMesh* pMesh, std::vector<VertexInfo>& outVertexVector)
+{
+	FbxGeometryElementNormal* lNormalElement = pMesh->GetElementNormal();
+	if (lNormalElement)
+	{
+		//mapping mode is by control points. The mesh should be smooth and soft.
+		//we can get normals by retrieving each control point
+		if (lNormalElement->GetMappingMode() == FbxGeometryElement::eByControlPoint)
+		{
+			//Let's get normals of each vertex, since the mapping mode of normal element is by control point
+			for (int lVertexIndex = 0; lVertexIndex < pMesh->GetControlPointsCount(); lVertexIndex++)
+			{
+				int lNormalIndex = 0;
+				//reference mode is direct, the normal index is same as vertex index.
+				//get normals by the index of control vertex
+				if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eDirect)
+					lNormalIndex = lVertexIndex;
+
+				//reference mode is index-to-direct, get normals by the index-to-direct
+				if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eIndexToDirect)
+					lNormalIndex = lNormalElement->GetIndexArray().GetAt(lVertexIndex);
+
+				//Got normals of each vertex.
+				FbxVector4 lNormal = lNormalElement->GetDirectArray().GetAt(lNormalIndex);
+				outVertexVector[lVertexIndex].Normal.x = lNormal[0];
+				outVertexVector[lVertexIndex].Normal.y = lNormal[2];
+				outVertexVector[lVertexIndex].Normal.z = - lNormal[1];
+				//add your custom code here, to output normals or get them into a list, such as KArrayTemplate<FbxVector4>
+				//. . .
+			}//end for lVertexIndex
+		}//end eByControlPoint
+		 //mapping mode is by polygon-vertex.
+		 //we can get normals by retrieving polygon-vertex.
+		else if (lNormalElement->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
+		{
+			int lIndexByPolygonVertex = 0;
+			//Let's get normals of each polygon, since the mapping mode of normal element is by polygon-vertex.
+			for (int lPolygonIndex = 0; lPolygonIndex < pMesh->GetPolygonCount(); lPolygonIndex++)
+			{
+				//get polygon size, you know how many vertices in current polygon.
+				int lPolygonSize = pMesh->GetPolygonSize(lPolygonIndex);
+				//retrieve each vertex of current polygon.
+				for (int i = 0; i < lPolygonSize; i++)
+				{
+					int lNormalIndex = 0;
+					//reference mode is direct, the normal index is same as lIndexByPolygonVertex.
+					if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eDirect)
+						lNormalIndex = lIndexByPolygonVertex;
+
+					//reference mode is index-to-direct, get normals by the index-to-direct
+					if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eIndexToDirect)
+						lNormalIndex = lNormalElement->GetIndexArray().GetAt(lIndexByPolygonVertex);
+
+					//Got normals of each polygon-vertex.
+					FbxVector4 lNormal = lNormalElement->GetDirectArray().GetAt(lNormalIndex);
+					int lPolyVertIndex = pMesh->GetPolygonVertex(lPolygonIndex, i);
+					outVertexVector[lIndexByPolygonVertex].Normal.x = lNormal[0];
+					outVertexVector[lIndexByPolygonVertex].Normal.y = lNormal[2];
+					outVertexVector[lIndexByPolygonVertex].Normal.z = -lNormal[1];
+
+					lIndexByPolygonVertex++;
+				}//end for i //lPolygonSize
+			}//end for lPolygonIndex //PolygonCount
+
+		}//end eByPolygonVertex
+	}//end if lNormalElement
 }

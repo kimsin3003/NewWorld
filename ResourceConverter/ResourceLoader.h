@@ -11,5 +11,6 @@ public:
 private:
 	void LoadVertexInformation(FbxMesh* pMesh, std::vector<class VertexInfo>& outVertexVector, std::vector<unsigned int>& outIndexVector);
 	void LoadUVInformation(FbxMesh* pMesh, std::vector<class VertexInfo>& outVertexVector);
+	void LoadNormalInformation(FbxMesh* pMesh, std::vector<VertexInfo>& outVertexVector);
 };
 
