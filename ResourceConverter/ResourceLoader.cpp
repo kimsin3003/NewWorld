@@ -22,13 +22,15 @@ bool ResourceLoader::LoadFBX(std::string fbxFileName, ModelInfo* outModelInfo)
 	bool bSuccess = pImporter->Initialize(fbxFileName.c_str(), -1, g_pFbxSdkManager->GetIOSettings());
 	if (!bSuccess)
 	{
-		std::cout << ("importer initialize failed") << std::endl;
+		FbxString error = pImporter->GetStatus().GetErrorString();
+		std::cout << "importer initialize failed :" << error.Buffer() << std::endl;
 		return false;
 	}
 	bSuccess = pImporter->Import(pFbxScene);
 	if (!bSuccess)
 	{
-		std::cout << ("importer import failed") << std::endl;
+		FbxString error = pImporter->GetStatus().GetErrorString();
+		std::cout << "importer import failed :" << error.Buffer() << std::endl;
 		return false;
 	}
 
@@ -226,9 +228,9 @@ void ResourceLoader::LoadNormalInformation(FbxMesh* pMesh, std::vector<VertexInf
 					//Got normals of each polygon-vertex.
 					FbxVector4 lNormal = lNormalElement->GetDirectArray().GetAt(lNormalIndex);
 					int lPolyVertIndex = pMesh->GetPolygonVertex(lPolygonIndex, i);
-					outVertexVector[lIndexByPolygonVertex].Normal.x = lNormal[0];
-					outVertexVector[lIndexByPolygonVertex].Normal.y = lNormal[2];
-					outVertexVector[lIndexByPolygonVertex].Normal.z = -lNormal[1];
+					outVertexVector[lPolyVertIndex].Normal.x = lNormal[0];
+					outVertexVector[lPolyVertIndex].Normal.y = lNormal[2];
+					outVertexVector[lPolyVertIndex].Normal.z = -lNormal[1];
 
 					lIndexByPolygonVertex++;
 				}//end for i //lPolygonSize

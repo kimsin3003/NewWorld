@@ -65,7 +65,7 @@ void Material::Initialize(struct ID3D11Device* device)
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	hr = device->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_inputLayout);
+	hr = device->CreateInputLayout(ied, sizeof(ied) / sizeof(D3D11_INPUT_ELEMENT_DESC), vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_inputLayout);
 	if (FAILED(hr))
 	{
 		Logger::Log(hr);
@@ -74,22 +74,37 @@ void Material::Initialize(struct ID3D11Device* device)
 	vsBlob->Release();
 	psBlob->Release();
 
-	D3D11_BUFFER_DESC constBufferDesc;
-	constBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	constBufferDesc.ByteWidth = sizeof(ConstBuffer);
-	constBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	constBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	constBufferDesc.MiscFlags = 0;
-	constBufferDesc.StructureByteStride = 0;
+	D3D11_BUFFER_DESC vsConstBufferDesc;
+	vsConstBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vsConstBufferDesc.ByteWidth = sizeof(VSConstBuffer);
+	vsConstBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	vsConstBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vsConstBufferDesc.MiscFlags = 0;
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	hr = device->CreateBuffer(&constBufferDesc, NULL, &m_constBuffer);
+	hr = device->CreateBuffer(&vsConstBufferDesc, NULL, &m_vsConstBuffer);
 	if (FAILED(hr))
 	{
 		Logger::Log(hr);
 		return;
 	}
-	Logger::Log("ConstBuffer 생성 성공");
+	Logger::Log("VSConstBuffer 생성 성공");
+
+	D3D11_BUFFER_DESC psConstBufferDesc;
+	psConstBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	psConstBufferDesc.ByteWidth = sizeof(PSConstBuffer);
+	psConstBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	psConstBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	psConstBufferDesc.MiscFlags = 0;
+
+	// Create the constant buffer pointer so we can access the pixel shader constant buffer from within this class.
+	hr = device->CreateBuffer(&psConstBufferDesc, NULL, &m_psConstBuffer);
+	if (FAILED(hr))
+	{
+		Logger::Log(hr);
+		return;
+	}
+	Logger::Log("PSConstBuffer 생성 성공");
 
 	// Create a texture sampler state description.
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -153,20 +168,26 @@ void Material::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* d
 
 void Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
-	HRESULT result;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ConstBuffer* dataPtr;
-	
+	SetVSConstBuffer(worldMatrix, viewMatrix, projectionMatrix, deviceContext);
 
+	SetPSConstBuffer(deviceContext);
+
+	deviceContext->PSSetShaderResources(0, 1, &m_textureView);
+
+}
+
+void Material::SetVSConstBuffer(XMMATRIX &worldMatrix, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, ID3D11DeviceContext* deviceContext)
+{
+	HRESULT result;
+	D3D11_MAPPED_SUBRESOURCE vsMappedResource;
 
 	// 행렬을 transpose하여 셰이더에서 사용할 수 있게 합니다.
 	worldMatrix = DirectX::XMMatrixTranspose(worldMatrix);
 	viewMatrix = DirectX::XMMatrixTranspose(viewMatrix);
 	projectionMatrix = DirectX::XMMatrixTranspose(projectionMatrix);
 
-
 	// 상수 버퍼의 내용을 쓸 수 있도록 잠급니다.
-	result = deviceContext->Map(m_constBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(m_vsConstBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &vsMappedResource);
 	if (FAILED(result))
 	{
 		Logger::Log(result);
@@ -174,25 +195,52 @@ void Material::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX 
 	}
 
 	// 상수 버퍼의 데이터에 대한 포인터를 가져옵니다.
-	dataPtr = (ConstBuffer*)mappedResource.pData;
+
+	VSConstBuffer* vsConstDataPtr = (VSConstBuffer*)vsMappedResource.pData;
 
 	// 상수 버퍼에 행렬을 복사합니다.
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
+	vsConstDataPtr->world = worldMatrix;
+	vsConstDataPtr->view = viewMatrix;
+	vsConstDataPtr->projection = projectionMatrix;
 
 	// 상수 버퍼의 잠금을 풉니다.
-	deviceContext->Unmap(m_constBuffer, 0);
+	deviceContext->Unmap(m_vsConstBuffer, 0);
 
 
 	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
 	unsigned int bufferSlot = 0;
 
 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
-	deviceContext->VSSetConstantBuffers(bufferSlot, 1, &m_constBuffer);
+	deviceContext->VSSetConstantBuffers(bufferSlot, 1, &m_vsConstBuffer);
+}
 
-	deviceContext->PSSetShaderResources(0, 1, &m_textureView);
+void Material::SetPSConstBuffer(ID3D11DeviceContext* deviceContext)
+{
+	HRESULT result;
+	D3D11_MAPPED_SUBRESOURCE psMappedResource;
+	result = deviceContext->Map(m_psConstBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &psMappedResource);
+	if (FAILED(result))
+	{
+		Logger::Log(result);
+		return;
+	}
 
+	// 상수 버퍼의 데이터에 대한 포인터를 가져옵니다.
+	PSConstBuffer* psConstDataPtr = (PSConstBuffer*)psMappedResource.pData;
+
+	// 상수 버퍼에 행렬을 복사합니다.
+	psConstDataPtr->lightPosition = XMFLOAT4(1000.0f, 1000.0f, 1000.0f, 1);
+	psConstDataPtr->lightIntensity = XMFLOAT4(2, 0, 0, 0);
+
+	// 상수 버퍼의 잠금을 풉니다.
+	deviceContext->Unmap(m_psConstBuffer, 0);
+
+
+	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
+	unsigned int bufferSlot = 0;
+
+	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
+	deviceContext->PSSetConstantBuffers(bufferSlot, 1, &m_psConstBuffer);
 }
 
 static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::wstring filename, ID3D11ShaderResourceView** pSRV)
