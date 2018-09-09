@@ -168,6 +168,6 @@ void SystemManager::Tick()
 	std::chrono::duration<double> diff = now - lastTime;
 	lastTime = now;
 	m_objectManager->Tick(diff.count());
-	m_renderer->Tick(m_cameraManager, m_objectManager, 0);
+	m_renderer->Tick(m_cameraManager, m_objectManager, diff.count());
 }
 

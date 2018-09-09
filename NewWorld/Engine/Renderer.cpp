@@ -29,6 +29,12 @@ void Renderer::Initialize(HWND hwnd, float bufferWidth, float bufferHeight)
 
 void Renderer::Tick(class CameraManager* cameraManager, class ObjectManager* objectManager, float deltaTime)
 {
+	static float elapsedTime = 0;
+	elapsedTime += deltaTime;
+	if (deltaTime < 1.0f / 60)
+		return;
+	deltaTime = 0;
+
 	float clearColor[4] = { 1.f, 1.0f, 1.0f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	m_immediateContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
