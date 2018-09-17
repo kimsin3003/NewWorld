@@ -32,6 +32,7 @@ public:
 	{
 		XMFLOAT4 lightPosition;
 		XMFLOAT4 lightIntensity; //앞의 4byte만 쓰자.
+		XMFLOAT4 ambientColor;
 	};
 	Material(const WCHAR* vsFileName, const WCHAR* psFileName, std::vector<TextureInfo> textures) : m_vsFileName(vsFileName), m_psFileName(psFileName), m_textures(textures) {}
 	bool IsInitialized() { return m_vertexShader && m_pixelShader && m_inputLayout; }

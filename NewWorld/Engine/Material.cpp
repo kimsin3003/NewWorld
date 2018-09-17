@@ -231,6 +231,7 @@ void Material::SetPSConstBuffer(ID3D11DeviceContext* deviceContext)
 	// 상수 버퍼에 행렬을 복사합니다.
 	psConstDataPtr->lightPosition = XMFLOAT4(1000.0f, 1000.0f, 1000.0f, 1);
 	psConstDataPtr->lightIntensity = XMFLOAT4(2, 0, 0, 0);
+	psConstDataPtr->ambientColor = XMFLOAT4(0.5, 0.5, 0.5, 0);
 
 	// 상수 버퍼의 잠금을 풉니다.
 	deviceContext->Unmap(m_psConstBuffer, 0);

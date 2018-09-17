@@ -10,6 +10,7 @@ cbuffer PSConstBuffer
 {
 	float4 lightPosition;
 	float lightIntensity;
+	float4 ambientColor;
 	float3 dummy;
 };
 
@@ -28,5 +29,5 @@ float4 PS(PS_INPUT Input) : SV_TARGET
 	float4 lightDirection = normalize(Input.Pos - lightPosition);
 	float4 textureColor = shaderTexture.Sample(SampleType, Input.UV);
 	float4 diffuse = max(lightIntensity * dot(Input.Normal, lightDirection), 0);
-	return textureColor * diffuse;
+	return textureColor * (ambientColor + diffuse);
 }
