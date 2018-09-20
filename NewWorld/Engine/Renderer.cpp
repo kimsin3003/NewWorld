@@ -31,9 +31,9 @@ void Renderer::Tick(class CameraManager* cameraManager, class ObjectManager* obj
 {
 	static float elapsedTime = 0;
 	elapsedTime += deltaTime;
-	if (deltaTime < 1.0f / 60)
+	if (elapsedTime < 1.0f / 60)
 		return;
-	deltaTime = 0;
+	elapsedTime = 0;
 
 	float clearColor[4] = { 1.f, 1.0f, 1.0f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
