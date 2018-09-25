@@ -8,17 +8,17 @@ SamplerState SampleType;
 
 cbuffer PSConstBuffer
 {
-	float4 lightPosition;
 	float lightIntensity;
-	float4 ambientColor;
 	float3 dummy;
+	float4 ambientColor;
 };
 
 struct PS_INPUT
 {
-	float4 Pos		: SV_POSITION;
-	float2 UV		: TEXCOORD0;
-	float4 Normal	: NORMAL0;
+	float4 Pos				: SV_POSITION;
+	float2 UV				: TEXCOORD0;
+	float3 Normal			: NORMAL;
+	float3 LightDirection	: TEXCOORD1;
 };
 
 //--------------------------------------------------------------------------------------
@@ -26,8 +26,9 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT Input) : SV_TARGET
 {
-	float4 lightDirection = normalize(Input.Pos - lightPosition);
 	float4 textureColor = shaderTexture.Sample(SampleType, Input.UV);
-	float4 diffuse = max(lightIntensity * dot(Input.Normal, lightDirection), 0);
-	return textureColor * (ambientColor + diffuse);
+	float diffuse = saturate(dot(Input.Normal, -Input.LightDirection));
+	float4 lightColor = { 1,1,1,1 };
+	float4 errorColor = { 1, 0, 0, 1 };
+	return lightIntensity * (ambientColor + diffuse) * textureColor;
 }

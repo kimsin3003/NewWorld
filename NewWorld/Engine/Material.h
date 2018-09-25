@@ -25,12 +25,12 @@ public:
 		XMMATRIX world;
 		XMMATRIX view;
 		XMMATRIX projection;
+		XMFLOAT4 lightPosition;
 	};
 
 	__declspec(align(16))
 	struct PSConstBuffer //sizeof해서 16의 배수가 되어야한다.
 	{
-		XMFLOAT4 lightPosition;
 		XMFLOAT4 lightIntensity; //앞의 4byte만 쓰자.
 		XMFLOAT4 ambientColor;
 	};
