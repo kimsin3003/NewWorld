@@ -8,9 +8,9 @@ void main()
 {
 	ResourceLoader loader;
 	ModelInfo info;
-	loader.LoadFBX("../Resource/warzombie_f_pedroso.fbx", &info);
+	loader.LoadFBX("../Resource/rectangle.FBX", &info);
 
-	JsonUtility::WriteModelToFIle(&info, "../Resource/zombie.json");
+	JsonUtility::WriteModelToFIle(&info, "../Resource/rectangle.json");
 
 	std::cout << "load complete" << std::endl;
 	getchar();
