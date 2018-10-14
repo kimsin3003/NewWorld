@@ -17,9 +17,7 @@ public:
 private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
-	class CameraManager* m_cameraManager = nullptr;
-	class ObjectManager* m_objectManager = nullptr;
-	class Renderer* m_renderer = nullptr;
+	class RRenderer* m_renderer = nullptr;
 };
 
 

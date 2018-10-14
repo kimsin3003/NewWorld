@@ -1,10 +1,11 @@
 #include "SystemManager.h"
 #include <chrono>
-#include "Renderer.h"
-#include "ObjectManager.h"
-#include "CameraManager.h"
+#include "RRenderer.h"
+#include "RObjectManager.h"
+#include "RCameraManager.h"
 #include "Logger.h"
-#include "InputManger.h"
+#include "RInputManger.h"
+#include "RContext.h"
 
 
 
@@ -95,11 +96,13 @@ void SystemManager::Initialize()
 
 	Logger::Initialize("log.txt");
 	Logger::Log("·Î±ë ½ÃÀÛ");
-	m_objectManager = new ObjectManager();
-	m_objectManager->Initialize();
-	m_cameraManager = new CameraManager();
-	m_cameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
-	m_renderer = new Renderer();
+	if (GameManager)
+		GameManager->Initialize();
+	ObjectManager = new RObjectManager();
+	ObjectManager->Initialize();
+	CameraManager = new RCameraManager();
+	CameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
+	m_renderer = new RRenderer();
 	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
 
@@ -140,7 +143,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 	case WM_KEYDOWN:
 	{
 		// If a key is pressed send it to the input object so it can record that state.
-		InputManager::KeyDown((unsigned int)wparam);
+		RInputManager::KeyDown((unsigned int)wparam);
 		return 0;
 	}
 
@@ -148,7 +151,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 	case WM_KEYUP:
 	{
 		// If a key is released then send it to the input object so it can unset the state for that key.
-		InputManager::KeyUp((unsigned int)wparam);
+		RInputManager::KeyUp((unsigned int)wparam);
 		return 0;
 	}
 
@@ -167,7 +170,9 @@ void SystemManager::Tick()
 	auto now = std::chrono::system_clock::now();
 	std::chrono::duration<double> diff = now - lastTime;
 	lastTime = now;
-	m_objectManager->Tick(diff.count());
-	m_renderer->Tick(m_cameraManager, m_objectManager, diff.count());
+	if (GameManager)
+		GameManager->Tick();
+	ObjectManager->Tick(diff.count());
+	m_renderer->Tick(CameraManager, ObjectManager, diff.count());
 }
 

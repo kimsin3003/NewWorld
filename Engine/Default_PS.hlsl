@@ -28,5 +28,5 @@ float4 PS(PS_INPUT Input) : SV_TARGET
 {
 	float4 textureColor = shaderTexture.Sample(SampleType, Input.UV);
 	float diffuse = saturate(dot(Input.Normal, -Input.LightDirection));
-	return lightIntensity * (ambientColor + diffuse);// *textureColor;
+	return lightIntensity * (ambientColor);// +diffuse);// *textureColor;
 }

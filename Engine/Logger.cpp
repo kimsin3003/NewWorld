@@ -39,6 +39,18 @@ void Logger::Log(HRESULT hr)
 	logStack += "\n";
 }
 
+void Logger::ShowAlert(std::string message)
+{
+	int msgboxID = MessageBoxA(
+		NULL,
+		message.c_str(),
+		"NewWorld",
+		MB_ICONWARNING | MB_OK | MB_DEFBUTTON2
+	);
+
+	exit(0);
+}
+
 void Logger::Finalize()
 {
 	ofs << logStack;

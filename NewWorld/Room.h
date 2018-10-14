@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/GameObject.h"
-class Room :public GameObject
+#include "Engine/RGameObject.h"
+class Room : public RGameObject
 {
 public:
 };

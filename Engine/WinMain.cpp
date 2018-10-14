@@ -1,5 +1,5 @@
 #include "SystemManager.h"
-#include "InputManger.h"
+#include "RInputManger.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 	SystemManager systemManager;
 	systemManager.Initialize();
-	InputManager::Initialize();
+	RInputManager::Initialize();
 	while (!done)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))

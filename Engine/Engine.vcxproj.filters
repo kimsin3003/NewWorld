@@ -1,35 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="InputManger.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
-    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SystemManager.cpp" />
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="JsonUtility.cpp" />
+    <ClCompile Include="RMesh.cpp" />
+    <ClCompile Include="RGameObject.cpp" />
+    <ClCompile Include="RMaterial.cpp" />
+    <ClCompile Include="RResourceLoader.cpp" />
+    <ClCompile Include="RRenderer.cpp" />
+    <ClCompile Include="RObjectManager.cpp" />
+    <ClCompile Include="RInputManger.cpp" />
+    <ClCompile Include="RCameraManager.cpp" />
+    <ClCompile Include="RCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="InputManger.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="Renderer.h" />
     <ClInclude Include="SystemManager.h" />
+    <ClInclude Include="JsonUtility.h" />
+    <ClInclude Include="IGameManager.h" />
+    <ClInclude Include="RContext.h" />
+    <ClInclude Include="RMesh.h" />
+    <ClInclude Include="RGameObject.h" />
+    <ClInclude Include="RMaterial.h" />
+    <ClInclude Include="RResourceLoader.h" />
+    <ClInclude Include="RRenderer.h" />
+    <ClInclude Include="RObjectManager.h" />
+    <ClInclude Include="RInputManger.h" />
+    <ClInclude Include="RCameraManager.h" />
+    <ClInclude Include="RCamera.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Default_PS.hlsl" />
     <FxCompile Include="Default_VS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>
