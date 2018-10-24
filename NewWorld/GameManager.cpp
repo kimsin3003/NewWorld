@@ -1,14 +1,11 @@
-#include "Engine/IGameManager.h"
-#include "Engine/RGameObject.h"
-#include "Engine/RResourceLoader.h"
+#include "GameManager.h"
 #include "Engine/RContext.h"
-#include "Engine/RMaterial.h"
-#include "Engine/RMesh.h"
+#include "Room.h"
 
-void IGameManager::Initialize()
+void GameManager::Initialize()
 {
-	RGameObject* gameObject = new RGameObject();
-	
+	RGameObject* gameObject = new Room();
+
 	gameObject->SetResource("rectangle.FBX");
 	for (RMesh* mesh : gameObject->Meshes)
 	{
@@ -16,9 +13,11 @@ void IGameManager::Initialize()
 		mesh->Mat = defaultMaterial;
 	}
 	ObjectManager->AddGameObject(gameObject);
+
+	gameObject->SetPosition(0, 0, 10);
 }
 
-void IGameManager::Tick()
+void GameManager::Tick()
 {
 
 }

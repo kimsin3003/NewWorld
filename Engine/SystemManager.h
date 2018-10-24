@@ -11,13 +11,14 @@ class SystemManager
 {
 public:
 	~SystemManager() { Logger::Finalize(); }
-	void Initialize();
+	void Initialize(class IGameManager* gameManager);
 	void Tick();
 
 private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 	class RRenderer* m_renderer = nullptr;
+	class IGameManager* m_gameManager = nullptr;
 };
 
 

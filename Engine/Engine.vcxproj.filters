@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="SystemManager.cpp" />
-    <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="JsonUtility.cpp" />
     <ClCompile Include="RMesh.cpp" />
     <ClCompile Include="RGameObject.cpp" />
@@ -14,6 +13,7 @@
     <ClCompile Include="RInputManger.cpp" />
     <ClCompile Include="RCameraManager.cpp" />
     <ClCompile Include="RCamera.cpp" />
+    <ClCompile Include="RContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger.h" />
@@ -32,10 +32,10 @@
     <ClInclude Include="RCamera.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="Default_PS.hlsl" />
     <FxCompile Include="Default_VS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

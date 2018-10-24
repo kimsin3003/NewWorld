@@ -2,7 +2,7 @@
 class IGameManager
 {
 public:
-	void Initialize();
-	void Tick();
+	virtual void Initialize() = 0;
+	virtual void Tick() = 0;
 };
 

@@ -1,5 +1,5 @@
-#include "SystemManager.h"
-#include "RInputManger.h"
+#include "Engine/RContext.h"
+#include "GameManager.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
@@ -13,7 +13,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	done = false;
 
 	SystemManager systemManager;
-	systemManager.Initialize();
+	GameManager* gameManger = new GameManager();
+	systemManager.Initialize(gameManger);
 	RInputManager::Initialize();
 	while (!done)
 	{

@@ -1,3 +1,5 @@
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"libfbxsdk.lib")
 #include "SystemManager.h"
 #include <chrono>
 #include "RRenderer.h"
@@ -6,10 +8,11 @@
 #include "Logger.h"
 #include "RInputManger.h"
 #include "RContext.h"
+#include "IGameManager.h"
 
 
 
-void SystemManager::Initialize()
+void SystemManager::Initialize(IGameManager* gameManager)
 {
 	WNDCLASSEX wc;
 	DEVMODE dmScreenSettings;
@@ -96,14 +99,24 @@ void SystemManager::Initialize()
 
 	Logger::Initialize("log.txt");
 	Logger::Log("·Î±ë ½ÃÀÛ");
-	if (GameManager)
-		GameManager->Initialize();
+
+	m_gameManager = gameManager;
+	if (m_gameManager)
+		m_gameManager->Initialize();
+
 	ObjectManager = new RObjectManager();
-	ObjectManager->Initialize();
-	CameraManager = new RCameraManager();
-	CameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
+	if(ObjectManager)
+		ObjectManager->Initialize();
+
+	if (CameraManager)
+	{
+		CameraManager = new RCameraManager();
+		CameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
+	}
+
 	m_renderer = new RRenderer();
-	m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
+	if(m_renderer)
+		m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
 
 	return;
@@ -170,9 +183,11 @@ void SystemManager::Tick()
 	auto now = std::chrono::system_clock::now();
 	std::chrono::duration<double> diff = now - lastTime;
 	lastTime = now;
-	if (GameManager)
-		GameManager->Tick();
-	ObjectManager->Tick(diff.count());
-	m_renderer->Tick(CameraManager, ObjectManager, diff.count());
+	if (m_gameManager)
+		m_gameManager->Tick();
+	if(ObjectManager)
+		ObjectManager->Tick(diff.count());
+	if(m_renderer)
+		m_renderer->Tick(CameraManager, ObjectManager, diff.count());
 }
 
