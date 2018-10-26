@@ -1,5 +1,4 @@
 #pragma comment(lib,"d3dcompiler.lib")
-#pragma comment(lib,"libfbxsdk.lib")
 #include "SystemManager.h"
 #include <chrono>
 #include "RRenderer.h"
@@ -100,17 +99,13 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	Logger::Initialize("log.txt");
 	Logger::Log("·Î±ë ½ÃÀÛ");
 
-	m_gameManager = gameManager;
-	if (m_gameManager)
-		m_gameManager->Initialize();
-
 	ObjectManager = new RObjectManager();
 	if(ObjectManager)
 		ObjectManager->Initialize();
 
+	CameraManager = new RCameraManager();
 	if (CameraManager)
 	{
-		CameraManager = new RCameraManager();
 		CameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
 	}
 
@@ -118,6 +113,9 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	if(m_renderer)
 		m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
+	m_gameManager = gameManager;
+	if (m_gameManager)
+		m_gameManager->Initialize();
 
 	return;
 }

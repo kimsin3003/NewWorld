@@ -13,10 +13,12 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
+[Dd]ebug/*
 [Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
+[Rr]elease/*
+[Rr]eleases/*
+!Library/fbxsdk/lib/debug/
+!Library/fbxsdk/lib/release/
 x64/
 x86/
 bld/
@@ -286,5 +288,5 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
 log.txt
-Resource/car.fbm/

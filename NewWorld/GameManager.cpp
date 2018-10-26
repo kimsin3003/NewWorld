@@ -13,11 +13,8 @@ void GameManager::Initialize()
 		mesh->Mat = defaultMaterial;
 	}
 	ObjectManager->AddGameObject(gameObject);
-
-	gameObject->SetPosition(0, 0, 10);
 }
 
 void GameManager::Tick()
 {
-
 }

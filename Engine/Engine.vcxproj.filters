@@ -32,10 +32,6 @@
     <ClInclude Include="RCamera.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Default_PS.hlsl" />
-    <FxCompile Include="Default_VS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
 </Project>

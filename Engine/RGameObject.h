@@ -10,7 +10,7 @@ public:
 	virtual ~RGameObject();
 
 	virtual void Start() {};
-	virtual void Tick() {};
+	virtual void Tick(float deltaTime) {};
 	const XMMATRIX GetWorldMatrix();
 
 	inline void SetPosition(float x, float y, float z) { m_position.x = x, m_position.y = y, m_position.z = z; }
