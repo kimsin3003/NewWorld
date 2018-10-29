@@ -6,9 +6,8 @@ class RObjectManager
 {
 public:
 	void Initialize();
-	void Tick(float deltaTime);
+	void Tick(double deltaTime);
 	void AddGameObject(class RGameObject* gameObject);
-	class RGameObject* const NewObject();
 	void RemoveGameObject(class RGameObject* gameObject);
 	inline const std::vector<class RGameObject*>& GetGameObjectPool() { return m_gameObjectPool; }
 

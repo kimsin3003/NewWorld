@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include "Logger.h"
+#include <chrono>
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -17,6 +18,7 @@ public:
 private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
+	std::chrono::time_point<std::chrono::system_clock> m_lastTime;
 	class RRenderer* m_renderer = nullptr;
 	class IGameManager* m_gameManager = nullptr;
 };

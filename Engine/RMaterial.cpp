@@ -202,7 +202,7 @@ void RMaterial::SetVSConstBuffer(XMMATRIX &worldMatrix, XMMATRIX &viewMatrix, XM
 	vsConstDataPtr->world = worldMatrix;
 	vsConstDataPtr->view = viewMatrix;
 	vsConstDataPtr->projection = projectionMatrix;
-	vsConstDataPtr->lightPosition = XMFLOAT4(1000, 1000, 1000, 0);
+	vsConstDataPtr->lightPosition = XMFLOAT4(0, 0, 0, 0);
 
 	// 상수 버퍼의 잠금을 풉니다.
 	deviceContext->Unmap(m_vsConstBuffer, 0);

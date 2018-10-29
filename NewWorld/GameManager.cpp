@@ -4,15 +4,27 @@
 
 void GameManager::Initialize()
 {
-	RGameObject* gameObject = new Room();
+// 	RGameObject* room = new Room();
+// 
+// 	room->SetResource("room.fbx");
+// 	for (RMesh* mesh : room->Meshes)
+// 	{
+// 		RMaterial* defaultMaterial = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", std::vector<RTexture>());
+// 		mesh->Mat = defaultMaterial;
+// 	}
+// 	ObjectManager->AddGameObject(room);
+// 	room->SetPosition(0, 0, 200);
 
-	gameObject->SetResource("rectangle.FBX");
-	for (RMesh* mesh : gameObject->Meshes)
+	RGameObject* ball = new Room();
+
+	ball->SetResource("ball.fbx");
+	for (RMesh* mesh : ball->Meshes)
 	{
 		RMaterial* defaultMaterial = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", std::vector<RTexture>());
 		mesh->Mat = defaultMaterial;
 	}
-	ObjectManager->AddGameObject(gameObject);
+	ObjectManager->AddGameObject(ball);
+	ball->SetPosition(0, 0, 10);
 }
 
 void GameManager::Tick()

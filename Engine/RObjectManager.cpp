@@ -9,7 +9,7 @@ void RObjectManager::Initialize()
 	m_gameObjectPool.reserve(100);
 }
 
-void RObjectManager::Tick(float deltaTime)
+void RObjectManager::Tick(double deltaTime)
 {
 	for (RGameObject* gameObject : m_gameObjectPool)
 	{

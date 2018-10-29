@@ -5,7 +5,7 @@ class Room : public RGameObject
 public:
 
 	virtual void Start() override;
-	virtual void Tick(float deltaTime) override;
+	virtual void Tick(double deltaTime) override;
 
 };
 

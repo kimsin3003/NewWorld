@@ -27,9 +27,9 @@ void RRenderer::Initialize(HWND hwnd, float bufferWidth, float bufferHeight)
 }
 
 
-void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, float deltaTime)
+void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime)
 {
-	static float elapsedTime = 0;
+	static double elapsedTime = 0;
 	elapsedTime += deltaTime;
 	if (elapsedTime < 1.0f / 60)
 		return;

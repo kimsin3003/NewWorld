@@ -48,6 +48,7 @@ bool RResourceLoader::LoadFBX(RGameObject* outGameObject, std::string fbxFileNam
 	if (!lGeomConverter.Triangulate(pFbxScene, true))
 		return false;
 	FbxNode* pFbxRootNode = pFbxScene->GetRootNode();
+	FbxDouble3 lTranslation = pFbxRootNode->LclTranslation.Get();
 
 	if (pFbxRootNode)
 	{

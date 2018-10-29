@@ -7,7 +7,7 @@ class RRenderer
 {
 public:
 	void Initialize(HWND hwnd, float bufferWidth, float bufferHeight);
-	void Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, float deltaTime);
+	void Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime);
 private:
 	struct MatrixBuffer
 	{ 

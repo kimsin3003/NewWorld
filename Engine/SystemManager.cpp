@@ -1,6 +1,5 @@
 #pragma comment(lib,"d3dcompiler.lib")
 #include "SystemManager.h"
-#include <chrono>
 #include "RRenderer.h"
 #include "RObjectManager.h"
 #include "RCameraManager.h"
@@ -99,6 +98,8 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	Logger::Initialize("log.txt");
 	Logger::Log("·Î±ë ½ÃÀÛ");
 
+	m_lastTime = std::chrono::system_clock::now();
+
 	ObjectManager = new RObjectManager();
 	if(ObjectManager)
 		ObjectManager->Initialize();
@@ -177,10 +178,9 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 
 void SystemManager::Tick()
 {
-	static auto lastTime = std::chrono::system_clock::now();
 	auto now = std::chrono::system_clock::now();
-	std::chrono::duration<double> diff = now - lastTime;
-	lastTime = now;
+	std::chrono::duration<double> diff = now - m_lastTime;
+	m_lastTime = now;
 	if (m_gameManager)
 		m_gameManager->Tick();
 	if(ObjectManager)
