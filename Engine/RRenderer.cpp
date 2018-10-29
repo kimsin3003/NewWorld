@@ -51,7 +51,7 @@ void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* 
 				RMaterial* mat = mesh->Mat;
 				if (mat)
 				{
-					mat->Render(m_device, m_immediateContext, gameObject->GetWorldMatrix(), currentCamera->GetProjectionMatrix(), currentCamera->GetViewMatrix());
+					mat->Render(m_device, m_immediateContext, gameObject->GetWorldMatrix(), currentCamera->GetViewMatrix(), currentCamera->GetProjectionMatrix());
 				}
 				mesh->Render(m_device, m_immediateContext);
 			}
