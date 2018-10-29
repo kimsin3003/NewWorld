@@ -182,7 +182,7 @@ void SystemManager::Tick()
 	std::chrono::duration<double> diff = now - m_lastTime;
 	m_lastTime = now;
 	if (m_gameManager)
-		m_gameManager->Tick();
+		m_gameManager->Tick(diff.count());
 	if(ObjectManager)
 		ObjectManager->Tick(diff.count());
 	if(m_renderer)

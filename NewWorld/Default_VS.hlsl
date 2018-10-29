@@ -10,7 +10,7 @@ struct VS_INPUT
 {
 	float4 Pos		: POSITION;
 	float2 UV		: TEXCOORD0;
-	float3 Normal	: NORMAL0;
+	float3 Normal	: NORMAL;
 };
 
 struct VS_OUTPUT
@@ -34,8 +34,8 @@ VS_OUTPUT VS(VS_INPUT Input)
 
 	Output.UV = Input.UV;
 
-	Output.Normal = normalize(mul(Input.Normal, (float3x3)worldMatrix));
-	float3 lightDir = { 1, 1, 1 };
-	Output.LightDirection = lightDir;//(normalize(mul(Input.Pos, worldMatrix) - lightPosition)).xyz;
+	Output.Normal = normalize(mul(Input.Normal, worldMatrix));
+	float3 lightDir = { -1, -1, -1 };
+	Output.LightDirection = normalize(lightDir);//(normalize(mul(Input.Pos, worldMatrix) - lightPosition)).xyz;
 	return Output;
 }

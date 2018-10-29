@@ -35,7 +35,7 @@ void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* 
 		return;
 	elapsedTime = 0;
 
-	float clearColor[4] = { 1.f, 1.0f, 1.0f, 1.0f };
+	float clearColor[4] = { 0, 1.0f, 0, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	m_immediateContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
