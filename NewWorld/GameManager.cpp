@@ -8,7 +8,7 @@ void GameManager::Initialize()
 	std::vector<RTexture> textures;
 	RTexture texture;
 	texture.type = RTexture::DIFFUSE;
-	texture.filename = L"../Resource/soccer_ball_diffuse.bmp";
+	texture.filename = L"../Resource/zombie.fbm/world_war_zombie_diffuse.png";
 
 	textures.push_back(texture);
 	room->SetResource("ball.fbx");
@@ -18,7 +18,7 @@ void GameManager::Initialize()
 		mesh->Mat = defaultMaterial;
 	}
 	ObjectManager->AddGameObject(room);
-	room->SetPosition(0, 0, 10);
+	room->SetPosition(0, 0, 30);
 
 // 	RGameObject* ball = new Room();
 // 

@@ -134,20 +134,68 @@ void RResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<RVertex>& ou
 
 void RResourceLoader::LoadNormalInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector)
 {
-	for (int i = 0; i < pMesh->GetPolygonCount(); i++)
+	FbxGeometryElementNormal* lNormalElement = pMesh->GetElementNormal();
+	if (lNormalElement)
 	{
-		int lPolygonsize = pMesh->GetPolygonSize(i);
-
-		for (int pol = 0; pol < lPolygonsize; pol++)
+		//mapping mode is by control points. The mesh should be smooth and soft.
+		//we can get normals by retrieving each control point
+		if (lNormalElement->GetMappingMode() == FbxGeometryElement::eByControlPoint)
 		{
-			FbxVector4 normal;
-			if (pMesh->GetPolygonVertexNormal(i, pol, normal))
-				return;
+			//Let's get normals of each vertex, since the mapping mode of normal element is by control point
+			for (int lVertexIndex = 0; lVertexIndex < pMesh->GetControlPointsCount(); lVertexIndex++)
+			{
+				int lNormalIndex = 0;
+				//reference mode is direct, the normal index is same as vertex index.
+				//get normals by the index of control vertex
+				if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eDirect)
+					lNormalIndex = lVertexIndex;
 
-			int lPolyVertIndex = pMesh->GetPolygonVertex(i, pol);
-			outVertexVector[lPolyVertIndex].Normal.x = normal[0];
-			outVertexVector[lPolyVertIndex].Normal.y = normal[2];
-			outVertexVector[lPolyVertIndex].Normal.z = -normal[1];
-		}
-	}
+				//reference mode is index-to-direct, get normals by the index-to-direct
+				if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eIndexToDirect)
+					lNormalIndex = lNormalElement->GetIndexArray().GetAt(lVertexIndex);
+
+				//Got normals of each vertex.
+				FbxVector4 lNormal = lNormalElement->GetDirectArray().GetAt(lNormalIndex);
+				outVertexVector[lVertexIndex].Normal.x = lNormal[0];
+				outVertexVector[lVertexIndex].Normal.y = lNormal[2];
+				outVertexVector[lVertexIndex].Normal.z = -lNormal[1];
+				//add your custom code here, to output normals or get them into a list, such as KArrayTemplate<FbxVector4>
+				//. . .
+			}//end for lVertexIndex
+		}//end eByControlPoint
+		 //mapping mode is by polygon-vertex.
+		 //we can get normals by retrieving polygon-vertex.
+		else if (lNormalElement->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
+		{
+			int lIndexByPolygonVertex = 0;
+			//Let's get normals of each polygon, since the mapping mode of normal element is by polygon-vertex.
+			for (int lPolygonIndex = 0; lPolygonIndex < pMesh->GetPolygonCount(); lPolygonIndex++)
+			{
+				//get polygon size, you know how many vertices in current polygon.
+				int lPolygonSize = pMesh->GetPolygonSize(lPolygonIndex);
+				//retrieve each vertex of current polygon.
+				for (int i = 0; i < lPolygonSize; i++)
+				{
+					int lNormalIndex = 0;
+					//reference mode is direct, the normal index is same as lIndexByPolygonVertex.
+					if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eDirect)
+						lNormalIndex = lIndexByPolygonVertex;
+
+					//reference mode is index-to-direct, get normals by the index-to-direct
+					if (lNormalElement->GetReferenceMode() == FbxGeometryElement::eIndexToDirect)
+						lNormalIndex = lNormalElement->GetIndexArray().GetAt(lIndexByPolygonVertex);
+
+					//Got normals of each polygon-vertex.
+					FbxVector4 lNormal = lNormalElement->GetDirectArray().GetAt(lNormalIndex);
+					int lPolyVertIndex = pMesh->GetPolygonVertex(lPolygonIndex, i);
+					outVertexVector[lPolyVertIndex].Normal.x = lNormal[0];
+					outVertexVector[lPolyVertIndex].Normal.y = lNormal[2];
+					outVertexVector[lPolyVertIndex].Normal.z = -lNormal[1];
+
+					lIndexByPolygonVertex++;
+				}//end for i //lPolygonSize
+			}//end for lPolygonIndex //PolygonCount
+
+		}//end eByPolygonVertex
+	}//end if lNormalElement
 }

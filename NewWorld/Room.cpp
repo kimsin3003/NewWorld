@@ -11,7 +11,7 @@ void Room::Tick(double deltaTime)
 		rotX -= 360;
 
 	static double rotY = 0;
-	rotY += (10 * deltaTime);
+	rotY += (100 * deltaTime);
 	if (rotY > 360)
 		rotY -= 360;
 	SetRotation(90, rotY, 0);
