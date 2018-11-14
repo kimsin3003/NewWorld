@@ -1,37 +1,126 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="SystemManager.cpp" />
-    <ClCompile Include="JsonUtility.cpp" />
-    <ClCompile Include="RMesh.cpp" />
-    <ClCompile Include="RGameObject.cpp" />
-    <ClCompile Include="RMaterial.cpp" />
-    <ClCompile Include="RResourceLoader.cpp" />
-    <ClCompile Include="RRenderer.cpp" />
-    <ClCompile Include="RObjectManager.cpp" />
-    <ClCompile Include="RInputManger.cpp" />
-    <ClCompile Include="RCameraManager.cpp" />
-    <ClCompile Include="RCamera.cpp" />
     <ClCompile Include="RContext.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RMaterial.cpp">
+      <Filter>RainyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="RMath.cpp">
+      <Filter>RainyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="RMesh.cpp">
+      <Filter>RainyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="RCamera.cpp">
+      <Filter>RainyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="RGameObject.cpp">
+      <Filter>RainyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="RLight.cpp">
+      <Filter>RainyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtility.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceLoader.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="PathTracer.cpp">
+      <Filter>PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="RCameraManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Intersection.cpp">
+      <Filter>PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="RInputManger.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="RObjectManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="SystemManager.h" />
-    <ClInclude Include="JsonUtility.h" />
     <ClInclude Include="IGameManager.h" />
     <ClInclude Include="RContext.h" />
-    <ClInclude Include="RMesh.h" />
-    <ClInclude Include="RGameObject.h" />
-    <ClInclude Include="RMaterial.h" />
-    <ClInclude Include="RResourceLoader.h" />
-    <ClInclude Include="RRenderer.h" />
-    <ClInclude Include="RObjectManager.h" />
-    <ClInclude Include="RInputManger.h" />
-    <ClInclude Include="RCameraManager.h" />
-    <ClInclude Include="RCamera.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RMaterial.h">
+      <Filter>RainyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="RMath.h">
+      <Filter>RainyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="RMesh.h">
+      <Filter>RainyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="RCamera.h">
+      <Filter>RainyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="RGameObject.h">
+      <Filter>RainyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="RLight.h">
+      <Filter>RainyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtility.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceLoader.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="PathTracer.h">
+      <Filter>PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="RRay.h">
+      <Filter>PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="RCameraManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersection.h">
+      <Filter>PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="RInputManger.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="RObjectManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="RainyTypes">
+      <UniqueIdentifier>{5cef6597-c7f1-49e2-9807-2b52362ae3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{d8e10f6e-3ed3-4345-9a2a-58f5928ce956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PBR">
+      <UniqueIdentifier>{9f049619-537e-411a-8a39-31971dd3b642}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{2cfb26a1-a624-4008-b1cc-eb297a1516cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Engine.rc" />
   </ItemGroup>
 </Project>

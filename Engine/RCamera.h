@@ -15,6 +15,7 @@ public:
 
 	XMFLOAT3 GetPosition() { return m_position; }
 	XMFLOAT3 GetRotation() { return m_rotation; }
+	XMFLOAT3 GetDirection() { return m_lookAt; }
 
 	const XMMATRIX& GetViewMatrix() { return m_viewMatrix; }
 	const XMMATRIX& GetProjectionMatrix() { return m_projectionMatrix; }

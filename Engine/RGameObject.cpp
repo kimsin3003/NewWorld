@@ -1,11 +1,7 @@
 #include "RGameObject.h"
 #include "RMesh.h"
 #include "RMaterial.h"
-#include "RResourceLoader.h"
-
-RGameObject::~RGameObject()
-{
-}
+#include "ResourceLoader.h"
 
 const DirectX::XMMATRIX RGameObject::GetWorldMatrix()
 {
@@ -26,5 +22,5 @@ const DirectX::XMMATRIX RGameObject::GetWorldMatrix()
 
 void RGameObject::SetResource(std::string filename)
 {
-	RResourceLoader::LoadFBX(this, filename);
+	ResourceLoader::LoadFBX(this, filename);
 }

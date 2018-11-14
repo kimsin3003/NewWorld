@@ -3,10 +3,11 @@
 #include "RMesh.h"
 
 
-class RRenderer
+class Renderer
 {
 public:
-	void Initialize(HWND hwnd, float bufferWidth, float bufferHeight);
+	void Initialize(HWND hwnd, int bufferWidth, int bufferHeight);
+	void RenderPbrScene(HWND hWnd, class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime);
 	void Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime);
 private:
 	struct MatrixBuffer
@@ -26,7 +27,7 @@ private:
 	struct ID3D11DepthStencilState*					m_depthStencilState = nullptr;
 	struct ID3D11Texture2D*							m_depthStencilTexture = nullptr;
 	struct ID3D11DepthStencilView*					m_depthStencilView = nullptr;
-	float m_bufferWidth;
-	float m_bufferHeight;
+	int m_bufferWidth;
+	int m_bufferHeight;
 };
 

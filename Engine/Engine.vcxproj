@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Intersection.cpp" />
+    <ClCompile Include="RLight.cpp" />
+    <ClCompile Include="PathTracer.cpp" />
     <ClCompile Include="RCamera.cpp" />
     <ClCompile Include="RCameraManager.cpp" />
     <ClCompile Include="RContext.cpp" />
@@ -27,13 +30,18 @@
     <ClCompile Include="JsonUtility.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="RMaterial.cpp" />
+    <ClCompile Include="RMath.cpp" />
     <ClCompile Include="RMesh.cpp" />
     <ClCompile Include="RObjectManager.cpp" />
-    <ClCompile Include="RRenderer.cpp" />
-    <ClCompile Include="RResourceLoader.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Intersection.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="RLight.h" />
+    <ClInclude Include="PathTracer.h" />
     <ClInclude Include="RCamera.h" />
     <ClInclude Include="RCameraManager.h" />
     <ClInclude Include="RGameObject.h" />
@@ -42,15 +50,20 @@
     <ClInclude Include="JsonUtility.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="RMaterial.h" />
+    <ClInclude Include="RMath.h" />
     <ClInclude Include="RMesh.h" />
     <ClInclude Include="RObjectManager.h" />
     <ClInclude Include="RContext.h" />
-    <ClInclude Include="RRenderer.h" />
-    <ClInclude Include="RResourceLoader.h" />
+    <ClInclude Include="RRay.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="SystemManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Engine.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

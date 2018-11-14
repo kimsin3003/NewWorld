@@ -4,7 +4,7 @@
 #include <string>
 using namespace fbxsdk;
 
-class RResourceLoader
+class ResourceLoader
 {
 public:
 	static bool LoadFBX(class RGameObject* outMeshes, std::string fbxFileName);

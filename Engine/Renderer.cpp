@@ -1,20 +1,25 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+#pragma comment(lib, "Gdiplus.lib")
 #include <time.h>
 #include <dxgi.h>
 #include <D3D11.h>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include <map>
-#include "RRenderer.h"
+#include "Renderer.h"
 #include "RMaterial.h"
 #include "RGameObject.h"
 #include "RObjectManager.h"
 #include "RCamera.h"
 #include "RCameraManager.h"
 #include "Logger.h"
+#include "RMath.h"
+#include "RRay.h"
+#include "PathTracer.h"
 
-void RRenderer::Initialize(HWND hwnd, float bufferWidth, float bufferHeight)
+
+void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 {
 	m_bufferWidth = bufferWidth;
 	m_bufferHeight = bufferHeight;
@@ -26,18 +31,35 @@ void RRenderer::Initialize(HWND hwnd, float bufferWidth, float bufferHeight)
 	SetViewports();
 }
 
+void Renderer::RenderPbrScene(HWND hWnd, class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime)
+{
+	PAINTSTRUCT ps;
+	HDC hdc;
+	hdc = BeginPaint(hWnd, &ps);
+	
+	for (int i = 0; i < m_bufferWidth; i++)
+	{
+		for (int j = 0; j < m_bufferHeight; j++)
+		{
+			RCamera* currentCamera = cameraManager->GetCurrentCamera();
+			RRay ray(currentCamera->GetPosition(), currentCamera->GetDirection());
+			RVector3 pixelColor = PathTracer::GetPixelColor(ray, objectManager->GetGameObjectPool(), 0);
+			DWORD rgbColor = RGB(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255);
+			SetPixel(hdc, i, j, COLORREF(rgbColor));
+		}
+	}
 
-void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime)
+	//stop drawing
+	EndPaint(hWnd, &ps);
+}
+
+void Renderer::Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime)
 {
 	static double elapsedTime = 0;
 	elapsedTime += deltaTime;
 	if (elapsedTime < 1.0f / 60)
 		return;
 	elapsedTime = 0;
-
-	float clearColor[4] = { 0, 1.0f, 0, 1.0f };
-	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
-	m_immediateContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	auto gameObjectPool = objectManager->GetGameObjectPool();
 
@@ -58,13 +80,13 @@ void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* 
 		}
 	}
 
-	m_swapChain->Present(0, 0);
+ 	m_swapChain->Present(0, 0);
 
 	return;
 }
 
 
-bool RRenderer::InitDevice(HWND hwnd)
+bool Renderer::InitDevice(HWND hwnd)
 {
 	HRESULT hr = S_OK;
 
@@ -89,10 +111,11 @@ bool RRenderer::InitDevice(HWND hwnd)
 	sd.BufferDesc.Width = m_bufferWidth;
 	sd.BufferDesc.Height = m_bufferHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;	//백버퍼 포맷
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferDesc.RefreshRate.Numerator = 60;	//분자
 	sd.BufferDesc.RefreshRate.Denominator = 1;	//분모
 
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	// 백버퍼 랜더링
+	//sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	// 백버퍼 랜더링
 	sd.OutputWindow = hwnd;	//출력할 윈도우 핸들
 	sd.SampleDesc.Count = 1;	//multisampling(다중 표본화) 1이면 한가지 색깔로 다중표본화 --> 다중표본화 안하겠다는 뜻.
 	sd.SampleDesc.Quality = 0;
@@ -121,7 +144,7 @@ bool RRenderer::InitDevice(HWND hwnd)
 	return true;
 }
 
-void RRenderer::SetRenderTargets()
+void Renderer::SetRenderTargets()
 {
 	ID3D11Texture2D* backBuffer = NULL;
 	HRESULT hr = m_swapChain->GetBuffer(0,							 // 후면 버퍼 인덱스, 여러개일 때 중요, 지금은 1개 이므로 0.
@@ -173,7 +196,7 @@ void RRenderer::SetRenderTargets()
 	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 }
 
-void RRenderer::SetViewports()
+void Renderer::SetViewports()
 {
 	//여기에 원래는 depthbuffer의 뷰를 넣어야함.
 
@@ -187,7 +210,7 @@ void RRenderer::SetViewports()
 	m_immediateContext->RSSetViewports(1, &vp); // 뷰포트가 여러개면 개수와, 배열의 주소를 넣는다.
 }
 
-void RRenderer::SetDepthStencilState()
+void Renderer::SetDepthStencilState()
 {
 	D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));

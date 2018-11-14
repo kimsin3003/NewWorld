@@ -1,6 +1,6 @@
 #pragma comment(lib,"d3dcompiler.lib")
 #include "SystemManager.h"
-#include "RRenderer.h"
+#include "Renderer.h"
 #include "RObjectManager.h"
 #include "RCameraManager.h"
 #include "Logger.h"
@@ -110,7 +110,7 @@ void SystemManager::Initialize(IGameManager* gameManager)
 		CameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
 	}
 
-	m_renderer = new RRenderer();
+	m_renderer = new Renderer();
 	if(m_renderer)
 		m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
@@ -186,6 +186,6 @@ void SystemManager::Tick()
 	if(ObjectManager)
 		ObjectManager->Tick(diff.count());
 	if(m_renderer)
-		m_renderer->Tick(CameraManager, ObjectManager, diff.count());
+		m_renderer->RenderPbrScene(m_hwnd, CameraManager, ObjectManager, diff.count());
 }
 

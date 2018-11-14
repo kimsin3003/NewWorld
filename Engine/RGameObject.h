@@ -7,8 +7,6 @@ class RGameObject
 {
 public:
 
-	virtual ~RGameObject();
-
 	virtual void Start() {};
 	virtual void Tick(double deltaTime) {};
 	const XMMATRIX GetWorldMatrix();

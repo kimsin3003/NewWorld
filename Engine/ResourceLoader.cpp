@@ -1,4 +1,4 @@
-#include "RResourceLoader.h"
+#include "ResourceLoader.h"
 #include <iostream>
 #include "Logger.h"
 #include "RMesh.h"
@@ -8,7 +8,7 @@
 static FbxManager* g_pFbxSdkManager = nullptr;
 
 
-bool RResourceLoader::LoadFBX(RGameObject* outGameObject, std::string fbxFileName)
+bool ResourceLoader::LoadFBX(RGameObject* outGameObject, std::string fbxFileName)
 {
 	std::string jsonFileName = "../Resource/" + fbxFileName + ".json";
 	std::string fbxFileDir = "../Resource/" + fbxFileName;
@@ -79,7 +79,7 @@ bool RResourceLoader::LoadFBX(RGameObject* outGameObject, std::string fbxFileNam
 	return true;
 }
 
-void RResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector, std::vector<unsigned int>& outIndexVector)
+void ResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector, std::vector<unsigned int>& outIndexVector)
 {
 	FbxVector4* controlPoints = pMesh->GetControlPoints();
 	if (!controlPoints)
@@ -103,7 +103,7 @@ void RResourceLoader::LoadVertexInformation(FbxMesh* pMesh, std::vector<RVertex>
 	}
 }
 
-void RResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector)
+void ResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector)
 {
 	//get all UV set names
 	FbxStringList lUVSetNameList;
@@ -132,7 +132,7 @@ void RResourceLoader::LoadUVInformation(FbxMesh* pMesh, std::vector<RVertex>& ou
 	}
 }
 
-void RResourceLoader::LoadNormalInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector)
+void ResourceLoader::LoadNormalInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector)
 {
 	FbxGeometryElementNormal* lNormalElement = pMesh->GetElementNormal();
 	if (lNormalElement)
