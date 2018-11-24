@@ -5,9 +5,8 @@
 
 struct HitData
 {
-	HitData();
-	const RGameObject* hitObject;
-	RMaterial mat;
+	HitData() {};
+	RGameObject* hitObject;
 	RVector3 hitPoint;
 	RVector3 hitPlaneNormal;
 };
@@ -15,6 +14,6 @@ struct HitData
 class Intersection
 {
 public:
-	static HitData GetHitData(RRay ray, RGameObject* gameObject);
+	static bool GetHitData(HitData* hitData, RRay ray, std::vector<class RGameObject*> gameObjects);
 };
 

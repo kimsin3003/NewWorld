@@ -15,3 +15,4 @@ private:
 	std::vector<class RGameObject*> m_gameObjectPool;
 };
 
+extern RObjectManager* ObjectManager;

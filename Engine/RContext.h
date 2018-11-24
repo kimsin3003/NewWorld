@@ -8,6 +8,3 @@
 #include "IGameManager.h"
 #include "SystemManager.h"
 #include "RInputManger.h"
-
-extern RCameraManager* CameraManager;
-extern RObjectManager* ObjectManager;

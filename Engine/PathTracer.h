@@ -10,6 +10,6 @@ const RVector3 ambientColor = { 0.1f, 0.1f, 0.1f };
 class PathTracer
 {
 public:
-	static RVector3 GetPixelColor(RRay ray, std::vector<class RGameObject*> gameObjects, int depth);
+	static RVector3 GetPixelColor(RRay ray, const std::vector<class RGameObject*>& gameObjects, int depth);
 };
 

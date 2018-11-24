@@ -2,7 +2,7 @@
 #include "RGameObject.h"
 #include "RMesh.h"
 #include "RMaterial.h"
-#include "ResourceLoader.h"
+RObjectManager* ObjectManager = new RObjectManager();
 
 void RObjectManager::Initialize()
 {

@@ -24,7 +24,6 @@
     <ClCompile Include="PathTracer.cpp" />
     <ClCompile Include="RCamera.cpp" />
     <ClCompile Include="RCameraManager.cpp" />
-    <ClCompile Include="RContext.cpp" />
     <ClCompile Include="RGameObject.cpp" />
     <ClCompile Include="RInputManger.cpp" />
     <ClCompile Include="JsonUtility.cpp" />
@@ -35,6 +34,7 @@
     <ClCompile Include="RObjectManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />
+    <ClCompile Include="RRay.cpp" />
     <ClCompile Include="SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +53,6 @@
     <ClInclude Include="RMath.h" />
     <ClInclude Include="RMesh.h" />
     <ClInclude Include="RObjectManager.h" />
-    <ClInclude Include="RContext.h" />
     <ClInclude Include="RRay.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceLoader.h" />

@@ -1,13 +1,13 @@
 #pragma once
 #include <vector>
 #include "RMesh.h"
-
+#include "RRay.h"
 
 class Renderer
 {
 public:
 	void Initialize(HWND hwnd, int bufferWidth, int bufferHeight);
-	void RenderPbrScene(HWND hWnd, class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime);
+	void RenderPbrScene(HWND hWnd, double deltaTime);
 	void Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime);
 private:
 	struct MatrixBuffer
@@ -20,6 +20,8 @@ private:
 	void SetRenderTargets();
 	void SetViewports();
 	void SetDepthStencilState();
+	void SetPixelOfIndex(int x, int y);
+
 	struct IDXGISwapChain*							m_swapChain = nullptr; //DC 바꾸기
 	struct ID3D11Device*							m_device = nullptr;
 	struct ID3D11DeviceContext*						m_immediateContext = nullptr; //Dx용 DC

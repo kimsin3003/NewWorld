@@ -4,6 +4,7 @@
 #include <time.h>
 #include <dxgi.h>
 #include <D3D11.h>
+#include <thread>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include <map>
@@ -15,9 +16,8 @@
 #include "RCameraManager.h"
 #include "Logger.h"
 #include "RMath.h"
-#include "RRay.h"
 #include "PathTracer.h"
-
+#include "RContext.h"
 
 void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 {
@@ -31,26 +31,32 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 	SetViewports();
 }
 
-void Renderer::RenderPbrScene(HWND hWnd, class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime)
+void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
 	hdc = BeginPaint(hWnd, &ps);
-	
+	std::thread first(&SetPixelOfPosition, );
 	for (int i = 0; i < m_bufferWidth; i++)
 	{
 		for (int j = 0; j < m_bufferHeight; j++)
 		{
-			RCamera* currentCamera = cameraManager->GetCurrentCamera();
-			RRay ray(currentCamera->GetPosition(), currentCamera->GetDirection());
-			RVector3 pixelColor = PathTracer::GetPixelColor(ray, objectManager->GetGameObjectPool(), 0);
+			RRay ray(i, j, m_bufferWidth, m_bufferHeight);
+			RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
 			DWORD rgbColor = RGB(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255);
 			SetPixel(hdc, i, j, COLORREF(rgbColor));
 		}
 	}
 
-	//stop drawing
 	EndPaint(hWnd, &ps);
+}
+
+void Renderer::SetPixelOfPosition(HDC hdc, int x, int y)
+{
+	RRay ray(x, y, m_bufferWidth, m_bufferHeight);
+	RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
+	DWORD rgbColor = RGB(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255);
+	SetPixel(hdc, x, y, COLORREF(rgbColor));
 }
 
 void Renderer::Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime)

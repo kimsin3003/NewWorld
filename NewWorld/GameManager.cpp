@@ -1,5 +1,7 @@
 #include "GameManager.h"
-#include "Engine/RContext.h"
+#include "Engine/RMaterial.h"
+#include "Engine/RMesh.h"
+#include "Engine/RObjectManager.h"
 #include "Room.h"
 
 void GameManager::Initialize()

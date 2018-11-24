@@ -1,6 +1,5 @@
 #include "RCameraManager.h"
-#include "RCamera.h"
-
+RCameraManager* CameraManager = new RCameraManager();
 
 void RCameraManager::Initialize(float screenWidth, float screenHeight, float screenNear, float screenDepth)
 {

@@ -1,12 +1,14 @@
 #pragma once
 #include <vector>
+#include "RCamera.h"
 class RCameraManager
 {
 public:
 	void Initialize(float screenWidth, float screenHeight, float  screenNear, float screenDepth);
-	class RCamera* GetCurrentCamera();
+	RCamera* GetCurrentCamera();
 
-	std::vector<class RCamera*> m_cameras;
-	class RCamera* m_currentCamera;
+	std::vector<RCamera*> m_cameras;
+	RCamera* m_currentCamera;
 };
 
+extern RCameraManager* CameraManager;

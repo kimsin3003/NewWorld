@@ -5,9 +5,8 @@
 #include "RCameraManager.h"
 #include "Logger.h"
 #include "RInputManger.h"
-#include "RContext.h"
+#include "RObjectManager.h"
 #include "IGameManager.h"
-
 
 
 void SystemManager::Initialize(IGameManager* gameManager)
@@ -44,7 +43,7 @@ void SystemManager::Initialize(IGameManager* gameManager)
 
 	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
 
-	int screenWidth = 1600, screenHeight = 900;
+	int screenWidth = 800, screenHeight = 640;
 	if (FULL_SCREEN)
 	{
 		// If full screen set the screen to maximum size of the users desktop and 32bit.
@@ -100,14 +99,14 @@ void SystemManager::Initialize(IGameManager* gameManager)
 
 	m_lastTime = std::chrono::system_clock::now();
 
-	ObjectManager = new RObjectManager();
-	if(ObjectManager)
+	if (ObjectManager)
+	{
 		ObjectManager->Initialize();
+	}
 
-	CameraManager = new RCameraManager();
 	if (CameraManager)
 	{
-		CameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
+		CameraManager->Initialize(screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
 	}
 
 	m_renderer = new Renderer();
@@ -117,6 +116,9 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	m_gameManager = gameManager;
 	if (m_gameManager)
 		m_gameManager->Initialize();
+
+	if (m_renderer)
+		m_renderer->RenderPbrScene(m_hwnd, 0);
 
 	return;
 }
@@ -185,7 +187,5 @@ void SystemManager::Tick()
 		m_gameManager->Tick(diff.count());
 	if(ObjectManager)
 		ObjectManager->Tick(diff.count());
-	if(m_renderer)
-		m_renderer->RenderPbrScene(m_hwnd, CameraManager, ObjectManager, diff.count());
 }
 
