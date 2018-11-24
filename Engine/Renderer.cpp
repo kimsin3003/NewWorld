@@ -36,7 +36,6 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	hdc = BeginPaint(hWnd, &ps);
-	std::thread first(&SetPixelOfPosition, );
 	for (int i = 0; i < m_bufferWidth; i++)
 	{
 		for (int j = 0; j < m_bufferHeight; j++)
