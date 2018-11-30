@@ -14,19 +14,21 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 				int aIndex = mesh->Indicies[i];
 				int bIndex = mesh->Indicies[i + 1];
 				int cIndex = mesh->Indicies[i + 2];
-				XMFLOAT3 a = mesh->Verticies[aIndex].Pos;
-				XMFLOAT3 b = mesh->Verticies[bIndex].Pos;
-				XMFLOAT3 c = mesh->Verticies[cIndex].Pos;
+				XMVECTOR a = XMLoadFloat3(&mesh->Verticies[aIndex].Pos);
+				XMVECTOR b = XMLoadFloat3(&mesh->Verticies[bIndex].Pos);
+				XMVECTOR c = XMLoadFloat3(&mesh->Verticies[cIndex].Pos);
 
-				XMVECTOR center = (XMLoadFloat3(&a) + XMLoadFloat3(&b) + XMLoadFloat3(&c)) / 3;
-				XMFLOAT3 centerInWorldCoord;
-				XMStoreFloat3(&centerInWorldCoord, XMVector3TransformCoord(center, gameObject->GetWorldMatrix()));
+				XMVECTOR planeVector = XMVector3Cross(a- b, a - c);
+				XMVECTOR planeVectorWorldCoord = XMVector3TransformCoord(planeVector, gameObject->GetWorldMatrix());
+				planeVectorWorldCoord = XMVector3Normalize(planeVectorWorldCoord);
+				XMVECTOR aPositionInWorldCoord;
+				aPositionInWorldCoord = XMVector3TransformCoord(a, gameObject->GetWorldMatrix());
 
-				RVector3 rayOrigin = ray.GetOrigin();
-				RVector3 rayDir = ray.GetDir();
+				XMFLOAT3 rayOrigin(ray.GetOrigin().x, ray.GetOrigin().y, ray.GetOrigin().z);
+				XMFLOAT3 rayDir(ray.GetDir().x, ray.GetDir().y, ray.GetDir().z);
 
-				RVector3 rayOriginToCenter = RVector3(centerInWorldCoord) - rayOrigin;
-				if (rayOriginToCenter * rayDir < 0.001f)
+				XMVECTOR intersection = GetIntersectPoint(XMLoadFloat3(&rayDir), XMLoadFloat3(&rayOrigin), planeVectorWorldCoord, aPositionInWorldCoord);
+				if (CheckPointIsInTriangle(intersection, a, b, c))
 				{
 					hitData->hitObject = gameObject;
 					return true;
@@ -36,4 +38,31 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 	}
 
 	return false;
+}
+
+XMVECTOR Intersection::GetIntersectPoint(XMVECTOR rayVector, XMVECTOR rayOrigin, XMVECTOR planeNormal, XMVECTOR planePoint) {
+	XMVECTOR diff = rayOrigin - planePoint;
+	float prod1 = XMVectorGetX(XMVector3Dot(diff, planeNormal));
+	double prod2 = XMVectorGetX(XMVector3Dot(rayVector, planeNormal));
+	double prod3 = prod1 / prod2;
+	return rayOrigin - rayVector * prod3;
+}
+
+bool Intersection::CheckPointIsInTriangle(XMVECTOR point, XMVECTOR a, XMVECTOR b, XMVECTOR c)
+{
+	//접점으로 부터 세 점까지로 이루어진 세 백터들이 이루는 각의 합이 360보다 작으면 삼각형 내부의 점이 아니다.
+	XMVECTOR v1 = a - point;
+	XMVECTOR v2 = b - point;
+	XMVECTOR v3 = c - point;
+
+	double v1v2Angle = XMVectorGetX(XMVector3AngleBetweenVectors(v1, v2));
+	double v2v3Angle = XMVectorGetX(XMVector3AngleBetweenVectors(v2, v3));
+	double v3v1Angle = XMVectorGetX(XMVector3AngleBetweenVectors(v3, v1));
+
+	double sumToDegree = (v1v2Angle + v2v3Angle + v3v1Angle) * XM_1DIVPI * 180;
+
+	if (sumToDegree >= 340)
+		return true;
+	else
+		return false;
 }

@@ -20,7 +20,7 @@ private:
 	void SetRenderTargets();
 	void SetViewports();
 	void SetDepthStencilState();
-	void SetPixelOfIndex(int x, int y);
+	void SetPixelOfPosition(HDC hdc, int x, int y);
 
 	struct IDXGISwapChain*							m_swapChain = nullptr; //DC ¹Ù²Ù±â
 	struct ID3D11Device*							m_device = nullptr;

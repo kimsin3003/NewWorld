@@ -13,9 +13,9 @@ RRay::RRay(int screenX, int screenY, int screenWith, int screenHeight)
 	RCamera* camara = CameraManager->GetCurrentCamera();
 	
 	XMMATRIX P = camara->GetProjectionMatrix();;
-	XMMATRIX invProj = XMMatrixInverse((&XMMatrixDeterminant(P)), P);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(P), P);
 	XMMATRIX V = camara->GetViewMatrix();;
-	XMMATRIX invView = XMMatrixInverse((&XMMatrixDeterminant(V)), V);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
 
 	XMMATRIX toWorld = XMMatrixMultiply(invProj, invView);
 	XMVECTOR originInWorldCoord = XMVector3TransformCoord(rayOrigin, toWorld);

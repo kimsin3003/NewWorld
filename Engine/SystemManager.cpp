@@ -43,7 +43,7 @@ void SystemManager::Initialize(IGameManager* gameManager)
 
 	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
 
-	int screenWidth = 800, screenHeight = 640;
+	int screenWidth = 300, screenHeight = 200;
 	if (FULL_SCREEN)
 	{
 		// If full screen set the screen to maximum size of the users desktop and 32bit.
