@@ -64,7 +64,7 @@ void RCamera::CreateViewMatrix()
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	lookVector = DirectX::XMVector3TransformCoord(lookVector, rotationMatrix);
-	upVector = DirectX::XMVector3TransformCoord(upVector, rotationMatrix);
+	upVector = DirectX::XMVector3TransformNormal(upVector, rotationMatrix);
 
 	// Translate the rotated camera position to the location of the viewer.
 	lookVector = DirectX::XMVectorAdd(positionVector, lookVector);

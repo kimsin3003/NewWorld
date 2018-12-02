@@ -2,9 +2,11 @@
 #include "RRay.h"
 #include "RGameObject.h"
 #include "RMesh.h"
+#include <DirectXCollision.h>
 
 bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGameObject*> gameObjects)
 {
+	float minT = 10000000.0;
 	for (auto gameObject : gameObjects)
 	{
 		for (RMesh* mesh : gameObject->Meshes)
@@ -18,17 +20,11 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 				XMVECTOR b = XMLoadFloat3(&mesh->Verticies[bIndex].Pos);
 				XMVECTOR c = XMLoadFloat3(&mesh->Verticies[cIndex].Pos);
 
-				XMVECTOR planeVector = XMVector3Cross(a- b, a - c);
-				XMVECTOR planeVectorWorldCoord = XMVector3TransformCoord(planeVector, gameObject->GetWorldMatrix());
-				planeVectorWorldCoord = XMVector3Normalize(planeVectorWorldCoord);
-				XMVECTOR aPositionInWorldCoord;
-				aPositionInWorldCoord = XMVector3TransformCoord(a, gameObject->GetWorldMatrix());
-
 				XMFLOAT3 rayOrigin(ray.GetOrigin().x, ray.GetOrigin().y, ray.GetOrigin().z);
 				XMFLOAT3 rayDir(ray.GetDir().x, ray.GetDir().y, ray.GetDir().z);
 
-				XMVECTOR intersection = GetIntersectPoint(XMLoadFloat3(&rayDir), XMLoadFloat3(&rayOrigin), planeVectorWorldCoord, aPositionInWorldCoord);
-				if (CheckPointIsInTriangle(intersection, a, b, c))
+				float t = 0.0f;
+				if (DirectX::TriangleTests::Intersects(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDir), a, b, c, t))
 				{
 					hitData->hitObject = gameObject;
 					return true;
