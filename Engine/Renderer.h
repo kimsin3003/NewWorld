@@ -8,7 +8,7 @@ class Renderer
 public:
 	void Initialize(HWND hwnd, int bufferWidth, int bufferHeight);
 	void RenderPbrScene(HWND hWnd, double deltaTime);
-	void Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime);
+	void Tick(double deltaTime);
 private:
 	struct MatrixBuffer
 	{ 

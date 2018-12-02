@@ -187,5 +187,7 @@ void SystemManager::Tick()
 		m_gameManager->Tick(diff.count());
 	if(ObjectManager)
 		ObjectManager->Tick(diff.count());
+	if (m_renderer)
+		m_renderer->Tick(diff.count());
 }
 

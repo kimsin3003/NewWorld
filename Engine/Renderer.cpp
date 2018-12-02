@@ -58,7 +58,7 @@ void Renderer::SetPixelOfPosition(HDC hdc, int x, int y)
 	SetPixel(hdc, x, y, COLORREF(rgbColor));
 }
 
-void Renderer::Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime)
+void Renderer::Tick(double deltaTime)
 {
 	static double elapsedTime = 0;
 	elapsedTime += deltaTime;
@@ -66,9 +66,13 @@ void Renderer::Tick(class RCameraManager* cameraManager, class RObjectManager* o
 		return;
 	elapsedTime = 0;
 
-	auto gameObjectPool = objectManager->GetGameObjectPool();
+	float clearColor[4] = { 0, 1.0f, 0, 1.0f };
+	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
+	m_immediateContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	RCamera* currentCamera = cameraManager->GetCurrentCamera();
+	auto gameObjectPool = ObjectManager->GetGameObjectPool();
+
+	RCamera* currentCamera = CameraManager->GetCurrentCamera();
 	for (RGameObject* gameObject : gameObjectPool)
 	{
 		for (RMesh* mesh : gameObject->Meshes)
