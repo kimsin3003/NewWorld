@@ -19,6 +19,8 @@ public:
 
 	const XMMATRIX& GetViewMatrix() { return m_viewMatrix; }
 	const XMMATRIX& GetProjectionMatrix() { return m_projectionMatrix; }
+	const float GetFov() { return m_fov; }
+	const float GetScreenAspect() { return m_screenAspect; }
 
 private:
 	void CreateViewMatrix();
@@ -26,6 +28,8 @@ private:
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_lookAt;
 	XMFLOAT3 m_up;
+	float m_fov;
+	float m_screenAspect;
 	XMFLOAT3 m_rotation;
 	XMMATRIX m_viewMatrix;
 	XMMATRIX m_projectionMatrix;

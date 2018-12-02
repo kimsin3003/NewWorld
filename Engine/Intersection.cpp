@@ -9,6 +9,7 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 	float minT = 10000000.0;
 	for (auto gameObject : gameObjects)
 	{
+		XMMATRIX worldMatrix = gameObject->GetWorldMatrix();
 		for (RMesh* mesh : gameObject->Meshes)
 		{
 			for (int i = 0; i < mesh->Indicies.size(); i += 3)
@@ -16,9 +17,9 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 				int aIndex = mesh->Indicies[i];
 				int bIndex = mesh->Indicies[i + 1];
 				int cIndex = mesh->Indicies[i + 2];
-				XMVECTOR a = XMLoadFloat3(&mesh->Verticies[aIndex].Pos);
-				XMVECTOR b = XMLoadFloat3(&mesh->Verticies[bIndex].Pos);
-				XMVECTOR c = XMLoadFloat3(&mesh->Verticies[cIndex].Pos);
+				XMVECTOR a = XMVector3TransformCoord(XMLoadFloat3(&mesh->Verticies[aIndex].Pos), worldMatrix);
+				XMVECTOR b = XMVector3TransformCoord(XMLoadFloat3(&mesh->Verticies[bIndex].Pos), worldMatrix);
+				XMVECTOR c = XMVector3TransformCoord(XMLoadFloat3(&mesh->Verticies[cIndex].Pos), worldMatrix);
 
 				XMFLOAT3 rayOrigin(ray.GetOrigin().x, ray.GetOrigin().y, ray.GetOrigin().z);
 				XMFLOAT3 rayDir(ray.GetDir().x, ray.GetDir().y, ray.GetDir().z);

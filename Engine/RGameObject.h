@@ -17,6 +17,7 @@ public:
 
 	void SetResource(std::string filename);
 	std::vector<class RMesh*> Meshes;
+	std::string Name;
 
 protected:
 	bool isLight = false;

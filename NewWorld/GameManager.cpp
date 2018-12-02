@@ -12,18 +12,9 @@ void GameManager::Initialize()
 	texture.type = RTexture::DIFFUSE;
 	texture.filename = L"../Resource/zombie.fbm/world_war_zombie_diffuse.png";
 
-	textures.push_back(texture);
-	room->SetResource("room.fbx");
-	for (RMesh* mesh : room->Meshes)
-	{
-		RMaterial* defaultMaterial = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", textures);
-		mesh->Mat = defaultMaterial;
-	}
-	ObjectManager->AddGameObject(room);
-	room->SetPosition(0, 0, 150);
 
 	RGameObject* ball = new Room();
-
+	ball->Name = "Ball";
 	ball->SetResource("ball.fbx");
 	for (RMesh* mesh : ball->Meshes)
 	{
@@ -32,6 +23,17 @@ void GameManager::Initialize()
 	}
 	ObjectManager->AddGameObject(ball);
 	ball->SetPosition(0, 0, 50);
+
+	textures.push_back(texture);
+	room->Name = "Room";
+	room->SetResource("room.fbx");
+	for (RMesh* mesh : room->Meshes)
+	{
+		RMaterial* defaultMaterial = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", textures);
+		mesh->Mat = defaultMaterial;
+	}
+	ObjectManager->AddGameObject(room);
+	room->SetPosition(0, 0, 150);
 }
 
 void GameManager::Tick(double deltaTime)

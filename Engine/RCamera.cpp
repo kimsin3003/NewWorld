@@ -41,11 +41,11 @@ void RCamera::Initialize(float screenWidth, float screenHeight, float  screenNea
 
 void RCamera::CreateProjectionMatrix(float screenWidth, float screenHeight, float screenNear, float screenDepth)
 {
-	float fieldOfView = 3.141592654f / 4.0f;
-	float screenAspect = (float)screenWidth / (float)screenHeight;
+	m_fov = 3.141592654f / 4.0f;
+	m_screenAspect = (float)screenWidth / (float)screenHeight;
 
 	// Create the projection matrix for 3D rendering.
-	m_projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
+	m_projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(m_fov, m_screenAspect, screenNear, screenDepth);
 }
 
 void RCamera::CreateViewMatrix()
