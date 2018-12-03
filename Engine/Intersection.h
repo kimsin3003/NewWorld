@@ -5,10 +5,10 @@
 
 struct HitData
 {
-	HitData() {};
+	HitData() { hitObject = nullptr; }
 	RGameObject* hitObject;
-	RVector3 hitPoint;
-	RVector3 hitPlaneNormal;
+	XMVECTOR hitPoint;
+	XMVECTOR hitPlaneNormal;
 };
 
 class Intersection

@@ -1,6 +1,7 @@
 #pragma once
 #include <directxmath.h>
 #include <vector>
+#include "RMath.h"
 using namespace DirectX;
 
 class RGameObject
@@ -18,6 +19,7 @@ public:
 	void SetResource(std::string filename);
 	std::vector<class RMesh*> Meshes;
 	std::string Name;
+	RVector3 color;
 
 protected:
 	bool isLight = false;

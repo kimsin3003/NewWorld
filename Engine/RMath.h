@@ -20,6 +20,11 @@ struct RVector3
 		z = xmlfloat3.z;
 	}
 
+	RVector3 operator+(RVector3& other)
+	{
+		return RVector3(x + other.x, y + other.y, z + other.z);
+	}
+
 	RVector3 operator-(RVector3& other)
 	{
 		return RVector3(x - other.x, y - other.y, z - other.z);

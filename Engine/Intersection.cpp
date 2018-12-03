@@ -20,20 +20,24 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 				XMVECTOR a = XMVector3TransformCoord(XMLoadFloat3(&mesh->Verticies[aIndex].Pos), worldMatrix);
 				XMVECTOR b = XMVector3TransformCoord(XMLoadFloat3(&mesh->Verticies[bIndex].Pos), worldMatrix);
 				XMVECTOR c = XMVector3TransformCoord(XMLoadFloat3(&mesh->Verticies[cIndex].Pos), worldMatrix);
-
-				XMFLOAT3 rayOrigin(ray.GetOrigin().x, ray.GetOrigin().y, ray.GetOrigin().z);
-				XMFLOAT3 rayDir(ray.GetDir().x, ray.GetDir().y, ray.GetDir().z);
-
+				
 				float t = 0.0f;
-				if (DirectX::TriangleTests::Intersects(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDir), a, b, c, t))
+				if (DirectX::TriangleTests::Intersects(ray.GetOrigin(), ray.GetDir(), a, b, c, t))
 				{
-					hitData->hitObject = gameObject;
-					return true;
+					if (t < minT)
+					{
+						minT = t;
+						hitData->hitObject = gameObject;
+						hitData->hitPlaneNormal = XMVector3Normalize(XMVector3Cross((a - b), (a - c)));
+						hitData->hitPoint = ray.GetOrigin() + ray.GetDir() * t;
+					}
 				}
 			}
 		}
 	}
 
+	if (hitData->hitObject != nullptr)
+		return true;
 	return false;
 }
 

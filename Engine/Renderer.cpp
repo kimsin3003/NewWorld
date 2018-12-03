@@ -33,29 +33,45 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 
 void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 {
+	unsigned numOfThread = std::thread::hardware_concurrency() * 2 + 1;
+
+	DWORD* pixels = new DWORD[m_bufferWidth * m_bufferHeight];
+	std::vector<std::thread> threads;
+	threads.reserve(numOfThread);
+	for (int i = 0; i < numOfThread; i++)
+	{
+		int withOfOneThread = m_bufferWidth / numOfThread;
+		int screenWidth = m_bufferWidth;
+		int screenHeight = m_bufferHeight;
+		threads.emplace_back([&pixels, withOfOneThread, screenWidth, screenHeight, i] {
+			for (int m = i * withOfOneThread; m < (i+1) * withOfOneThread; m++)
+			{
+				for (int n = 0; n < screenHeight; n++)
+				{
+					RRay ray(m, n, screenWidth, screenHeight);
+					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
+					DWORD rgbColor = RGB(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255);
+					pixels[m * screenHeight + n] = rgbColor;
+				}
+			}
+		});
+	}
+	for (int i = 0; i < numOfThread; i++)
+	{
+		threads[i].join();
+	}
 	PAINTSTRUCT ps;
 	HDC hdc;
 	hdc = BeginPaint(hWnd, &ps);
-	for (int i = 0; i < m_bufferWidth; i++)
+
+	for (int m = 0; m < m_bufferWidth; m++)
 	{
-		for (int j = 0; j < m_bufferHeight; j++)
+		for (int n = 0; n < m_bufferHeight; n++)
 		{
-			RRay ray(i, j, m_bufferWidth, m_bufferHeight);
-			RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
-			DWORD rgbColor = RGB(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255);
-			SetPixel(hdc, i, j, COLORREF(rgbColor));
+			SetPixel(hdc, m, n, pixels[m * m_bufferHeight + n]);
 		}
 	}
-
 	EndPaint(hWnd, &ps);
-}
-
-void Renderer::SetPixelOfPosition(HDC hdc, int x, int y)
-{
-	RRay ray(x, y, m_bufferWidth, m_bufferHeight);
-	RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
-	DWORD rgbColor = RGB(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255);
-	SetPixel(hdc, x, y, COLORREF(rgbColor));
 }
 
 void Renderer::Tick(double deltaTime)

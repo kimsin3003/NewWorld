@@ -1,16 +1,17 @@
 #pragma once
-#include "RMath.h"
+#include <directxmath.h>
+using namespace DirectX;
 
 class RRay
 {
 public:
 	RRay(int screenX, int screenY, int screenWith, int screenHeight); // for screen to world
-	RRay(RVector3 origin, RVector3 dir); // for world to world
-	RVector3 GetOrigin() { return m_origin; }
-	RVector3 GetDir() { return m_dir; }
+	RRay(XMVECTOR origin, XMVECTOR dir) { m_origin = origin; m_dir = dir; }
+	XMVECTOR GetOrigin() { return m_origin; }
+	XMVECTOR GetDir() { return m_dir; }
 
 private:
-	RVector3 m_origin;
-	RVector3 m_dir;
+	XMVECTOR m_origin;
+	XMVECTOR m_dir;
 };
 

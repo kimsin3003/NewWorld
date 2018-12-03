@@ -17,17 +17,7 @@ RRay::RRay(int screenX, int screenY, int screenWith, int screenHeight)
 	XMMATRIX V = camera->GetViewMatrix();    
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
 
-
-	XMVECTOR originInWorldCoord = XMVector3TransformCoord(rayOrigin, invView);
-	XMVECTOR dirInWorldCoord = XMVector3TransformNormal(rayDir, invView);
-
-	if (screenX == screenWith / 2 && screenY == screenHeight / 2)
-		printf("asdf");
-
-	XMFLOAT3 temp;
-	XMStoreFloat3(&temp, originInWorldCoord);
-	m_origin = temp;
-	XMStoreFloat3(&temp, XMVector3Normalize(dirInWorldCoord));
-	m_dir = temp;
+	m_origin = XMVector3TransformCoord(rayOrigin, invView);
+	m_dir = XMVector3Normalize(XMVector3TransformNormal(rayDir, invView));
 }
 
