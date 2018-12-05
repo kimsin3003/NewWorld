@@ -20,35 +20,33 @@ struct RVector3
 		z = xmlfloat3.z;
 	}
 
-	RVector3 operator+(RVector3& other)
+	friend RVector3 operator+(RVector3 lhs, const RVector3& rhs)
 	{
-		return RVector3(x + other.x, y + other.y, z + other.z);
+		return RVector3(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+	}
+	void operator+=(RVector3& other)
+	{
+		x = x + other.x;
+		y = y + other.y;
+		z = z + other.z;
 	}
 
-	RVector3 operator-(RVector3& other)
+	friend RVector3 operator-(RVector3 lhs, const RVector3& rhs)
 	{
-		return RVector3(x - other.x, y - other.y, z - other.z);
+		return RVector3(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
 	}
 
-	const float operator*(RVector3& other)
+	friend const float operator*(RVector3 lhs, const RVector3& rhs)
 	{
-		return x * other.x + y * other.y + z * other.z;
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 	}
-	RVector3 operator*(float muliplier)
+	friend RVector3 operator*(RVector3 lhs, float muliplier)
 	{
-		RVector3 result = *this;
-		result.x *= muliplier;
-		result.y *= muliplier;
-		result.z *= muliplier;
-		return result;
+		return RVector3(lhs.x * muliplier, lhs.y * muliplier, lhs.z * muliplier);
 	}
-	RVector3 operator/(float divider)
+	friend RVector3 operator/(RVector3 lhs, float divider)
 	{
-		RVector3 result = *this;
-		result.x / divider;
-		result.y / divider;
-		result.z / divider;
-		return result;
+		return RVector3(lhs.x / divider, lhs.y / divider, lhs.z / divider);
 	}
 
 	const float size()

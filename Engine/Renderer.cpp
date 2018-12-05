@@ -50,14 +50,18 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 				for (int n = 0; n < screenHeight; n++)
 				{
 					RRay ray(m, n, screenWidth, screenHeight);
-					int sampleCount = 1;
+					int sampleCount = 10;
 					RVector3 pixelColor(0, 0, 0);
 					for (int i = 0; i < sampleCount; i++)
 					{
-						pixelColor = pixelColor + PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
+						RVector3 traceColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
+						pixelColor = pixelColor + traceColor;
 					}
 					pixelColor = pixelColor / sampleCount;
-					DWORD rgbColor = RGB(pixelColor.x, pixelColor.y, pixelColor.z);
+					float r = pixelColor.x > 255 ? 255 : pixelColor.x;
+					float g = pixelColor.y > 255 ? 255 : pixelColor.y;
+					float b = pixelColor.z > 255 ? 255 : pixelColor.z;
+					DWORD rgbColor = RGB(r, g, b);
 					pixels[m * screenHeight + n] = rgbColor;
 				}
 			}

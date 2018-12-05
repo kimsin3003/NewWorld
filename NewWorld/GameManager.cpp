@@ -14,7 +14,7 @@ void GameManager::Initialize()
 		PbrSphere* sphere = new PbrSphere();
 		sphere->R = 2 * i;
 		sphere->SetPosition(-50 + i * 20, 0, 200);
-		sphere->pbrColor = { 6, 189, 0 };
+		sphere->pbrColor = { 71, 15, 255 };
 		sphere->pbrFigure = PBRFIGURE::SPHERE;
 		ObjectManager->AddGameObject(sphere);
 	}
@@ -24,7 +24,7 @@ void GameManager::Initialize()
 	center->V2 = DirectX::XMFLOAT3(100, 50, 250);
 	center->V3 = DirectX::XMFLOAT3(100, -50, 250);
 	center->V4 = DirectX::XMFLOAT3(-100, -50, 250);
-	center->pbrColor = { 0, 183, 255 };
+	center->pbrColor = { 0, 64, 92 };
 	center->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(center);
 
@@ -33,7 +33,7 @@ void GameManager::Initialize()
 	left->V2 = DirectX::XMFLOAT3(-100, 50, 250);
 	left->V3 = DirectX::XMFLOAT3(-100, -50, 250);
 	left->V4 = DirectX::XMFLOAT3(-100, -50, 150);
-	left->pbrColor = { 0, 183, 255 };
+	left->pbrColor = { 0, 64, 92 };
 	left->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(left);
 
@@ -42,7 +42,7 @@ void GameManager::Initialize()
 	right->V2 = DirectX::XMFLOAT3(100, 50, 150);
 	right->V3 = DirectX::XMFLOAT3(100, -50, 150);
 	right->V4 = DirectX::XMFLOAT3(100, -50, 250);
-	right->pbrColor = { 0, 183, 255 };
+	right->pbrColor = { 0, 64, 92 };
 	right->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(right);
 
@@ -51,7 +51,7 @@ void GameManager::Initialize()
 	top->V2 = DirectX::XMFLOAT3(100, 50, 150);
 	top->V3 = DirectX::XMFLOAT3(100, 50, 250);
 	top->V4 = DirectX::XMFLOAT3(-100, 50, 250);
-	top->pbrColor = { 0, 183, 255 };
+	top->pbrColor = { 0, 64, 92 };
 	top->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(top);
 
@@ -60,7 +60,7 @@ void GameManager::Initialize()
 	bottom->V2 = DirectX::XMFLOAT3(-100, -50, 150);
 	bottom->V3 = DirectX::XMFLOAT3(-100, -50, 250);
 	bottom->V4 = DirectX::XMFLOAT3(100, -50, 250);
-	bottom->pbrColor = { 0, 183, 255 };
+	bottom->pbrColor = { 0, 64, 92 };
 	bottom->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(bottom);
 }

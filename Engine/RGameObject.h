@@ -27,6 +27,7 @@ public:
 	std::vector<class RMesh*> Meshes;
 	std::string Name;
 	RVector3 pbrColor;
+	RVector3 pbrColor;
 	PBRFIGURE pbrFigure;
 
 protected:
