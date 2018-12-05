@@ -52,6 +52,12 @@
     <ClCompile Include="RRay.cpp">
       <Filter>PBR</Filter>
     </ClCompile>
+    <ClCompile Include="PbrSphere.cpp">
+      <Filter>PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="PbrPlane.cpp">
+      <Filter>PBR</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IGameManager.h" />
@@ -106,6 +112,15 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Renderer.h">
       <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="PbrSphere.h">
+      <Filter>PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="PbrPlane.h">
+      <Filter>PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap_image.h">
+      <Filter>Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

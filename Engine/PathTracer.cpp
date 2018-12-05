@@ -14,7 +14,11 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class RGameObject
 	if (Intersection::GetHitData(&hitData, ray, gameObjects))
 	{
 		XMVECTOR reflectionDir = XMVector3Normalize(ray.GetDir() + 2 * -ray.GetDir() * hitData.hitPlaneNormal * hitData.hitPlaneNormal);
-		return hitData.hitObject->color + GetPixelColor(RRay(hitData.hitPoint, reflectionDir), gameObjects, depth + 1) * 0.5;
+		RVector3 averageColor(0,0,0);
+		XMVECTOR randomDirVector;
+		XMFLOAT3 ramdomDir = XMFLOAT3(rand() - RAND_MAX / 2, rand() - RAND_MAX / 2, rand() - RAND_MAX / 2);
+		randomDirVector = XMVector3Normalize(XMLoadFloat3(&ramdomDir));
+		return hitData.hitObject->pbrColor + GetPixelColor(RRay(hitData.hitPoint, randomDirVector), gameObjects, depth + 1) * 0.5;
 	}
 	else
 	{
@@ -22,8 +26,10 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class RGameObject
 		XMFLOAT3 dotVector;
 		XMStoreFloat3(&dotVector, XMVector3Dot(ray.GetDir(), -lightDir));
 		float dotProduct = dotVector.x;
-		if (dotProduct < 0.05f)
+		if (dotProduct > 0.9)
+		{
 			return RVector3(0.9f, 0.9f, 0.9f);
+		}
 		return ambientColor;
 	}
 }

@@ -18,6 +18,7 @@
 #include "RMath.h"
 #include "PathTracer.h"
 #include "RContext.h"
+#include "bitmap_image.h"
 
 void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 {
@@ -49,8 +50,14 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 				for (int n = 0; n < screenHeight; n++)
 				{
 					RRay ray(m, n, screenWidth, screenHeight);
-					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
-					DWORD rgbColor = RGB(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255);
+					int sampleCount = 1;
+					RVector3 pixelColor(0, 0, 0);
+					for (int i = 0; i < sampleCount; i++)
+					{
+						pixelColor = pixelColor + PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
+					}
+					pixelColor = pixelColor / sampleCount;
+					DWORD rgbColor = RGB(pixelColor.x, pixelColor.y, pixelColor.z);
 					pixels[m * screenHeight + n] = rgbColor;
 				}
 			}
@@ -60,6 +67,8 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 	{
 		threads[i].join();
 	}
+
+	bitmap_image image(m_bufferWidth, m_bufferHeight);
 	PAINTSTRUCT ps;
 	HDC hdc;
 	hdc = BeginPaint(hWnd, &ps);
@@ -69,8 +78,15 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 		for (int n = 0; n < m_bufferHeight; n++)
 		{
 			SetPixel(hdc, m, n, pixels[m * m_bufferHeight + n]);
+			unsigned char red = GetRValue(pixels[m * m_bufferHeight + n]);
+			unsigned char green = GetGValue(pixels[m * m_bufferHeight + n]);
+			unsigned char blue = GetBValue(pixels[m * m_bufferHeight + n]);
+			image.set_pixel(m, n, red, green, blue);
 		}
 	}
+
+	image.save_image("pbroutput.bmp");
+
 	EndPaint(hWnd, &ps);
 }
 

@@ -14,6 +14,9 @@ RRay::RRay(int screenX, int screenY, int screenWith, int screenHeight)
 	XMVECTOR rayOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 	XMVECTOR rayDir = XMVectorSet(vx, vy, 1.0f, 0.0f);
 
+	XMMATRIX P = camera->GetProjectionMatrix();
+	XMVECTOR det = XMMatrixDeterminant(P);
+
 	XMMATRIX V = camera->GetViewMatrix();    
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
 

@@ -4,48 +4,65 @@
 #include "Engine/RObjectManager.h"
 #include "Room.h"
 #include "Engine/RLight.h"
+#include "Engine/PbrSphere.h"
+#include "Engine/PbrPlane.h"
 
 void GameManager::Initialize()
 {
-// 	RGameObject* light = new RLight();
-// 	light->Name = "Light";
-// 	light->SetResource("ball.fbx");
-// 	for (RMesh* mesh : light->Meshes)
-// 	{
-// 		RMaterial* defaultMaterial = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", std::vector<RTexture>());
-// 		mesh->Mat = defaultMaterial;
-// 	}
-// 	ObjectManager->AddGameObject(light);
-// 	light->SetPosition(10, 10, 50);
-
-	RGameObject* ball = new RGameObject();
-	ball->Name = "Ball";
-	ball->SetResource("ball.fbx");
-	for (RMesh* mesh : ball->Meshes)
+	for (int i = 0; i < 5; i++)
 	{
-		RMaterial* defaultMaterial = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", std::vector<RTexture>());
-		mesh->Mat = defaultMaterial;
+		PbrSphere* sphere = new PbrSphere();
+		sphere->R = 2 * i;
+		sphere->SetPosition(-50 + i * 20, 0, 200);
+		sphere->pbrColor = { 6, 189, 0 };
+		sphere->pbrFigure = PBRFIGURE::SPHERE;
+		ObjectManager->AddGameObject(sphere);
 	}
-	ObjectManager->AddGameObject(ball);
-	ball->SetPosition(0, 0, 50);
-	ball->color = RVector3(0, 0.6, 0);
 
-	RGameObject* room = new RGameObject();
-	std::vector<RTexture> textures;
-	RTexture texture;
-	texture.type = RTexture::DIFFUSE;
-	texture.filename = L"../Resource/zombie.fbm/world_war_zombie_diffuse.png";
-	textures.push_back(texture);
-	room->Name = "Room";
-	room->SetResource("room.fbx");
-	for (RMesh* mesh : room->Meshes)
-	{
-		RMaterial* defaultMaterial = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", textures);
-		mesh->Mat = defaultMaterial;
-	}
-	ObjectManager->AddGameObject(room);
-	room->SetPosition(0, 0, 150);
-	room->color = RVector3(0, 0, 0.6f);
+	PbrPlane* center = new PbrPlane();
+	center->V1 = DirectX::XMFLOAT3(-100, 50, 250);
+	center->V2 = DirectX::XMFLOAT3(100, 50, 250);
+	center->V3 = DirectX::XMFLOAT3(100, -50, 250);
+	center->V4 = DirectX::XMFLOAT3(-100, -50, 250);
+	center->pbrColor = { 0, 183, 255 };
+	center->pbrFigure = PBRFIGURE::PLANE;
+	ObjectManager->AddGameObject(center);
+
+	PbrPlane* left = new PbrPlane();
+	left->V1 = DirectX::XMFLOAT3(-100, 50, 150);
+	left->V2 = DirectX::XMFLOAT3(-100, 50, 250);
+	left->V3 = DirectX::XMFLOAT3(-100, -50, 250);
+	left->V4 = DirectX::XMFLOAT3(-100, -50, 150);
+	left->pbrColor = { 0, 183, 255 };
+	left->pbrFigure = PBRFIGURE::PLANE;
+	ObjectManager->AddGameObject(left);
+
+	PbrPlane* right = new PbrPlane();
+	right->V1 = DirectX::XMFLOAT3(100, 50, 250);
+	right->V2 = DirectX::XMFLOAT3(100, 50, 150);
+	right->V3 = DirectX::XMFLOAT3(100, -50, 150);
+	right->V4 = DirectX::XMFLOAT3(100, -50, 250);
+	right->pbrColor = { 0, 183, 255 };
+	right->pbrFigure = PBRFIGURE::PLANE;
+	ObjectManager->AddGameObject(right);
+
+	PbrPlane* top = new PbrPlane();
+	top->V1 = DirectX::XMFLOAT3(-100, 50, 150);
+	top->V2 = DirectX::XMFLOAT3(100, 50, 150);
+	top->V3 = DirectX::XMFLOAT3(100, 50, 250);
+	top->V4 = DirectX::XMFLOAT3(-100, 50, 250);
+	top->pbrColor = { 0, 183, 255 };
+	top->pbrFigure = PBRFIGURE::PLANE;
+	ObjectManager->AddGameObject(top);
+
+	PbrPlane* bottom = new PbrPlane();
+	bottom->V1 = DirectX::XMFLOAT3(100, -50, 150);
+	bottom->V2 = DirectX::XMFLOAT3(-100, -50, 150);
+	bottom->V3 = DirectX::XMFLOAT3(-100, -50, 250);
+	bottom->V4 = DirectX::XMFLOAT3(100, -50, 250);
+	bottom->pbrColor = { 0, 183, 255 };
+	bottom->pbrFigure = PBRFIGURE::PLANE;
+	ObjectManager->AddGameObject(bottom);
 }
 
 void GameManager::Tick(double deltaTime)
