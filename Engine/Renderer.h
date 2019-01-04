@@ -2,10 +2,12 @@
 #include <vector>
 #include "RMesh.h"
 #include "RRay.h"
+#include "RMath.h"
 
 class Renderer
 {
 public:
+	~Renderer();
 	void Initialize(HWND hwnd, int bufferWidth, int bufferHeight);
 	void RenderPbrScene(HWND hWnd, double deltaTime);
 	void Tick(double deltaTime);
@@ -30,5 +32,6 @@ private:
 	struct ID3D11DepthStencilView*					m_depthStencilView = nullptr;
 	int m_bufferWidth;
 	int m_bufferHeight;
+	RVector3* pixels = nullptr;
 };
 

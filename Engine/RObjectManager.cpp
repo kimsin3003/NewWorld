@@ -4,9 +4,18 @@
 #include "RMaterial.h"
 RObjectManager* ObjectManager = new RObjectManager();
 
+RObjectManager::~RObjectManager()
+{
+	for (auto object : m_gameObjectPool)
+	{
+		delete object;
+	}
+	m_gameObjectPool.clear();
+}
+
 void RObjectManager::Initialize()
 {
-	m_gameObjectPool.reserve(100);
+	m_gameObjectPool.reserve(20);
 }
 
 void RObjectManager::Tick(double deltaTime)

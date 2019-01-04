@@ -3,6 +3,15 @@
 #include "RMaterial.h"
 #include "ResourceLoader.h"
 
+RGameObject::~RGameObject()
+{
+	for (auto mesh : Meshes)
+	{
+		delete mesh;
+	}
+	Meshes.clear();
+}
+
 const DirectX::XMMATRIX RGameObject::GetWorldMatrix()
 {
 	XMVECTOR positionVector = XMLoadFloat3(&m_position);

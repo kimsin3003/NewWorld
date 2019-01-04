@@ -16,9 +16,6 @@
     <ClCompile Include="RGameObject.cpp">
       <Filter>RainyTypes</Filter>
     </ClCompile>
-    <ClCompile Include="RLight.cpp">
-      <Filter>RainyTypes</Filter>
-    </ClCompile>
     <ClCompile Include="JsonUtility.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -58,6 +55,7 @@
     <ClCompile Include="PbrPlane.cpp">
       <Filter>PBR</Filter>
     </ClCompile>
+    <ClCompile Include="UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IGameManager.h" />
@@ -74,9 +72,6 @@
       <Filter>RainyTypes</Filter>
     </ClInclude>
     <ClInclude Include="RGameObject.h">
-      <Filter>RainyTypes</Filter>
-    </ClInclude>
-    <ClInclude Include="RLight.h">
       <Filter>RainyTypes</Filter>
     </ClInclude>
     <ClInclude Include="JsonUtility.h">
@@ -122,6 +117,7 @@
     <ClInclude Include="bitmap_image.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="UIObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

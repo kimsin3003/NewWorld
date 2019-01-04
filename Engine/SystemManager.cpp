@@ -43,7 +43,7 @@ void SystemManager::Initialize(IGameManager* gameManager)
 
 	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
 
-	int screenWidth = 1200, screenHeight = 600;
+	int screenWidth = 1600, screenHeight = 700;
 	if (FULL_SCREEN)
 	{
 		// If full screen set the screen to maximum size of the users desktop and 32bit.
@@ -117,9 +117,6 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	if (m_gameManager)
 		m_gameManager->Initialize();
 
-	if (m_renderer)
-		m_renderer->RenderPbrScene(m_hwnd, 0);
-
 	return;
 }
 
@@ -187,7 +184,10 @@ void SystemManager::Tick()
 		m_gameManager->Tick(diff.count());
 	if(ObjectManager)
 		ObjectManager->Tick(diff.count());
-// 	if (m_renderer)
-// 		m_renderer->Tick(diff.count());
+
+	if (m_renderer)
+		m_renderer->RenderPbrScene(m_hwnd, 0);
+	if (m_renderer)
+ 		m_renderer->Tick(diff.count());
 }
 

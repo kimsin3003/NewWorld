@@ -15,10 +15,21 @@
 #include "RCamera.h"
 #include "RCameraManager.h"
 #include "Logger.h"
-#include "RMath.h"
 #include "PathTracer.h"
 #include "RContext.h"
 #include "bitmap_image.h"
+
+Renderer::~Renderer()
+{
+	m_swapChain->Release();
+	m_device->Release();
+	m_immediateContext->Release();
+	m_renderTargetView->Release();
+	m_depthStencilState->Release();
+	m_depthStencilTexture->Release();
+	m_depthStencilView->Release();
+	delete[] pixels;
+}
 
 void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 {
@@ -30,13 +41,15 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 	SetDepthStencilState();
 	SetRenderTargets();
 	SetViewports();
+	pixels = new RVector3[m_bufferWidth * m_bufferHeight];
+	srand(time(NULL));
 }
 
 void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 {
+	static int sampleCount = 0;
 	unsigned numOfThread = std::thread::hardware_concurrency() * 2 + 1;
 
-	DWORD* pixels = new DWORD[m_bufferWidth * m_bufferHeight];
 	std::vector<std::thread> threads;
 	threads.reserve(numOfThread);
 	for (int i = 0; i < numOfThread; i++)
@@ -44,25 +57,14 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 		int withOfOneThread = m_bufferWidth / numOfThread;
 		int screenWidth = m_bufferWidth;
 		int screenHeight = m_bufferHeight;
-		threads.emplace_back([&pixels, withOfOneThread, screenWidth, screenHeight, i] {
+		threads.emplace_back([this, withOfOneThread, screenWidth, screenHeight, i] {
 			for (int m = i * withOfOneThread; m < (i+1) * withOfOneThread; m++)
 			{
 				for (int n = 0; n < screenHeight; n++)
 				{
 					RRay ray(m, n, screenWidth, screenHeight);
-					int sampleCount = 10;
-					RVector3 pixelColor(0, 0, 0);
-					for (int i = 0; i < sampleCount; i++)
-					{
-						RVector3 traceColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
-						pixelColor = pixelColor + traceColor;
-					}
-					pixelColor = pixelColor / sampleCount;
-					float r = pixelColor.x > 255 ? 255 : pixelColor.x;
-					float g = pixelColor.y > 255 ? 255 : pixelColor.y;
-					float b = pixelColor.z > 255 ? 255 : pixelColor.z;
-					DWORD rgbColor = RGB(r, g, b);
-					pixels[m * screenHeight + n] = rgbColor;
+					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
+					pixels[m * screenHeight + n] += pixelColor;
 				}
 			}
 		});
@@ -71,27 +73,30 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 	{
 		threads[i].join();
 	}
+	sampleCount++;
+
+	RVector3 centerColor = pixels[m_bufferHeight * m_bufferWidth / 2 + m_bufferHeight / 2];
 
 	bitmap_image image(m_bufferWidth, m_bufferHeight);
-	PAINTSTRUCT ps;
-	HDC hdc;
-	hdc = BeginPaint(hWnd, &ps);
 
 	for (int m = 0; m < m_bufferWidth; m++)
 	{
 		for (int n = 0; n < m_bufferHeight; n++)
 		{
-			SetPixel(hdc, m, n, pixels[m * m_bufferHeight + n]);
-			unsigned char red = GetRValue(pixels[m * m_bufferHeight + n]);
-			unsigned char green = GetGValue(pixels[m * m_bufferHeight + n]);
-			unsigned char blue = GetBValue(pixels[m * m_bufferHeight + n]);
+			RVector3 pixelColor = pixels[m * m_bufferHeight + n] / sampleCount;
+			float r = pixelColor.x >= 1 ? 255 : pixelColor.x * 255;
+			float g = pixelColor.y >= 1 ? 255 : pixelColor.y * 255;
+			float b = pixelColor.z >= 1 ? 255 : pixelColor.z * 255;
+			DWORD rgbColor = RGB(r, g, b);
+			//SetPixel(hdc, m, n, rgbColor);
+			unsigned char red = GetRValue(rgbColor);
+			unsigned char green = GetGValue(rgbColor);
+			unsigned char blue = GetBValue(rgbColor);
 			image.set_pixel(m, n, red, green, blue);
 		}
 	}
 
 	image.save_image("pbroutput.bmp");
-
-	EndPaint(hWnd, &ps);
 }
 
 void Renderer::Tick(double deltaTime)

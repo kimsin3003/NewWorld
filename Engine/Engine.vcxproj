@@ -22,7 +22,6 @@
     <ClCompile Include="Intersection.cpp" />
     <ClCompile Include="PbrPlane.cpp" />
     <ClCompile Include="PbrSphere.cpp" />
-    <ClCompile Include="RLight.cpp" />
     <ClCompile Include="PathTracer.cpp" />
     <ClCompile Include="RCamera.cpp" />
     <ClCompile Include="RCameraManager.cpp" />
@@ -38,6 +37,7 @@
     <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="RRay.cpp" />
     <ClCompile Include="SystemManager.cpp" />
+    <ClCompile Include="UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap_image.h" />
@@ -45,7 +45,6 @@
     <ClInclude Include="PbrPlane.h" />
     <ClInclude Include="PbrSphere.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="RLight.h" />
     <ClInclude Include="PathTracer.h" />
     <ClInclude Include="RCamera.h" />
     <ClInclude Include="RCameraManager.h" />
@@ -62,6 +61,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="SystemManager.h" />
+    <ClInclude Include="UIObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

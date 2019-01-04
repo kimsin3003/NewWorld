@@ -7,7 +7,7 @@ struct RVector3
 	float y;
 	float z;
 
-	RVector3() {};
+	RVector3() { x = 0; y = 0; z = 0; };
 	RVector3(float x, float y, float z) {
 		this->x = x;
 		this->y = y;
@@ -24,6 +24,7 @@ struct RVector3
 	{
 		return RVector3(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
 	}
+
 	void operator+=(RVector3& other)
 	{
 		x = x + other.x;
@@ -40,6 +41,7 @@ struct RVector3
 	{
 		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 	}
+
 	friend RVector3 operator*(RVector3 lhs, float muliplier)
 	{
 		return RVector3(lhs.x * muliplier, lhs.y * muliplier, lhs.z * muliplier);

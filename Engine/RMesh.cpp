@@ -95,4 +95,5 @@ RMesh::~RMesh()
 {
 	m_vertexBuffer->Release();
 	m_indexBuffer->Release();
+	delete Mat;
 }

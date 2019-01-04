@@ -13,10 +13,10 @@ enum class PBRFIGURE
 class RGameObject
 {
 public:
+	~RGameObject();
 	virtual void Start() {};
 	virtual void Tick(double deltaTime) {};
 	const XMMATRIX GetWorldMatrix();
-	bool IsLight() { return isLight; }
 	
 	inline XMFLOAT3 GetPos() { return m_position; }
 	inline XMFLOAT3 GetRotation() { return m_rotation; }
@@ -26,12 +26,12 @@ public:
 	void SetResource(std::string filename);
 	std::vector<class RMesh*> Meshes;
 	std::string Name;
-	RVector3 pbrColor;
+	bool IsLight = false;
 	RVector3 pbrColor;
 	PBRFIGURE pbrFigure;
+	bool pbrGlossy = false;
 
 protected:
-	bool isLight = false;
 
 private:
 	XMFLOAT3 m_position;

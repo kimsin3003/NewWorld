@@ -5,6 +5,7 @@
 class RObjectManager
 {
 public:
+	~RObjectManager();
 	void Initialize();
 	void Tick(double deltaTime);
 	void AddGameObject(class RGameObject* gameObject);

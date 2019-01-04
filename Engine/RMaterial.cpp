@@ -144,6 +144,13 @@ void RMaterial::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* 
 	if (!IsInitialized())
 		Initialize(device);
 
+	//PBR을 위해 매번 그릴때마다 택스쳐를 갱신한다.
+	for (auto texInfo : m_textures)
+	{
+		if (texInfo.type == RTexture::DIFFUSE)
+			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_textureView);
+	}
+
 	SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 
 	deviceContext->IASetInputLayout(m_inputLayout);
@@ -293,4 +300,10 @@ RMaterial::~RMaterial()
 	m_vertexShader->Release();
 	m_pixelShader->Release();
 	m_inputLayout->Release();
+	m_sampleState->Release();
+	m_textureView->Release();
+	m_vsConstBuffer->Release();
+	m_psConstBuffer->Release();
+	delete m_vsFileName;
+	delete m_psFileName;
 }

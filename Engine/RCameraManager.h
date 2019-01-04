@@ -4,6 +4,7 @@
 class RCameraManager
 {
 public:
+	~RCameraManager();
 	void Initialize(float screenWidth, float screenHeight, float  screenNear, float screenDepth);
 	RCamera* GetCurrentCamera();
 
