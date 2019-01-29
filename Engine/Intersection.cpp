@@ -46,7 +46,7 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 					minT = t;
 					hitData->hitObject = gameObject;
 					hitData->hitPoint = ray.GetOrigin() + ray.GetDir() * t;
-					hitData->hitPlaneNormal = XMVector3Normalize(XMVector3Cross((v1 - v2), (v3 - v2)));
+					hitData->hitPlaneNormal = -XMVector3Normalize(XMVector3Cross((v1 - v2), (v3 - v2)));
 				}
 			}
 		}

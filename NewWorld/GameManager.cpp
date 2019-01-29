@@ -22,28 +22,28 @@ void GameManager::Initialize()
 
 	PbrSphere* light = new PbrSphere();
 	light->R = 1;
-	light->SetPosition(3, 2, 20);
+	light->SetPosition(-3, 2, 10);
 	light->pbrColor = { 1, 1, 1 };
 	light->pbrFigure = PBRFIGURE::SPHERE;
 	light->IsLight = true;
 	ObjectManager->AddGameObject(light);
 
 	PbrPlane* center = new PbrPlane();
-	center->V1 = DirectX::XMFLOAT3(-10, 10, 50);
-	center->V2 = DirectX::XMFLOAT3(10, 10, 50);
-	center->V3 = DirectX::XMFLOAT3(10, -10, 50);
-	center->V4 = DirectX::XMFLOAT3(-10, -10, 50);
-	center->pbrColor = { 0.3, 0.3, 0.3};
+	center->V1 = DirectX::XMFLOAT3(10, 10, 50);
+	center->V2 = DirectX::XMFLOAT3(-10, 10, 50);
+	center->V3 = DirectX::XMFLOAT3(-10, -10, 50);
+	center->V4 = DirectX::XMFLOAT3(10, -10, 50);
+	center->pbrColor = { 0.2, 0, 0};
 	center->pbrFigure = PBRFIGURE::PLANE;
 	center->pbrGlossy = true;
 	ObjectManager->AddGameObject(center);
 
 	PbrPlane* left = new PbrPlane();
-	left->V1 = DirectX::XMFLOAT3(-10, 10, 0);
-	left->V2 = DirectX::XMFLOAT3(-10, 10, 50);
-	left->V3 = DirectX::XMFLOAT3(-10, -10, 50);
-	left->V4 = DirectX::XMFLOAT3(-10, -10, 0);
-	left->pbrColor = { 0.4, 0, 0.52 };
+	left->V1 = DirectX::XMFLOAT3(-10, 10, 50);
+	left->V2 = DirectX::XMFLOAT3(-10, 10, 0);
+	left->V3 = DirectX::XMFLOAT3(-10, -10, 0);
+	left->V4 = DirectX::XMFLOAT3(-10, -10, 50);
+	left->pbrColor = { 0.2, 0, 0 };
 	left->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(left);
 
@@ -52,30 +52,30 @@ void GameManager::Initialize()
 	right->V2 = DirectX::XMFLOAT3(10, 10, 0);
 	right->V3 = DirectX::XMFLOAT3(10, -10, 0);
 	right->V4 = DirectX::XMFLOAT3(10, -10, 50);
-	right->pbrColor = { 0.4, 0.52, 0 };
+	right->pbrColor = { 0, 0.2f, 0 };
 	right->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(right);
 
 	PbrPlane* top = new PbrPlane();
 	top->V1 = DirectX::XMFLOAT3(-10, 10, 0);
-	top->V2 = DirectX::XMFLOAT3(10, 10, 0);
+	top->V2 = DirectX::XMFLOAT3(-10, 10, 50);
 	top->V3 = DirectX::XMFLOAT3(10, 10, 50);
-	top->V4 = DirectX::XMFLOAT3(-10, 10, 50);
-	top->pbrColor = { 0, 0.52 , 0.4 };
+	top->V4 = DirectX::XMFLOAT3(10, 10, 0);
+	top->pbrColor = { 0, 0.2f , 0 };
 	top->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(top);
 
 	PbrPlane* bottom = new PbrPlane();
 	bottom->V1 = DirectX::XMFLOAT3(10, -5, 0);
-	bottom->V2 = DirectX::XMFLOAT3(-10, -5, 0);
+	bottom->V2 = DirectX::XMFLOAT3(10, -5, 50);
 	bottom->V3 = DirectX::XMFLOAT3(-10, -5, 50);
-	bottom->V4 = DirectX::XMFLOAT3(10, -5, 50);
-	bottom->pbrColor = { 0.52, 0, 0.4 };
+	bottom->V4 = DirectX::XMFLOAT3(-10, -5, 0);
+	bottom->pbrColor = { 0, 0, 0.2f };
 	bottom->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(bottom);
 
 	RTexture texture;
-	texture.filename = L"pbroutput.bmp";
+	texture.filename = L"result.bmp";
 	texture.type = RTexture::DIFFUSE;
 
 	std::vector<RTexture> textures;    

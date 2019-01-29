@@ -186,7 +186,7 @@ void SystemManager::Tick()
 		ObjectManager->Tick(diff.count());
 
 	if (m_renderer)
-		m_renderer->RenderPbrScene(m_hwnd, 0);
+		m_renderer->RenderPbrScene(m_hwnd, diff.count());
 	if (m_renderer)
  		m_renderer->Tick(diff.count());
 }

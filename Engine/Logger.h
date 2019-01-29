@@ -9,7 +9,7 @@ public:
 	static void Log(std::string message);
 	static void Log(HRESULT hr);
 	static void ShowAlert(std::string message);
-	static void Finalize();
+	~Logger();
 
 private:
 	static std::string logStack;

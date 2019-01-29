@@ -57,7 +57,7 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 		int withOfOneThread = m_bufferWidth / numOfThread;
 		int screenWidth = m_bufferWidth;
 		int screenHeight = m_bufferHeight;
-		threads.emplace_back([this, withOfOneThread, screenWidth, screenHeight, i] {
+		threads.emplace_back([=] {
 			for (int m = i * withOfOneThread; m < (i+1) * withOfOneThread; m++)
 			{
 				for (int n = 0; n < screenHeight; n++)
@@ -74,8 +74,13 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 		threads[i].join();
 	}
 	sampleCount++;
+	ShowResult(sampleCount, "result.bmp");
+// 	if (sampleCount >= 10)
+// 		::MessageBox(hWnd, L"End", NULL, NULL);
+}
 
-	RVector3 centerColor = pixels[m_bufferHeight * m_bufferWidth / 2 + m_bufferHeight / 2];
+void Renderer::ShowResult(int sampleCount, std::string fileName)
+{
 
 	bitmap_image image(m_bufferWidth, m_bufferHeight);
 
@@ -84,9 +89,11 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 		for (int n = 0; n < m_bufferHeight; n++)
 		{
 			RVector3 pixelColor = pixels[m * m_bufferHeight + n] / sampleCount;
-			float r = pixelColor.x >= 1 ? 255 : pixelColor.x * 255;
-			float g = pixelColor.y >= 1 ? 255 : pixelColor.y * 255;
-			float b = pixelColor.z >= 1 ? 255 : pixelColor.z * 255;
+			INT r = pixelColor.x >= 1 ? 255 : pixelColor.x * 255;
+			INT g = pixelColor.y >= 1 ? 255 : pixelColor.y * 255;
+			INT b = pixelColor.z >= 1 ? 255 : pixelColor.z * 255;
+
+
 			DWORD rgbColor = RGB(r, g, b);
 			//SetPixel(hdc, m, n, rgbColor);
 			unsigned char red = GetRValue(rgbColor);
@@ -96,7 +103,7 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 		}
 	}
 
-	image.save_image("pbroutput.bmp");
+	image.save_image(fileName);
 }
 
 void Renderer::Tick(double deltaTime)

@@ -1,7 +1,9 @@
 #include "PathTracer.h"
 #include "Intersection.h"
+#include <chrono>
+#include <random>
 
-#define MAX_DEPTH 3
+#define MAX_DEPTH 5
  XMVECTOR GetRandomHemiSphereDir(XMVECTOR planeNormal);
  XMVECTOR GetRefelectedDir(XMVECTOR rayDir, XMVECTOR planeNormal);
 RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class RGameObject*>& gameObjects, int depth)
@@ -15,28 +17,19 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class RGameObject
 	{
 		if (hitData.hitObject->IsLight)
 			return hitData.hitObject->pbrColor;
-
-		XMVECTOR reflectionDir = GetRefelectedDir(ray.GetDir(), hitData.hitPlaneNormal);
+ 
+// 		XMVECTOR reflectionDir = GetRefelectedDir(ray.GetDir(), hitData.hitPlaneNormal);
 		XMVECTOR randomDirVector = GetRandomHemiSphereDir(hitData.hitPlaneNormal);
 
+		//RVector3 reflectColor = GetPixelColor(RRay(hitData.hitPoint, reflectionDir), gameObjects, depth + 1);
+		RVector3 randomIncomingLightColor = GetPixelColor(RRay(hitData.hitPoint, randomDirVector), gameObjects, depth + 1);
+		
+		XMFLOAT3 dotResult;
+		XMStoreFloat3(&dotResult, XMVector3Dot(randomDirVector, hitData.hitPlaneNormal));
+		float cosTheta = dotResult.x;
 
-		if (hitData.hitObject->pbrGlossy)
-		{
-			RVector3 reflectedRayColor = GetPixelColor(RRay(hitData.hitPoint, reflectionDir), gameObjects, depth + 1) *0.3;
-			XMFLOAT3 dotResult;
-			XMStoreFloat3(&dotResult, XMVector3Dot(reflectionDir, hitData.hitPlaneNormal));
-			return hitData.hitObject->pbrColor + reflectedRayColor * dotResult.x;
-		}
-		else
-		{
-			RVector3 reflectedRayColor = GetPixelColor(RRay(hitData.hitPoint, reflectionDir), gameObjects, depth + 1) * 0.3 * 0.1;
-			RVector3 blurryReflectedRayColor = GetPixelColor(RRay(hitData.hitPoint, randomDirVector), gameObjects, depth + 1) * 0.3 * 0.9;
-			XMFLOAT3 relfectDotResult;
-			XMStoreFloat3(&relfectDotResult, XMVector3Dot(reflectionDir, hitData.hitPlaneNormal));
-			XMFLOAT3 randomDotResult;
-			XMStoreFloat3(&randomDotResult, XMVector3Dot(randomDirVector, hitData.hitPlaneNormal));
-			return hitData.hitObject->pbrColor + reflectedRayColor * relfectDotResult.x + blurryReflectedRayColor * randomDotResult.x;
-		}
+		RVector3 diffuseColor = (randomIncomingLightColor + hitData.hitObject->pbrColor) * cosTheta;
+		return diffuseColor;
 
 	}
 	return ambientColor;
@@ -49,12 +42,23 @@ RVector3 GetReflectColor(RVector3 c1, RVector3 c2)
 
 XMVECTOR GetRandomHemiSphereDir(XMVECTOR planeNormal)
 {
-	XMVECTOR randomDir = XMVector3Normalize(XMLoadFloat3(&XMFLOAT3(rand() - RAND_MAX / 2, rand() - RAND_MAX / 2, rand() - RAND_MAX / 2)));
+	unsigned seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
+
+	// seeds the random number engine, the mersenne_twister_engine
+	std::mt19937 generator(seed);
+
+	// set a distribution range (1 - 100)
+	std::uniform_int_distribution<int> distribution(1, RAND_MAX);
+
+	XMVECTOR randomDir = XMVector3Normalize(XMLoadFloat3(&XMFLOAT3(distribution(generator) - RAND_MAX / 2, distribution(generator) - RAND_MAX / 2, distribution(generator) - RAND_MAX / 2)));
 	XMFLOAT3 dotResult;
 	XMStoreFloat3(&dotResult, XMVector3Dot(randomDir, planeNormal));
 	if (dotResult.x < 0)
 	{
-		return GetRefelectedDir(randomDir, planeNormal);
+		XMVECTOR newDir = GetRefelectedDir(randomDir, planeNormal);
+		XMStoreFloat3(&dotResult, XMVector3Dot(newDir, planeNormal));
+		if(dotResult.x > 0)
+			return newDir;
 	}
 	return randomDir;
 }

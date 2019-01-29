@@ -20,6 +20,13 @@ struct RVector3
 		z = xmlfloat3.z;
 	}
 
+	bool operator==(RVector3& other)
+	{
+		if (x == other.x && y == other.y && z == other.z)
+			return true;
+		return false;
+	}
+
 	friend RVector3 operator+(RVector3 lhs, const RVector3& rhs)
 	{
 		return RVector3(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
@@ -54,5 +61,10 @@ struct RVector3
 	const float size()
 	{
 		return sqrt(x * x + y * y + z * z);
+	}
+
+	const RVector3 normalize()
+	{
+		return RVector3(x / size(), y / size(), z / size());
 	}
 };

@@ -11,7 +11,6 @@ const float SCREEN_NEAR = 0.1f;
 class SystemManager
 {
 public:
-	~SystemManager() { Logger::Finalize(); }
 	void Initialize(class IGameManager* gameManager);
 	void Tick();
 

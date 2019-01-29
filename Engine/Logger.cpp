@@ -51,7 +51,7 @@ void Logger::ShowAlert(std::string message)
 	exit(0);
 }
 
-void Logger::Finalize()
+Logger::~Logger()
 {
 	ofs << logStack;
 	ofs.close();
