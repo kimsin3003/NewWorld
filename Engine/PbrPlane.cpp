@@ -21,5 +21,5 @@ DirectX::XMVECTOR PbrPlane::GetNormal(XMVECTOR hitPoint)
 	XMVECTOR v1 = XMLoadFloat3(&V1);
 	XMVECTOR v2 = XMLoadFloat3(&V2);
 	XMVECTOR v3 = XMLoadFloat3(&V3);
-	return -XMVector3Normalize(XMVector3Cross((v1 - v2), (v3 - v2)));
+	return XMVector3Normalize(XMVector3Cross((v1 - v2), (v3 - v2)));
 }

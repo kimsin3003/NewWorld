@@ -14,7 +14,7 @@ void GameManager::Initialize()
 		PbrSphere* sphere = new PbrSphere();
 		sphere->R = 2;
 		sphere->SetPosition(-5 + i * 5, -2, 30);
-		sphere->pbrColor = { 0.1, 0.1, 0.1 };
+		sphere->reflectance = { 0.7, 0.7, 0.7 };
 		sphere->pbrFigure = PBRFIGURE::SPHERE;
 		sphere->pbrGlossy = i != 1 ? true : false;
 		ObjectManager->AddGameObject(sphere);
@@ -23,7 +23,7 @@ void GameManager::Initialize()
 	PbrSphere* light = new PbrSphere();
 	light->R = 1;
 	light->SetPosition(-3, 2, 10);
-	light->pbrColor = { 1, 1, 1 };
+	light->emittance = { 1, 1, 1 };
 	light->pbrFigure = PBRFIGURE::SPHERE;
 	light->IsLight = true;
 	ObjectManager->AddGameObject(light);
@@ -33,7 +33,7 @@ void GameManager::Initialize()
 	center->V2 = DirectX::XMFLOAT3(-10, 10, 50);
 	center->V3 = DirectX::XMFLOAT3(-10, -10, 50);
 	center->V4 = DirectX::XMFLOAT3(10, -10, 50);
-	center->pbrColor = { 0.2, 0, 0};
+	center->reflectance = { 0.7, 0, 0};
 	center->pbrFigure = PBRFIGURE::PLANE;
 	center->pbrGlossy = true;
 	ObjectManager->AddGameObject(center);
@@ -43,16 +43,16 @@ void GameManager::Initialize()
 	left->V2 = DirectX::XMFLOAT3(-10, 10, 0);
 	left->V3 = DirectX::XMFLOAT3(-10, -10, 0);
 	left->V4 = DirectX::XMFLOAT3(-10, -10, 50);
-	left->pbrColor = { 0.2, 0, 0 };
+	left->reflectance = { 0.7, 0, 0 };
 	left->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(left);
 
 	PbrPlane* right = new PbrPlane();
-	right->V1 = DirectX::XMFLOAT3(10, 10, 50);
-	right->V2 = DirectX::XMFLOAT3(10, 10, 0);
-	right->V3 = DirectX::XMFLOAT3(10, -10, 0);
-	right->V4 = DirectX::XMFLOAT3(10, -10, 50);
-	right->pbrColor = { 0, 0.2f, 0 };
+	right->V1 = DirectX::XMFLOAT3(10, 10, 0);
+	right->V2 = DirectX::XMFLOAT3(10, 10, 50);
+	right->V3 = DirectX::XMFLOAT3(10, -10, 50);
+	right->V4 = DirectX::XMFLOAT3(10, -10, 0);
+	right->reflectance = { 0, 0.7f, 0 };
 	right->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(right);
 
@@ -61,7 +61,7 @@ void GameManager::Initialize()
 	top->V2 = DirectX::XMFLOAT3(-10, 10, 50);
 	top->V3 = DirectX::XMFLOAT3(10, 10, 50);
 	top->V4 = DirectX::XMFLOAT3(10, 10, 0);
-	top->pbrColor = { 0, 0.2f , 0 };
+	top->reflectance = { 0, 0.7f , 0 };
 	top->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(top);
 
@@ -70,7 +70,7 @@ void GameManager::Initialize()
 	bottom->V2 = DirectX::XMFLOAT3(10, -5, 50);
 	bottom->V3 = DirectX::XMFLOAT3(-10, -5, 50);
 	bottom->V4 = DirectX::XMFLOAT3(-10, -5, 0);
-	bottom->pbrColor = { 0, 0, 0.2f };
+	bottom->reflectance = { 0, 0, 0.7f };
 	bottom->pbrFigure = PBRFIGURE::PLANE;
 	ObjectManager->AddGameObject(bottom);
 

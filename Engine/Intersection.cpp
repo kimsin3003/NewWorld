@@ -16,7 +16,6 @@ bool isfinite(float arg)
 bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGameObject*> gameObjects)
 {
 	float minDist = 10000.0;
-	float dist = 0.0f;
 	for (auto gameObject : gameObjects)
 	{
 		ICollider* collider = nullptr;
@@ -31,9 +30,10 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 			collider = static_cast<ICollider*>(pbrPlane);
 		}
 
+		float dist = 0.0f;
 		if (collider != nullptr && collider->Intersects(ray, dist))
 		{
-			if (dist < minDist && dist > 0.0f);
+			if (dist < minDist && dist > 0.0f)
 			{
 				XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
 				hitData->hitObject = gameObject;

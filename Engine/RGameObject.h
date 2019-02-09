@@ -28,7 +28,8 @@ public:
 	std::vector<class RMesh*> Meshes;
 	std::string Name;
 	bool IsLight = false;
-	RVector3 pbrColor;
+	RVector3 emittance;
+	RVector3 reflectance;
 	PBRFIGURE pbrFigure;
 	bool pbrGlossy = false;
 

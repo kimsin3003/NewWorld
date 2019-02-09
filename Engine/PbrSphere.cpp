@@ -6,11 +6,7 @@ bool PbrSphere::Intersects(RRay ray, float& dist)
 	BoundingSphere sphere;
 	sphere.Center = GetPos();
 	sphere.Radius = R;
-	if (sphere.Intersects(ray.GetOrigin(), ray.GetDir(), dist))
-	{
-		return true;
-	}
-	return false;
+	return sphere.Intersects(ray.GetOrigin(), ray.GetDir(), dist);
 }
 
 DirectX::XMVECTOR PbrSphere::GetNormal(XMVECTOR hitPoint)
