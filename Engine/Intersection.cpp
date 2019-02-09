@@ -19,33 +19,27 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 	float dist = 0.0f;
 	for (auto gameObject : gameObjects)
 	{
+		ICollider* collider = nullptr;
 		if (gameObject->pbrFigure == PBRFIGURE::SPHERE)
 		{
-			PbrSphere* pbrSphere = (PbrSphere*)gameObject;
-			if (pbrSphere->Intersects(ray, dist))
-			{
-				if (!isfinite(dist) && !std::isnan(dist) && dist < minDist && dist > 0.0);
-				{
-					XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
-					hitData->hitObject = gameObject;
-					hitData->hitPoint = hitPoint;
-					hitData->hitPlaneNormal = XMVector3Normalize(hitPoint - XMLoadFloat3(&gameObject->GetPos()));
-					minDist = dist;
-				}
-			}
+			PbrSphere* pbrSphere = static_cast<PbrSphere*>(gameObject);
+			collider = static_cast<ICollider*>(pbrSphere);
 		}
 		else if(gameObject->pbrFigure == PBRFIGURE::PLANE)
 		{
-			PbrPlane* pbrPlane = (PbrPlane*)gameObject;
-			if (pbrPlane->Intersects(ray, dist))
+			PbrPlane* pbrPlane = static_cast<PbrPlane*>(gameObject);
+			collider = static_cast<ICollider*>(pbrPlane);
+		}
+
+		if (collider != nullptr && collider->Intersects(ray, dist))
+		{
+			if (dist < minDist && dist > 0.0f);
 			{
-				if (!isnan(dist) && !isinf(dist) && dist < minDist)
-				{
-					hitData->hitObject = gameObject;
-					hitData->hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
-					hitData->hitPlaneNormal = -XMVector3Normalize(pbrPlane->GetNormal());
-					minDist = dist;
-				}
+				XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
+				hitData->hitObject = gameObject;
+				hitData->hitPoint = hitPoint;
+				hitData->hitPlaneNormal = collider->GetNormal(hitPoint);
+				minDist = dist;
 			}
 		}
 	}

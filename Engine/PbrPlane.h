@@ -3,7 +3,7 @@
 #include "ICollider.h"
 #include <DirectXMath.h>
 class PbrPlane :
-	public RGameObject, ICollider
+	public RGameObject, public ICollider
 {
 public:
 	XMFLOAT3 V1;
@@ -12,7 +12,7 @@ public:
 	XMFLOAT3 V4;
 
 	virtual bool Intersects(RRay ray, float& dist) override;
-	DirectX::XMVECTOR GetNormal();
+	virtual XMVECTOR GetNormal(XMVECTOR hitPoint) override;
 
 };
 

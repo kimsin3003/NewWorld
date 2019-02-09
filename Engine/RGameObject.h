@@ -6,6 +6,7 @@ using namespace DirectX;
 
 enum class PBRFIGURE
 {
+	NONE,
 	SPHERE,
 	PLANE
 };

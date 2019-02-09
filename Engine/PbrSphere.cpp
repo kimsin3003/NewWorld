@@ -12,3 +12,8 @@ bool PbrSphere::Intersects(RRay ray, float& dist)
 	}
 	return false;
 }
+
+DirectX::XMVECTOR PbrSphere::GetNormal(XMVECTOR hitPoint)
+{
+	return XMVector3Normalize(hitPoint - XMLoadFloat3(&GetPos()));
+}
