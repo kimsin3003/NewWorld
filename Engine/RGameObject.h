@@ -4,7 +4,7 @@
 #include "RMath.h"
 using namespace DirectX;
 
-enum class PBRFIGURE
+enum class PBRColliderType
 {
 	NONE,
 	SPHERE,
@@ -30,8 +30,9 @@ public:
 	bool IsLight = false;
 	RVector3 emittance;
 	RVector3 reflectance;
-	PBRFIGURE pbrFigure;
-	bool pbrGlossy = false;
+	PBRColliderType pbrColliderType;
+	bool pbrTransparent = false;
+	float refractionRate = 1.f;
 
 protected:
 

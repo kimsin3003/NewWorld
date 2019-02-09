@@ -52,7 +52,7 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 
 void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 {
-	unsigned numOfThread = std::thread::hardware_concurrency() - 1;
+	unsigned numOfThread = std::thread::hardware_concurrency() * 2 - 2;
 
 	std::vector<std::thread> threads;
 	threads.reserve(numOfThread);

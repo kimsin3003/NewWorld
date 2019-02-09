@@ -9,6 +9,7 @@ struct HitData
 	RGameObject* hitObject;
 	XMVECTOR hitPoint;
 	XMVECTOR hitPlaneNormal;
+	float refractionRatio;
 };
 
 class Intersection

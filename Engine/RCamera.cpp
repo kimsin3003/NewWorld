@@ -17,6 +17,12 @@ void RCamera::SetPosition(float x, float y, float z)
 	CreateViewMatrix();
 }
 
+void RCamera::SetRotation(float x, float y, float z)
+{
+	m_rotation.x = x; m_rotation.y = y; m_rotation.z = z;
+	CreateViewMatrix();
+}
+
 void RCamera::Initialize(float screenWidth, float screenHeight, float  screenNear, float screenDepth)
 {
 	m_position.x = 0;

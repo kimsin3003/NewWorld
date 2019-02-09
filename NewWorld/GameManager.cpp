@@ -6,72 +6,99 @@
 #include "Engine/PbrSphere.h"
 #include "Engine/PbrPlane.h"
 #include "Engine/UIObject.h"
+#include "Engine/RCameraManager.h"
 
 void GameManager::Initialize()
 {
-	for (int i = 0; i < 3; i++)
-	{
-		PbrSphere* sphere = new PbrSphere();
-		sphere->R = 2;
-		sphere->SetPosition(-5 + i * 5, -2, 30);
-		sphere->reflectance = { 0.7, 0.7, 0.7 };
-		sphere->pbrFigure = PBRFIGURE::SPHERE;
-		sphere->pbrGlossy = i != 1 ? true : false;
-		ObjectManager->AddGameObject(sphere);
-	}
+	CameraManager->GetCurrentCamera()->SetPosition(0, 15, 0);
+	CameraManager->GetCurrentCamera()->SetRotation(15, 0, 0);
 
-	PbrSphere* light = new PbrSphere();
-	light->R = 1;
-	light->SetPosition(-3, 2, 10);
+	PbrSphere* redSphere = new PbrSphere();
+	redSphere->R = 3;
+	redSphere->SetPosition(-5, 3, 40);
+	redSphere->pbrColliderType = PBRColliderType::SPHERE;
+	redSphere->pbrTransparent = false;
+	redSphere->reflectance = { 0.7, 0.0, 0.0 };
+	ObjectManager->AddGameObject(redSphere);
+
+	PbrSphere* greenSphere = new PbrSphere();
+	greenSphere->R = 3;
+	greenSphere->SetPosition(0, 3, 45);
+	greenSphere->pbrColliderType = PBRColliderType::SPHERE;
+	greenSphere->pbrTransparent = false;
+	greenSphere->reflectance = { 0.0, 0.7, 0.0 };
+	ObjectManager->AddGameObject(greenSphere);
+
+	PbrSphere* blueSphere = new PbrSphere();
+	blueSphere->R = 3;
+	blueSphere->SetPosition(5, 3, 40);
+	blueSphere->pbrColliderType = PBRColliderType::SPHERE;
+	blueSphere->pbrTransparent = false;
+	blueSphere->reflectance = { 0.0, 0.0, 0.7 };
+	ObjectManager->AddGameObject(blueSphere);
+
+	PbrSphere* transparentSphere = new PbrSphere();
+	transparentSphere->R = 3;
+	transparentSphere->SetPosition(0, 3, 30);
+	transparentSphere->pbrColliderType = PBRColliderType::SPHERE;
+	transparentSphere->pbrTransparent = true;
+	transparentSphere->refractionRate = 2.0f;
+	transparentSphere->reflectance = { 1, 1, 1 };
+	ObjectManager->AddGameObject(transparentSphere);
+
+	PbrPlane* light = new PbrPlane();
+	light->V1 = DirectX::XMFLOAT3(-10, 19, 45);
+	light->V2 = DirectX::XMFLOAT3(-10, 19, 60);
+	light->V3 = DirectX::XMFLOAT3(10, 19, 60);
+	light->V4 = DirectX::XMFLOAT3(10, 19, 45);
 	light->emittance = { 1, 1, 1 };
-	light->pbrFigure = PBRFIGURE::SPHERE;
+	light->pbrColliderType = PBRColliderType::PLANE;
 	light->IsLight = true;
 	ObjectManager->AddGameObject(light);
 
 	PbrPlane* center = new PbrPlane();
-	center->V1 = DirectX::XMFLOAT3(10, 10, 50);
-	center->V2 = DirectX::XMFLOAT3(-10, 10, 50);
-	center->V3 = DirectX::XMFLOAT3(-10, -10, 50);
-	center->V4 = DirectX::XMFLOAT3(10, -10, 50);
-	center->reflectance = { 0.7, 0, 0};
-	center->pbrFigure = PBRFIGURE::PLANE;
-	center->pbrGlossy = true;
+	center->V1 = DirectX::XMFLOAT3(20, 20, 70);
+	center->V2 = DirectX::XMFLOAT3(-20, 20, 70);
+	center->V3 = DirectX::XMFLOAT3(-20, -20, 70);
+	center->V4 = DirectX::XMFLOAT3(20, -20, 70);
+	center->reflectance = { 0.7, 0.7, 0.7 };
+	center->pbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddGameObject(center);
 
 	PbrPlane* left = new PbrPlane();
-	left->V1 = DirectX::XMFLOAT3(-10, 10, 50);
-	left->V2 = DirectX::XMFLOAT3(-10, 10, 0);
-	left->V3 = DirectX::XMFLOAT3(-10, -10, 0);
-	left->V4 = DirectX::XMFLOAT3(-10, -10, 50);
-	left->reflectance = { 0.7, 0, 0 };
-	left->pbrFigure = PBRFIGURE::PLANE;
+	left->V1 = DirectX::XMFLOAT3(-20, 20, 70);
+	left->V2 = DirectX::XMFLOAT3(-20, 20, 0);
+	left->V3 = DirectX::XMFLOAT3(-20, -20, 0);
+	left->V4 = DirectX::XMFLOAT3(-20, -20, 70);
+	left->reflectance = { 0.7, 0.7, 0.7 };
+	left->pbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddGameObject(left);
 
 	PbrPlane* right = new PbrPlane();
-	right->V1 = DirectX::XMFLOAT3(10, 10, 0);
-	right->V2 = DirectX::XMFLOAT3(10, 10, 50);
-	right->V3 = DirectX::XMFLOAT3(10, -10, 50);
-	right->V4 = DirectX::XMFLOAT3(10, -10, 0);
-	right->reflectance = { 0, 0.7f, 0 };
-	right->pbrFigure = PBRFIGURE::PLANE;
+	right->V1 = DirectX::XMFLOAT3(20, 20, 0);
+	right->V2 = DirectX::XMFLOAT3(20, 20, 70);
+	right->V3 = DirectX::XMFLOAT3(20, -20, 70);
+	right->V4 = DirectX::XMFLOAT3(20, -20, 0);
+	right->reflectance = { 0.7, 0.7, 0.7 };
+	right->pbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddGameObject(right);
 
 	PbrPlane* top = new PbrPlane();
-	top->V1 = DirectX::XMFLOAT3(-10, 10, 0);
-	top->V2 = DirectX::XMFLOAT3(-10, 10, 50);
-	top->V3 = DirectX::XMFLOAT3(10, 10, 50);
-	top->V4 = DirectX::XMFLOAT3(10, 10, 0);
-	top->reflectance = { 0, 0.7f , 0 };
-	top->pbrFigure = PBRFIGURE::PLANE;
+	top->V1 = DirectX::XMFLOAT3(-20, 20, 0);
+	top->V2 = DirectX::XMFLOAT3(-20, 20, 70);
+	top->V3 = DirectX::XMFLOAT3(20, 20, 70);
+	top->V4 = DirectX::XMFLOAT3(20, 20, 0);
+	top->reflectance = { 0.7, 0.7, 0.7 };
+	top->pbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddGameObject(top);
 
 	PbrPlane* bottom = new PbrPlane();
-	bottom->V1 = DirectX::XMFLOAT3(10, -5, 0);
-	bottom->V2 = DirectX::XMFLOAT3(10, -5, 50);
-	bottom->V3 = DirectX::XMFLOAT3(-10, -5, 50);
-	bottom->V4 = DirectX::XMFLOAT3(-10, -5, 0);
-	bottom->reflectance = { 0, 0, 0.7f };
-	bottom->pbrFigure = PBRFIGURE::PLANE;
+	bottom->V1 = DirectX::XMFLOAT3(20, 0, 0);
+	bottom->V2 = DirectX::XMFLOAT3(20, 0, 70);
+	bottom->V3 = DirectX::XMFLOAT3(-20, 0, 70);
+	bottom->V4 = DirectX::XMFLOAT3(-20, 0, 0);
+	bottom->reflectance = { 0.7, 0.7, 0.7 };
+	bottom->pbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddGameObject(bottom);
 
 	RTexture texture;
