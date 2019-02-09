@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap_image.h" />
+    <ClInclude Include="ICollider.h" />
     <ClInclude Include="Intersection.h" />
     <ClInclude Include="PbrPlane.h" />
     <ClInclude Include="PbrSphere.h" />

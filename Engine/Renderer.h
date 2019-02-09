@@ -35,6 +35,5 @@ private:
 	int m_bufferHeight;
 	RVector3* pixels = nullptr;
 	int* hitCountOnPixel = nullptr;
-	RVector3 lastColor;
 };
 

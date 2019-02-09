@@ -118,6 +118,9 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="UIObject.h" />
+    <ClInclude Include="ICollider.h">
+      <Filter>PBR</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

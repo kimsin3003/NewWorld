@@ -4,50 +4,47 @@
 #include "RMesh.h"
 #include "PbrSphere.h"
 #include "PbrPlane.h"
-#include <DirectXCollision.h>
+#include <cmath>
+
+bool isfinite(float arg)
+{
+	return arg == arg &&
+		arg != std::numeric_limits<float>::infinity() &&
+		arg != -std::numeric_limits<float>::infinity();
+}
 
 bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGameObject*> gameObjects)
 {
-	float minT = 10000000.0;
+	float minDist = 10000.0;
+	float dist = 0.0f;
 	for (auto gameObject : gameObjects)
 	{
 		if (gameObject->pbrFigure == PBRFIGURE::SPHERE)
 		{
 			PbrSphere* pbrSphere = (PbrSphere*)gameObject;
-			BoundingSphere sphere;
-			sphere.Center = pbrSphere->GetPos();
-			sphere.Radius = pbrSphere->R;
-			float t = 0.0f;
-			if (sphere.Intersects(ray.GetOrigin(), ray.GetDir(), t))
+			if (pbrSphere->Intersects(ray, dist))
 			{
-				if (t < minT);
+				if (!isfinite(dist) && !std::isnan(dist) && dist < minDist && dist > 0.0);
 				{
-					XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * t;
-					minT = t;
+					XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
 					hitData->hitObject = gameObject;
 					hitData->hitPoint = hitPoint;
-					hitData->hitPlaneNormal = XMVector3Normalize(hitData->hitPoint - XMLoadFloat3(&gameObject->GetPos()));
+					hitData->hitPlaneNormal = XMVector3Normalize(hitPoint - XMLoadFloat3(&gameObject->GetPos()));
+					minDist = dist;
 				}
 			}
 		}
 		else if(gameObject->pbrFigure == PBRFIGURE::PLANE)
 		{
 			PbrPlane* pbrPlane = (PbrPlane*)gameObject;
-			float t = 0.0f;
-
-			XMVECTOR v1 = XMLoadFloat3(&pbrPlane->V1);
-			XMVECTOR v2 = XMLoadFloat3(&pbrPlane->V2);
-			XMVECTOR v3 = XMLoadFloat3(&pbrPlane->V3);
-			XMVECTOR v4 = XMLoadFloat3(&pbrPlane->V4);
-			if (DirectX::TriangleTests::Intersects(ray.GetOrigin(), ray.GetDir(), v1, v2, v3, t) 
-				|| DirectX::TriangleTests::Intersects(ray.GetOrigin(), ray.GetDir(), v3, v4, v1, t))
+			if (pbrPlane->Intersects(ray, dist))
 			{
-				if (t < minT)
+				if (!isnan(dist) && !isinf(dist) && dist < minDist)
 				{
-					minT = t;
 					hitData->hitObject = gameObject;
-					hitData->hitPoint = ray.GetOrigin() + ray.GetDir() * t;
-					hitData->hitPlaneNormal = -XMVector3Normalize(XMVector3Cross((v1 - v2), (v3 - v2)));
+					hitData->hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
+					hitData->hitPlaneNormal = -XMVector3Normalize(pbrPlane->GetNormal());
+					minDist = dist;
 				}
 			}
 		}
