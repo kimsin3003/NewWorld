@@ -42,13 +42,17 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 	SetRenderTargets();
 	SetViewports();
 	pixels = new RVector3[m_bufferWidth * m_bufferHeight];
+	hitCountOnPixel = new int[m_bufferWidth * m_bufferHeight];
+	for (int i = 0; i < m_bufferWidth * m_bufferHeight; i++)
+	{
+		hitCountOnPixel[i] = 0;
+	}
 	srand(time(NULL));
 }
 
 void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 {
-	static int sampleCount = 0;
-	unsigned numOfThread = std::thread::hardware_concurrency() * 2 + 1;
+	unsigned numOfThread = std::thread::hardware_concurrency() - 1;
 
 	std::vector<std::thread> threads;
 	threads.reserve(numOfThread);
@@ -64,7 +68,12 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 				{
 					RRay ray(m, n, screenWidth, screenHeight);
 					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
-					pixels[m * screenHeight + n] += pixelColor;
+
+					if (pixelColor.x > 0.1f || pixelColor.y > 0.1f || pixelColor.z > 0.1f)
+					{
+						pixels[m * screenHeight + n] += pixelColor;
+						hitCountOnPixel[m * screenHeight + n]++;
+					}
 				}
 			}
 		});
@@ -73,13 +82,10 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 	{
 		threads[i].join();
 	}
-	sampleCount++;
-	ShowResult(sampleCount, "result.bmp");
-// 	if (sampleCount >= 10)
-// 		::MessageBox(hWnd, L"End", NULL, NULL);
+	ShowResult("result.bmp");
 }
 
-void Renderer::ShowResult(int sampleCount, std::string fileName)
+void Renderer::ShowResult(std::string fileName)
 {
 
 	bitmap_image image(m_bufferWidth, m_bufferHeight);
@@ -88,7 +94,9 @@ void Renderer::ShowResult(int sampleCount, std::string fileName)
 	{
 		for (int n = 0; n < m_bufferHeight; n++)
 		{
-			RVector3 pixelColor = pixels[m * m_bufferHeight + n] / sampleCount;
+			RVector3 pixelColor = pixels[m * m_bufferHeight + n];
+			if(hitCountOnPixel[m * m_bufferHeight + n] != 0)
+				pixelColor = pixelColor / hitCountOnPixel[m * m_bufferHeight + n];
 			INT r = pixelColor.x >= 1 ? 255 : pixelColor.x * 255;
 			INT g = pixelColor.y >= 1 ? 255 : pixelColor.y * 255;
 			INT b = pixelColor.z >= 1 ? 255 : pixelColor.z * 255;

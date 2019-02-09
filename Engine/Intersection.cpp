@@ -20,11 +20,12 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 			float t = 0.0f;
 			if (sphere.Intersects(ray.GetOrigin(), ray.GetDir(), t))
 			{
-				if (t < minT)
+				if (t < minT);
 				{
+					XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * t;
 					minT = t;
 					hitData->hitObject = gameObject;
-					hitData->hitPoint = ray.GetOrigin() + ray.GetDir() * t;
+					hitData->hitPoint = hitPoint;
 					hitData->hitPlaneNormal = XMVector3Normalize(hitData->hitPoint - XMLoadFloat3(&gameObject->GetPos()));
 				}
 			}

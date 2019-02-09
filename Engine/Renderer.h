@@ -10,7 +10,7 @@ public:
 	~Renderer();
 	void Initialize(HWND hwnd, int bufferWidth, int bufferHeight);
 	void RenderPbrScene(HWND hWnd, double deltaTime);
-	void ShowResult(int sampleCount, std::string fileName);
+	void ShowResult(std::string fileName);
 	void Tick(double deltaTime);
 private:
 	struct MatrixBuffer
@@ -34,6 +34,7 @@ private:
 	int m_bufferWidth;
 	int m_bufferHeight;
 	RVector3* pixels = nullptr;
+	int* hitCountOnPixel = nullptr;
 	RVector3 lastColor;
 };
 
