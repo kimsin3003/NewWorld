@@ -2,6 +2,7 @@
 #include "Intersection.h"
 #include <chrono>
 #include <random>
+#include "PbrObject.h"
 
 #define MAX_DEPTH 3
 XMVECTOR GetRefractedDir(XMVECTOR rayDir, XMVECTOR planeNormal, float refractionRatio);
@@ -10,14 +11,14 @@ XMVECTOR GetRefelectedDir(XMVECTOR rayDir, XMVECTOR planeNormal);
 RVector3 GetReflectColor(RVector3 c1, RVector3 c2);
 XMVECTOR GetRandomDir();
 
-RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class RGameObject*>& gameObjects, int depth)
+RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>& pbrObjects, int depth)
 {
 	RVector3 Black = { 0, 0, 0 };
 	if (depth > MAX_DEPTH)
 		return Black;
 
 	HitData hitData;
-	if (Intersection::GetHitData(&hitData, ray, gameObjects))
+	if (Intersection::GetHitData(&hitData, ray, pbrObjects))
 	{
 		if (hitData.hitObject->IsLight)
 		{
@@ -31,7 +32,7 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class RGameObject
 		else
 			randomDirVector = GetRandomHemiSphereDir(hitData.hitPlaneNormal);
 
-		RVector3 randomIncomingLightColor = GetPixelColor(RRay(hitData.hitPoint, randomDirVector), gameObjects, depth + 1);
+		RVector3 randomIncomingLightColor = GetPixelColor(RRay(hitData.hitPoint, randomDirVector), pbrObjects, depth + 1);
 		XMStoreFloat3(&dotResult, XMVector3Dot(randomDirVector, hitData.hitPlaneNormal));
 
 		float randomCos = dotResult.x;

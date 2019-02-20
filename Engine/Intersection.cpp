@@ -13,7 +13,7 @@ bool isfinite(float arg)
 		arg != -std::numeric_limits<float>::infinity();
 }
 
-bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGameObject*> gameObjects)
+bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class PbrObject*> gameObjects)
 {
 	float minDist = 10000.0;
 	for (auto gameObject : gameObjects)
@@ -33,7 +33,7 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class RGam
 		float dist = 0.0f;
 		if (collider != nullptr && collider->Intersects(ray, dist))
 		{
-			if (dist < minDist && dist > 0.1f)
+			if (dist < minDist && dist > 0.01f)
 			{
 				XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
 				XMVECTOR normal = collider->GetNormal(hitPoint);

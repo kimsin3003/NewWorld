@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Intersection.cpp" />
+    <ClCompile Include="PbrObject.cpp" />
     <ClCompile Include="PbrPlane.cpp" />
     <ClCompile Include="PbrSphere.cpp" />
     <ClCompile Include="PathTracer.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="bitmap_image.h" />
     <ClInclude Include="ICollider.h" />
     <ClInclude Include="Intersection.h" />
+    <ClInclude Include="PbrObject.h" />
     <ClInclude Include="PbrPlane.h" />
     <ClInclude Include="PbrSphere.h" />
     <ClInclude Include="resource.h" />

@@ -6,7 +6,7 @@
 struct HitData
 {
 	HitData() { hitObject = nullptr; }
-	RGameObject* hitObject;
+	class PbrObject* hitObject;
 	XMVECTOR hitPoint;
 	XMVECTOR hitPlaneNormal;
 	float refractionRatio;
@@ -15,7 +15,7 @@ struct HitData
 class Intersection
 {
 public:
-	static bool GetHitData(HitData* hitData, RRay ray, std::vector<class RGameObject*> gameObjects);
+	static bool GetHitData(HitData* hitData, RRay ray, std::vector<class PbrObject*> gameObjects);
 
 private:
 	static XMVECTOR GetIntersectPoint(XMVECTOR rayVector, XMVECTOR rayOrigin, XMVECTOR planeNormal, XMVECTOR planePoint);

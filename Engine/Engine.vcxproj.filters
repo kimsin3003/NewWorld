@@ -55,7 +55,12 @@
     <ClCompile Include="PbrPlane.cpp">
       <Filter>PBR</Filter>
     </ClCompile>
-    <ClCompile Include="UIObject.cpp" />
+    <ClCompile Include="PbrObject.cpp">
+      <Filter>PBR</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObject.cpp">
+      <Filter>RainyTypes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IGameManager.h" />
@@ -117,9 +122,14 @@
     <ClInclude Include="bitmap_image.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="UIObject.h" />
     <ClInclude Include="ICollider.h">
       <Filter>PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="PbrObject.h">
+      <Filter>PBR</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObject.h">
+      <Filter>RainyTypes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

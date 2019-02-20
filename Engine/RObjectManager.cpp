@@ -1,26 +1,27 @@
 #include "RObjectManager.h"
 #include "RGameObject.h"
+#include "PbrObject.h"
 #include "RMesh.h"
 #include "RMaterial.h"
 RObjectManager* ObjectManager = new RObjectManager();
 
 RObjectManager::~RObjectManager()
 {
-	for (auto object : m_gameObjectPool)
+	for (auto object : m_gameObjects)
 	{
 		delete object;
 	}
-	m_gameObjectPool.clear();
+	m_gameObjects.clear();
 }
 
 void RObjectManager::Initialize()
 {
-	m_gameObjectPool.reserve(20);
+	m_gameObjects.reserve(20);
 }
 
 void RObjectManager::Tick(double deltaTime)
 {
-	for (RGameObject* gameObject : m_gameObjectPool)
+	for (RGameObject* gameObject : m_gameObjects)
 	{
 		gameObject->Tick(deltaTime);
 	}
@@ -28,15 +29,29 @@ void RObjectManager::Tick(double deltaTime)
 
 void RObjectManager::AddGameObject(RGameObject* gameObject)
 {
-	m_gameObjectPool.push_back(gameObject);
+	m_gameObjects.push_back(gameObject);
 	gameObject->Start();
+}
+
+void RObjectManager::AddPbrObject(class PbrObject* pbrObject)
+{
+	m_pbrObjects.push_back(pbrObject);
+}
+
+void RObjectManager::RemovePbrObject(PbrObject* pbrObject)
+{
+	for (auto it = m_pbrObjects.begin(); it != m_pbrObjects.end(); it++)
+	{
+		if (pbrObject == *it)
+			m_pbrObjects.erase(it);
+	}
 }
 
 void RObjectManager::RemoveGameObject(RGameObject* gameObject)
 {
-	for (auto it = m_gameObjectPool.begin(); it != m_gameObjectPool.end(); it++)
+	for (auto it = m_gameObjects.begin(); it != m_gameObjects.end(); it++)
 	{
 		if (gameObject == *it)
-			m_gameObjectPool.erase(it);
+			m_gameObjects.erase(it);
 	}
 }

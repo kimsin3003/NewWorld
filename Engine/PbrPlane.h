@@ -1,9 +1,9 @@
 #pragma once
-#include "RGameObject.h"
+#include "PbrObject.h"
 #include "ICollider.h"
 #include <DirectXMath.h>
 class PbrPlane :
-	public RGameObject, public ICollider
+	public PbrObject, public ICollider
 {
 public:
 	XMFLOAT3 V1;
@@ -13,6 +13,5 @@ public:
 
 	virtual bool Intersects(RRay ray, float& dist) override;
 	virtual XMVECTOR GetNormal(XMVECTOR hitPoint) override;
-
 };
 

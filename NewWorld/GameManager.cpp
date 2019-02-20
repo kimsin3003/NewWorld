@@ -19,7 +19,7 @@ void GameManager::Initialize()
 	redSphere->pbrColliderType = PBRColliderType::SPHERE;
 	redSphere->pbrTransparent = false;
 	redSphere->reflectance = { 0.7, 0.0, 0.0 };
-	ObjectManager->AddGameObject(redSphere);
+	ObjectManager->AddPbrObject(redSphere);
 
 	PbrSphere* greenSphere = new PbrSphere();
 	greenSphere->R = 3;
@@ -27,7 +27,7 @@ void GameManager::Initialize()
 	greenSphere->pbrColliderType = PBRColliderType::SPHERE;
 	greenSphere->pbrTransparent = false;
 	greenSphere->reflectance = { 0.0, 0.7, 0.0 };
-	ObjectManager->AddGameObject(greenSphere);
+	ObjectManager->AddPbrObject(greenSphere);
 
 	PbrSphere* blueSphere = new PbrSphere();
 	blueSphere->R = 3;
@@ -35,26 +35,35 @@ void GameManager::Initialize()
 	blueSphere->pbrColliderType = PBRColliderType::SPHERE;
 	blueSphere->pbrTransparent = false;
 	blueSphere->reflectance = { 0.0, 0.0, 0.7 };
-	ObjectManager->AddGameObject(blueSphere);
+	ObjectManager->AddPbrObject(blueSphere);
 
 	PbrSphere* transparentSphere = new PbrSphere();
 	transparentSphere->R = 3;
 	transparentSphere->SetPosition(0, 3, 30);
 	transparentSphere->pbrColliderType = PBRColliderType::SPHERE;
 	transparentSphere->pbrTransparent = true;
-	transparentSphere->refractionRate = 2.0f;
+	transparentSphere->refractionRate = 1.5f;
 	transparentSphere->reflectance = { 1, 1, 1 };
-	ObjectManager->AddGameObject(transparentSphere);
+	ObjectManager->AddPbrObject(transparentSphere);
 
 	PbrPlane* light = new PbrPlane();
-	light->V1 = DirectX::XMFLOAT3(-10, 19, 45);
-	light->V2 = DirectX::XMFLOAT3(-10, 19, 60);
-	light->V3 = DirectX::XMFLOAT3(10, 19, 60);
-	light->V4 = DirectX::XMFLOAT3(10, 19, 45);
+	light->V1 = DirectX::XMFLOAT3(-10, 19.9f, 45);
+	light->V2 = DirectX::XMFLOAT3(-10, 19.9f, 60);
+	light->V3 = DirectX::XMFLOAT3(10, 19.9f, 60);
+	light->V4 = DirectX::XMFLOAT3(10, 19.9f, 45);
 	light->emittance = { 1, 1, 1 };
 	light->pbrColliderType = PBRColliderType::PLANE;
 	light->IsLight = true;
-	ObjectManager->AddGameObject(light);
+	ObjectManager->AddPbrObject(light);
+
+	PbrPlane* front = new PbrPlane();
+	front->V1 = DirectX::XMFLOAT3(20, -20, 0); 
+	front->V2 = DirectX::XMFLOAT3(-20, -20, 0); 
+	front->V3 = DirectX::XMFLOAT3(-20, 20, 0);
+	front->V4 = DirectX::XMFLOAT3(20, 20, 0);
+	front->reflectance = { 0.7, 0.7, 0.7 };
+	front->pbrColliderType = PBRColliderType::PLANE;
+	ObjectManager->AddPbrObject(front);
 
 	PbrPlane* center = new PbrPlane();
 	center->V1 = DirectX::XMFLOAT3(20, 20, 70);
@@ -63,7 +72,7 @@ void GameManager::Initialize()
 	center->V4 = DirectX::XMFLOAT3(20, -20, 70);
 	center->reflectance = { 0.7, 0.7, 0.7 };
 	center->pbrColliderType = PBRColliderType::PLANE;
-	ObjectManager->AddGameObject(center);
+	ObjectManager->AddPbrObject(center);
 
 	PbrPlane* left = new PbrPlane();
 	left->V1 = DirectX::XMFLOAT3(-20, 20, 70);
@@ -72,7 +81,7 @@ void GameManager::Initialize()
 	left->V4 = DirectX::XMFLOAT3(-20, -20, 70);
 	left->reflectance = { 0.7, 0.7, 0.7 };
 	left->pbrColliderType = PBRColliderType::PLANE;
-	ObjectManager->AddGameObject(left);
+	ObjectManager->AddPbrObject(left);
 
 	PbrPlane* right = new PbrPlane();
 	right->V1 = DirectX::XMFLOAT3(20, 20, 0);
@@ -81,7 +90,7 @@ void GameManager::Initialize()
 	right->V4 = DirectX::XMFLOAT3(20, -20, 0);
 	right->reflectance = { 0.7, 0.7, 0.7 };
 	right->pbrColliderType = PBRColliderType::PLANE;
-	ObjectManager->AddGameObject(right);
+	ObjectManager->AddPbrObject(right);
 
 	PbrPlane* top = new PbrPlane();
 	top->V1 = DirectX::XMFLOAT3(-20, 20, 0);
@@ -90,7 +99,7 @@ void GameManager::Initialize()
 	top->V4 = DirectX::XMFLOAT3(20, 20, 0);
 	top->reflectance = { 0.7, 0.7, 0.7 };
 	top->pbrColliderType = PBRColliderType::PLANE;
-	ObjectManager->AddGameObject(top);
+	ObjectManager->AddPbrObject(top);
 
 	PbrPlane* bottom = new PbrPlane();
 	bottom->V1 = DirectX::XMFLOAT3(20, 0, 0);
@@ -99,7 +108,7 @@ void GameManager::Initialize()
 	bottom->V4 = DirectX::XMFLOAT3(-20, 0, 0);
 	bottom->reflectance = { 0.7, 0.7, 0.7 };
 	bottom->pbrColliderType = PBRColliderType::PLANE;
-	ObjectManager->AddGameObject(bottom);
+	ObjectManager->AddPbrObject(bottom);
 
 	RTexture texture;
 	texture.filename = L"result.bmp";

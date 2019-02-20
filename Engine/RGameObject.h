@@ -4,13 +4,6 @@
 #include "RMath.h"
 using namespace DirectX;
 
-enum class PBRColliderType
-{
-	NONE,
-	SPHERE,
-	PLANE
-};
-
 class RGameObject
 {
 public:
@@ -27,14 +20,6 @@ public:
 	void SetResource(std::string filename);
 	std::vector<class RMesh*> Meshes;
 	std::string Name;
-	bool IsLight = false;
-	RVector3 emittance;
-	RVector3 reflectance;
-	PBRColliderType pbrColliderType;
-	bool pbrTransparent = false;
-	float refractionRate = 1.f;
-
-protected:
 
 private:
 	XMFLOAT3 m_position;
