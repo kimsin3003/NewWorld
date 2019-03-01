@@ -67,7 +67,7 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 				for (int n = 0; n < screenHeight; n++)
 				{
 					RRay ray(m, n, screenWidth, screenHeight);
-					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetGameObjectPool(), 0);
+					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetPbrObjects(), 0);
 
 					if (pixelColor.x > 0.1f || pixelColor.y > 0.1f || pixelColor.z > 0.1f)
 					{
@@ -126,7 +126,7 @@ void Renderer::Tick(double deltaTime)
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	m_immediateContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	auto gameObjectPool = ObjectManager->GetGameObjectPool();
+	auto gameObjectPool = ObjectManager->GetGameObjects();
 
 	RCamera* currentCamera = CameraManager->GetCurrentCamera();
 	for (RGameObject* gameObject : gameObjectPool)

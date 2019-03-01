@@ -47,10 +47,10 @@ void GameManager::Initialize()
 	ObjectManager->AddPbrObject(transparentSphere);
 
 	PbrPlane* light = new PbrPlane();
-	light->V1 = DirectX::XMFLOAT3(-10, 19.9f, 45);
-	light->V2 = DirectX::XMFLOAT3(-10, 19.9f, 60);
-	light->V3 = DirectX::XMFLOAT3(10, 19.9f, 60);
-	light->V4 = DirectX::XMFLOAT3(10, 19.9f, 45);
+	light->V1 = DirectX::XMFLOAT3(-17, 19.9f, 30);
+	light->V2 = DirectX::XMFLOAT3(-17, 19.9f, 60);
+	light->V3 = DirectX::XMFLOAT3(17, 19.9f, 60);
+	light->V4 = DirectX::XMFLOAT3(17, 19.9f, 30);
 	light->emittance = { 1, 1, 1 };
 	light->pbrColliderType = PBRColliderType::PLANE;
 	light->IsLight = true;
