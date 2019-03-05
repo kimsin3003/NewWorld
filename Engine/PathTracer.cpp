@@ -90,11 +90,18 @@ XMVECTOR GetRefelectedDir(XMVECTOR rayDir, XMVECTOR planeNormal)
 XMVECTOR GetRefractedDir(XMVECTOR rayDir, XMVECTOR planeNormal, float refractionRatio)
 {
 	XMFLOAT3 dotResult;
-	XMVECTOR rayDirNormal = refractionRatio > 1 ? -planeNormal : planeNormal;
-	XMStoreFloat3(&dotResult, XMVector3Dot(rayDir, rayDirNormal));
-	float rayNormalCos = dotResult.x;
-	XMVECTOR raydirProjectedToNormal = rayDirNormal * rayNormalCos;
-	XMVECTOR refractedDir = (rayDir - raydirProjectedToNormal) / refractionRatio +
-		sqrt(1 - pow(refractionRatio, 2) * (1 - pow(rayNormalCos, 2))) * rayDirNormal;
-	return XMVector3Normalize(refractedDir);
+
+	XMStoreFloat3(&dotResult, XMVector3Dot(rayDir, planeNormal));
+
+	XMVECTOR rayDirNormal = dotResult.x > 0 ? planeNormal : -planeNormal;
+
+	XMVECTOR rayProjToNormal = rayDirNormal * XMVector3Dot(rayDir, rayDirNormal);
+	XMVECTOR verticalToNormalToRay = rayDir - rayProjToNormal;
+	XMVECTOR verticalToNormalToRefract = verticalToNormalToRay / refractionRatio;
+
+	XMFLOAT3 verticalToNormalToRefractSize;
+	XMStoreFloat3(&verticalToNormalToRefractSize, XMVector3Length(verticalToNormalToRefract));
+	XMVECTOR refractProjToNormal = rayProjToNormal * sqrt(1 - pow(verticalToNormalToRefractSize.x, 2));
+
+	return XMVector3Normalize(refractProjToNormal + verticalToNormalToRefract);
 }
