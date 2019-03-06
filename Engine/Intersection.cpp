@@ -24,11 +24,13 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class PbrO
 			PbrSphere* pbrSphere = static_cast<PbrSphere*>(gameObject);
 			collider = static_cast<ICollider*>(pbrSphere);
 		}
-		else if(gameObject->pbrColliderType == PBRColliderType::PLANE)
+		else if (gameObject->pbrColliderType == PBRColliderType::PLANE)
 		{
 			PbrPlane* pbrPlane = static_cast<PbrPlane*>(gameObject);
 			collider = static_cast<ICollider*>(pbrPlane);
 		}
+		else
+			continue;
 
 		float dist = 0.0f;
 		if (collider != nullptr && collider->Intersects(ray, dist))
@@ -41,9 +43,9 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class PbrO
 				XMStoreFloat3(&dotResult, XMVector3Dot(ray.GetDir(), normal));
 
 				if (dotResult.x > 0) //물체 내부에서 밖으로
-					hitData->refractionRatio = 1 / gameObject->refractionRate;
-				else
 					hitData->refractionRatio = gameObject->refractionRate;
+				else
+					hitData->refractionRatio = 1 / gameObject->refractionRate;
 
 				hitData->hitObject = gameObject;
 				hitData->hitPoint = hitPoint;

@@ -17,7 +17,7 @@ void GameManager::Initialize()
 	redSphere->R = 3;
 	redSphere->SetPosition(-5, 3, 40);
 	redSphere->pbrColliderType = PBRColliderType::SPHERE;
-	redSphere->pbrTransparent = false;
+	redSphere->pbrTransparent = true;
 	redSphere->reflectance = { 0.7, 0.0, 0.0 };
 	ObjectManager->AddPbrObject(redSphere);
 
@@ -25,7 +25,7 @@ void GameManager::Initialize()
 	greenSphere->R = 3;
 	greenSphere->SetPosition(0, 3, 45);
 	greenSphere->pbrColliderType = PBRColliderType::SPHERE;
-	greenSphere->pbrTransparent = false;
+	greenSphere->pbrTransparent = true;
 	greenSphere->reflectance = { 0.0, 0.7, 0.0 };
 	ObjectManager->AddPbrObject(greenSphere);
 
@@ -33,7 +33,7 @@ void GameManager::Initialize()
 	blueSphere->R = 3;
 	blueSphere->SetPosition(5, 3, 40);
 	blueSphere->pbrColliderType = PBRColliderType::SPHERE;
-	blueSphere->pbrTransparent = false;
+	blueSphere->pbrTransparent = true;
 	blueSphere->reflectance = { 0.0, 0.0, 0.7 };
 	ObjectManager->AddPbrObject(blueSphere);
 
@@ -42,7 +42,7 @@ void GameManager::Initialize()
 	transparentSphere->SetPosition(0, 3, 30);
 	transparentSphere->pbrColliderType = PBRColliderType::SPHERE;
 	transparentSphere->pbrTransparent = true;
-	transparentSphere->refractionRate = 1.5f;
+	transparentSphere->refractionRate = 2.0f;
 	transparentSphere->reflectance = { 1, 1, 1 };
 	ObjectManager->AddPbrObject(transparentSphere);
 
