@@ -15,16 +15,16 @@ bool isfinite(float arg)
 
 bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class PbrObject*> gameObjects)
 {
-	float minDist = 10000.0;
+	float maxDist = 10000.0;
 	for (auto gameObject : gameObjects)
 	{
 		ICollider* collider = nullptr;
-		if (gameObject->pbrColliderType == PBRColliderType::SPHERE)
+		if (gameObject->PbrColliderType == PBRColliderType::SPHERE)
 		{
 			PbrSphere* pbrSphere = static_cast<PbrSphere*>(gameObject);
 			collider = static_cast<ICollider*>(pbrSphere);
 		}
-		else if (gameObject->pbrColliderType == PBRColliderType::PLANE)
+		else if (gameObject->PbrColliderType == PBRColliderType::PLANE)
 		{
 			PbrPlane* pbrPlane = static_cast<PbrPlane*>(gameObject);
 			collider = static_cast<ICollider*>(pbrPlane);
@@ -35,7 +35,7 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class PbrO
 		float dist = 0.0f;
 		if (collider != nullptr && collider->Intersects(ray, dist))
 		{
-			if (dist < minDist && dist > 0.01f)
+			if (dist < maxDist && dist > 0.01f)
 			{
 				XMVECTOR hitPoint = ray.GetOrigin() + ray.GetDir() * dist;
 				XMVECTOR normal = collider->GetNormal(hitPoint);
@@ -43,14 +43,15 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class PbrO
 				XMStoreFloat3(&dotResult, XMVector3Dot(ray.GetDir(), normal));
 
 				if (dotResult.x > 0) //물체 내부에서 밖으로
-					hitData->refractionRatio = gameObject->refractionRate;
+					hitData->refractionRatio = gameObject->RefractionRate;
 				else
-					hitData->refractionRatio = 1 / gameObject->refractionRate;
+					hitData->refractionRatio = 1 / gameObject->RefractionRate;
 
 				hitData->hitObject = gameObject;
 				hitData->hitPoint = hitPoint;
 				hitData->hitPlaneNormal = normal;
-				minDist = dist;
+				hitData->dist = dist;
+				maxDist = dist;
 			}
 		}
 	}

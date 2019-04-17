@@ -18,11 +18,13 @@ public:
 	inline void SetPosition(float x, float y, float z) { m_position.x = x; m_position.y = y; m_position.z = z; }
 	inline void SetRotation(float x, float y, float z) { m_rotation.x = x; m_rotation.y = y; m_rotation.z = z; }
 	bool IsLight = false;
-	RVector3 emittance;
-	RVector3 reflectance;
-	PBRColliderType pbrColliderType;
-	bool pbrTransparent = false;
-	float refractionRate = 1.f;
+	RVector3 Emittance;
+	float DiffuseRate = 1.0f;
+	float AbsorbRate = 0.7f;
+	RVector3 Reflectance;
+	PBRColliderType PbrColliderType;
+	bool PbrTransparent = false;
+	float RefractionRate = 1.f;
 
 private:
 	XMFLOAT3 m_position;

@@ -6,7 +6,7 @@
 
 #define MAX_DEPTH 3
 XMVECTOR GetRandomHemiSphereDir(XMVECTOR planeNormal);
-RVector3 GetReflectColor(RVector3 c1, RVector3 c2);
+RVector3 GetReflectedColor(RVector3 c1, RVector3 c2);
 XMVECTOR GetRandomDir();
 
 RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>& pbrObjects, int depth)
@@ -20,38 +20,53 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>
 	{
 		if (hitData.hitObject->IsLight)
 		{
-			return hitData.hitObject->emittance;
+			return hitData.hitObject->Emittance;
 		}
 
-		if (hitData.hitObject->pbrTransparent)
+		if (hitData.hitObject->PbrTransparent)
 		{
-			XMVECTOR refractedDirVector = XMVector3Refract(ray.GetDir(), hitData.hitPlaneNormal, hitData.refractionRatio);
+			XMVECTOR refractedDirVector = DirectX::XMVector3Refract(ray.GetDir(), hitData.hitPlaneNormal, hitData.refractionRatio);
+			if (DirectX::XMVector3Equal(refractedDirVector, DirectX::XMVectorZero()))
+				return Black;
 			RVector3 refractedIncomingLightColor = GetPixelColor(RRay(hitData.hitPoint, refractedDirVector), pbrObjects, depth + 1);
 			return refractedIncomingLightColor;
 		}
 		else
 		{
-			XMFLOAT3 dotResult;
-			XMVECTOR randomDirVector = GetRandomHemiSphereDir(hitData.hitPlaneNormal);
 
-			RVector3 randomIncomingLightColor = GetPixelColor(RRay(hitData.hitPoint, randomDirVector), pbrObjects, depth + 1);
-			XMStoreFloat3(&dotResult, XMVector3Dot(randomDirVector, hitData.hitPlaneNormal));
+			bool isDiffused =  (double)rand() / (RAND_MAX) < hitData.hitObject->DiffuseRate ? true : false;
+			XMVECTOR incomingLightDir;
+
+			if (isDiffused)
+			{
+				incomingLightDir = GetRandomHemiSphereDir(hitData.hitPlaneNormal);
+			}
+			else
+			{
+				incomingLightDir = XMVector3Reflect(ray.GetDir(), hitData.hitPlaneNormal);
+			}
+
+			XMFLOAT3 dotResult;
+			RVector3 incomingLightColor = GetPixelColor(RRay(hitData.hitPoint, incomingLightDir), pbrObjects, depth + 1);
+			XMStoreFloat3(&dotResult, XMVector3Dot(incomingLightDir, hitData.hitPlaneNormal));
 
 			float randomCos = dotResult.x;
-			if (hitData.hitObject->pbrTransparent)
-				randomCos = -randomCos;
+			if (hitData.hitObject->PbrTransparent)
+				randomCos = -randomCos; 
 
 			XMFLOAT3 dist;
 			XMStoreFloat3(&dist, XMVector3Length(hitData.hitPoint - ray.GetOrigin()));
 
-			RVector3 diffuseColor = hitData.hitObject->emittance + GetReflectColor(hitData.hitObject->reflectance, randomIncomingLightColor) * randomCos;// / dist.x;
+			bool isAbsorbed = (double)rand() / (RAND_MAX) < hitData.hitObject->AbsorbRate ? true : false;
+			RVector3 reflectedColor = isAbsorbed ? GetReflectedColor(hitData.hitObject->Reflectance, incomingLightColor) : incomingLightColor;
+			RVector3 diffuseColor = hitData.hitObject->Emittance + reflectedColor * randomCos;
 			return diffuseColor;
 		}
 	}
 	return Black;
 }
 
-RVector3 GetReflectColor(RVector3 c1, RVector3 c2)
+RVector3 GetReflectedColor(RVector3 c1, RVector3 c2)
 {
 	return RVector3(c1.x * c2.x, c1.y * c2.y, c1.z * c2.z);
 }

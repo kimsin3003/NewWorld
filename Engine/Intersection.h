@@ -10,6 +10,7 @@ struct HitData
 	XMVECTOR hitPoint;
 	XMVECTOR hitPlaneNormal;
 	float refractionRatio;
+	float dist;
 };
 
 class Intersection
