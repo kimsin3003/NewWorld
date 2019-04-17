@@ -22,6 +22,7 @@
     <ClCompile Include="Intersection.cpp" />
     <ClCompile Include="PbrObject.cpp" />
     <ClCompile Include="PbrPlane.cpp" />
+    <ClCompile Include="PbrShaderCompiler.cpp" />
     <ClCompile Include="PbrSphere.cpp" />
     <ClCompile Include="PathTracer.cpp" />
     <ClCompile Include="RCamera.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="Intersection.h" />
     <ClInclude Include="PbrObject.h" />
     <ClInclude Include="PbrPlane.h" />
+    <ClInclude Include="PbrShaderCompiler.h" />
     <ClInclude Include="PbrSphere.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="PathTracer.h" />
@@ -71,6 +73,18 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ComputeShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

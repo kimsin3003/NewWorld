@@ -61,6 +61,9 @@
     <ClCompile Include="UIObject.cpp">
       <Filter>RainyTypes</Filter>
     </ClCompile>
+    <ClCompile Include="PbrShaderCompiler.cpp">
+      <Filter>PBR\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IGameManager.h" />
@@ -131,6 +134,9 @@
     <ClInclude Include="UIObject.h">
       <Filter>RainyTypes</Filter>
     </ClInclude>
+    <ClInclude Include="PbrShaderCompiler.h">
+      <Filter>PBR\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -148,8 +154,16 @@
     <Filter Include="Managers">
       <UniqueIdentifier>{2cfb26a1-a624-4008-b1cc-eb297a1516cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PBR\Shader">
+      <UniqueIdentifier>{22f54d1e-3b7a-4b3a-adcd-1f1648e1db69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ComputeShader.hlsl">
+      <Filter>PBR\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
