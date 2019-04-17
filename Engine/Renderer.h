@@ -9,7 +9,9 @@ class Renderer
 public:
 	~Renderer();
 	void Initialize(HWND hwnd, int bufferWidth, int bufferHeight);
+	void LoadLastResult();
 	void RenderPbrScene(HWND hWnd, double deltaTime);
+	void RenderPbrSceneWithCS(HWND hWnd, double deltaTime);
 	void ShowResult(std::string fileName);
 	void Tick(double deltaTime);
 private:
