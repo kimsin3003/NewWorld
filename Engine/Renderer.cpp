@@ -56,6 +56,8 @@ void Renderer::LoadLastResult()
 {
 
 	bitmap_image lastResult("result.bmp");
+	if (lastResult.pixel_count() != m_bufferHeight * m_bufferWidth)
+		return;
 
 	std::ifstream lastHitCountFile;
 	lastHitCountFile.open("lastHitCount.txt");
@@ -73,7 +75,14 @@ void Renderer::LoadLastResult()
 			pixels[m * m_bufferHeight + n].z = blue;
 			std::string line;
 			if (getline(lastHitCountFile, line) && line != "")
-				hitCountOnPixel[m * m_bufferHeight + n] = stoi(line);
+			{
+				try {
+					hitCountOnPixel[m * m_bufferHeight + n] = stoi(line);
+				}
+				catch (...) {
+					continue;
+				}
+			}
 		}
 	}
 	lastHitCountFile.close();
@@ -81,8 +90,9 @@ void Renderer::LoadLastResult()
 
 void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 {
-	unsigned numOfThread = std::thread::hardware_concurrency();
+	unsigned numOfThread = std::thread::hardware_concurrency() * 2;
 
+	int maxSampleCount = 500;
 	std::vector<std::thread> threads;
 	threads.reserve(numOfThread);
 	for (int i = 0; i < numOfThread; i++)
@@ -95,6 +105,8 @@ void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 			{
 				for (int n = 0; n < screenHeight; n++)
 				{
+					if (hitCountOnPixel[m * screenHeight + n] >= maxSampleCount)
+						continue;
 					RRay ray(m, n, screenWidth, screenHeight);
 					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetPbrObjects(), 0);
 

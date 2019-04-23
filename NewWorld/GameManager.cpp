@@ -18,8 +18,9 @@ void GameManager::Initialize()
 	redSphere->SetPosition(-5, 3, 40);
 	redSphere->PbrColliderType = PBRColliderType::SPHERE;
 	redSphere->PbrTransparent = false;
-	redSphere->DiffuseRate = 0.7;
-	redSphere->Reflectance = { 0.7, 0.0, 0.0 };
+	redSphere->DiffuseRate = 0.7f;
+	redSphere->AbsorbRate = 0.7f;
+	redSphere->Reflectance = { 0.7f, 0.0f, 0.0f };
 	ObjectManager->AddPbrObject(redSphere);
 
 	PbrSphere* greenSphere = new PbrSphere();
@@ -27,8 +28,9 @@ void GameManager::Initialize()
 	greenSphere->SetPosition(0, 3, 45);
 	greenSphere->PbrColliderType = PBRColliderType::SPHERE;
 	greenSphere->PbrTransparent = false;
-	greenSphere->DiffuseRate = 0.7;
-	greenSphere->Reflectance = { 0.0, 0.7, 0.0 };
+	greenSphere->DiffuseRate = 0.7f;
+	greenSphere->AbsorbRate = 0.7f;
+	greenSphere->Reflectance = { 0.0f, 0.7f, 0.0f };
 	ObjectManager->AddPbrObject(greenSphere);
 
 	PbrSphere* blueSphere = new PbrSphere();
@@ -36,28 +38,30 @@ void GameManager::Initialize()
 	blueSphere->SetPosition(5, 3, 40);
 	blueSphere->PbrColliderType = PBRColliderType::SPHERE;
 	blueSphere->PbrTransparent = false;
-	blueSphere->DiffuseRate = 0.7;
-	blueSphere->Reflectance = { 0.0, 0.0, 0.7 };
+	blueSphere->DiffuseRate = 0.7f;
+	blueSphere->AbsorbRate = 0.7f;
+	blueSphere->Reflectance = { 0.0f, 0.0f, 0.7f };
 	ObjectManager->AddPbrObject(blueSphere);
 
-	PbrSphere* trasparent = new PbrSphere();
-	trasparent->R = 3;
-	trasparent->SetPosition(0, 5, 30);
-	trasparent->PbrColliderType = PBRColliderType::SPHERE;
-	trasparent->PbrTransparent = true;
-	trasparent->RefractionRate = 1.5f;
-	blueSphere->DiffuseRate = 0.7;
-	trasparent->Reflectance = { 1, 1, 1 };
-	ObjectManager->AddPbrObject(trasparent);
+	PbrSphere* mirror = new PbrSphere();
+	mirror->R = 3;
+	mirror->SetPosition(0, 3, 30);
+	mirror->PbrColliderType = PBRColliderType::SPHERE;
+	mirror->PbrTransparent = false;
+	mirror->RefractionRate = 1.5f;
+	mirror->DiffuseRate = 0;
+	mirror->AbsorbRate = 0;
+	mirror->Reflectance = { 1, 1, 1 };
+	ObjectManager->AddPbrObject(mirror);
 
 	PbrSphere* light = new PbrSphere();
 	light->R = 1;
-	light->SetPosition(10, 3, 30);
+	light->SetPosition(10, 1, 30);
 	light->IsLight = true;
 	light->Emittance = { 2, 2, 2 };
 	light->PbrColliderType = PBRColliderType::SPHERE;
 	light->PbrTransparent = true;
-	light->DiffuseRate = 0.7;
+	light->DiffuseRate = 0.7f;
 	light->Reflectance = { 1, 1, 1 };
 	ObjectManager->AddPbrObject(light);
 
@@ -66,7 +70,9 @@ void GameManager::Initialize()
 	front->V2 = DirectX::XMFLOAT3(-20, -20, 0); 
 	front->V3 = DirectX::XMFLOAT3(-20, 20, 0);
 	front->V4 = DirectX::XMFLOAT3(20, 20, 0);
-	front->Reflectance = { 0.7, 0.7, 0.7 };
+	front->Reflectance = { 0.7f, 0.7f, 0.7f };
+	front->DiffuseRate = 1;
+	front->AbsorbRate = 1;
 	front->PbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddPbrObject(front);
 
@@ -75,7 +81,9 @@ void GameManager::Initialize()
 	center->V2 = DirectX::XMFLOAT3(-20, 20, 70);
 	center->V3 = DirectX::XMFLOAT3(-20, -20, 70);
 	center->V4 = DirectX::XMFLOAT3(20, -20, 70);
-	center->Reflectance = { 0.7, 0.7, 0.7 };
+	center->Reflectance = { 0.7f, 0.7f, 0.7f };
+	center->DiffuseRate = 1;
+	center->AbsorbRate = 1;
 	center->PbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddPbrObject(center);
 
@@ -84,7 +92,9 @@ void GameManager::Initialize()
 	left->V2 = DirectX::XMFLOAT3(-20, 20, 0);
 	left->V3 = DirectX::XMFLOAT3(-20, -20, 0);
 	left->V4 = DirectX::XMFLOAT3(-20, -20, 70);
-	left->Reflectance = { 0.7, 0.7, 0.7 };
+	left->Reflectance = { 0.7f, 0.7f, 0.7f };
+	left->DiffuseRate = 1;
+	left->AbsorbRate = 1;
 	left->PbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddPbrObject(left);
 
@@ -93,7 +103,9 @@ void GameManager::Initialize()
 	right->V2 = DirectX::XMFLOAT3(20, 20, 70);
 	right->V3 = DirectX::XMFLOAT3(20, -20, 70);
 	right->V4 = DirectX::XMFLOAT3(20, -20, 0);
-	right->Reflectance = { 0.7, 0.7, 0.7 };
+	right->Reflectance = { 0.7f, 0.7f, 0.7f };
+	right->DiffuseRate = 1;
+	right->AbsorbRate = 1;
 	right->PbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddPbrObject(right);
 
@@ -102,7 +114,9 @@ void GameManager::Initialize()
 	top->V2 = DirectX::XMFLOAT3(-20, 20, 70);
 	top->V3 = DirectX::XMFLOAT3(20, 20, 70);
 	top->V4 = DirectX::XMFLOAT3(20, 20, 0);
-	top->Reflectance = { 0.7, 0.7, 0.7 };
+	top->Reflectance = { 0.7f, 0.7f, 0.7f };
+	top->DiffuseRate = 1;
+	top->AbsorbRate = 1;
 	top->PbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddPbrObject(top);
 
@@ -111,7 +125,9 @@ void GameManager::Initialize()
 	bottom->V2 = DirectX::XMFLOAT3(20, 0, 70);
 	bottom->V3 = DirectX::XMFLOAT3(-20, 0, 70);
 	bottom->V4 = DirectX::XMFLOAT3(-20, 0, 0);
-	bottom->Reflectance = { 0.7, 0.7, 0.7 };
+	bottom->Reflectance = { 0.7f, 0.7f, 0.7f };
+	bottom->DiffuseRate = 1;
+	bottom->AbsorbRate = 1;
 	bottom->PbrColliderType = PBRColliderType::PLANE;
 	ObjectManager->AddPbrObject(bottom);
 

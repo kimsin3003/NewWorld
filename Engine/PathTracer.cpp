@@ -34,7 +34,7 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>
 		else
 		{
 
-			bool isDiffused =  (double)rand() / (RAND_MAX) < hitData.hitObject->DiffuseRate ? true : false;
+			bool isDiffused = (double)rand() / (RAND_MAX) < hitData.hitObject->DiffuseRate ? true : false;
 			XMVECTOR incomingLightDir;
 
 			if (isDiffused)
@@ -59,7 +59,7 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>
 
 			bool isAbsorbed = (double)rand() / (RAND_MAX) < hitData.hitObject->AbsorbRate ? true : false;
 			RVector3 reflectedColor = isAbsorbed ? GetReflectedColor(hitData.hitObject->Reflectance, incomingLightColor) : incomingLightColor;
-			RVector3 diffuseColor = hitData.hitObject->Emittance + reflectedColor * randomCos;
+			RVector3 diffuseColor = hitData.hitObject->Emittance + reflectedColor;// *randomCos;
 			return diffuseColor;
 		}
 	}
