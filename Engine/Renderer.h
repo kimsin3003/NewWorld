@@ -3,6 +3,7 @@
 #include "RMesh.h"
 #include "RRay.h"
 #include "RMath.h"
+#include <thread>
 
 class Renderer
 {
@@ -12,7 +13,7 @@ public:
 	void LoadLastResult();
 	void RenderPbrScene(HWND hWnd, double deltaTime);
 	void RenderPbrSceneWithCS(HWND hWnd, double deltaTime);
-	void ShowResult(std::string fileName);
+	void ShowResult(std::string fileName) const;
 	void Tick(double deltaTime);
 private:
 	struct MatrixBuffer
@@ -37,5 +38,6 @@ private:
 	int m_bufferHeight;
 	RVector3* pixels = nullptr;
 	int* hitCountOnPixel = nullptr;
+	std::vector<std::thread>						m_threads;
 };
 

@@ -148,7 +148,10 @@ void RMaterial::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* 
 	for (auto texInfo : m_textures)
 	{
 		if (texInfo.type == RTexture::DIFFUSE)
+		{
+			m_textureView->Release();
 			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_textureView);
+		}
 	}
 
 	SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);

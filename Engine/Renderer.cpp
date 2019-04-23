@@ -4,7 +4,6 @@
 #include <time.h>
 #include <dxgi.h>
 #include <D3D11.h>
-#include <thread>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include <iostream>
@@ -22,6 +21,11 @@
 
 Renderer::~Renderer()
 {
+	for (int i = 0; i < m_threads.size(); i++)
+	{
+		m_threads[i].join();
+	}
+
 	m_swapChain->Release();
 	m_device->Release();
 	m_immediateContext->Release();
@@ -49,7 +53,37 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 		hitCountOnPixel[i] = 0;
 	}
 	srand(time(NULL));
-	LoadLastResult();
+
+	unsigned numOfThread = std::thread::hardware_concurrency();
+
+	m_threads.reserve(numOfThread);
+	for (int i = 0; i < numOfThread; i++)
+	{
+		int withOfOneThread = m_bufferWidth / numOfThread;
+		int screenWidth = m_bufferWidth;
+		int screenHeight = m_bufferHeight;
+		m_threads.emplace_back([=] {
+			while (true)
+			{
+				for (int m = i * withOfOneThread; m < (i + 1) * withOfOneThread; m++)
+				{
+					for (int n = 0; n < screenHeight; n++)
+					{
+						RRay ray(m, n, screenWidth, screenHeight);
+						RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetPbrObjects(), 0);
+
+						if (pixelColor.x > 0.1f || pixelColor.y > 0.1f || pixelColor.z > 0.1f)
+						{
+							pixels[m * screenHeight + n] += pixelColor;
+							hitCountOnPixel[m * screenHeight + n]++;
+						}
+					}
+				}
+			}
+			
+		});
+	}
+	//LoadLastResult();
 }
 
 void Renderer::LoadLastResult()
@@ -90,40 +124,13 @@ void Renderer::LoadLastResult()
 
 void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
 {
-	unsigned numOfThread = std::thread::hardware_concurrency() * 2;
-
-	int maxSampleCount = 500;
-	std::vector<std::thread> threads;
-	threads.reserve(numOfThread);
-	for (int i = 0; i < numOfThread; i++)
+	static double elapsedTime = 0;
+	elapsedTime += deltaTime;
+	if (elapsedTime > 1 / 60)
 	{
-		int withOfOneThread = m_bufferWidth / numOfThread;
-		int screenWidth = m_bufferWidth;
-		int screenHeight = m_bufferHeight;
-		threads.emplace_back([=] {
-			for (int m = i * withOfOneThread; m < (i+1) * withOfOneThread; m++)
-			{
-				for (int n = 0; n < screenHeight; n++)
-				{
-					if (hitCountOnPixel[m * screenHeight + n] >= maxSampleCount)
-						continue;
-					RRay ray(m, n, screenWidth, screenHeight);
-					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetPbrObjects(), 0);
-
-					if (pixelColor.x > 0.1f || pixelColor.y > 0.1f || pixelColor.z > 0.1f)
-					{
-						pixels[m * screenHeight + n] += pixelColor;
-						hitCountOnPixel[m * screenHeight + n]++;
-					}
-				}
-			}
-		});
+		elapsedTime = 0;
+		ShowResult("result.bmp");
 	}
-	for (int i = 0; i < numOfThread; i++)
-	{
-		threads[i].join();
-	}
-	ShowResult("result.bmp");
 }
 
 void Renderer::RenderPbrSceneWithCS(HWND hWnd, double deltaTime)
@@ -150,7 +157,7 @@ void Renderer::RenderPbrSceneWithCS(HWND hWnd, double deltaTime)
 // 	ShowResult("result.bmp");
 }
 
-void Renderer::ShowResult(std::string fileName)
+void Renderer::ShowResult(std::string fileName) const
 {
 
 	bitmap_image image(m_bufferWidth, m_bufferHeight);

@@ -109,14 +109,13 @@ void SystemManager::Initialize(IGameManager* gameManager)
 		CameraManager->Initialize(screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
 	}
 
-	m_renderer = new Renderer();
-	if(m_renderer)
-		m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
-
 	m_gameManager = gameManager;
 	if (m_gameManager)
 		m_gameManager->Initialize();
 
+	m_renderer = new Renderer();
+	if (m_renderer)
+		m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 	return;
 }
 
