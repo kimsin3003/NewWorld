@@ -226,6 +226,21 @@ void Renderer::Tick(double deltaTime)
 	return;
 }
 
+ID3D11Texture2D* Renderer::GetFrameBuffer()
+{
+	ID3D11Texture2D* pBuffer;
+
+	m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBuffer);
+
+	ID3D11Texture2D* result = nullptr;
+	D3D11_TEXTURE2D_DESC td;
+	pBuffer->GetDesc(&td);
+	m_device->CreateTexture2D(&td, NULL, &result);
+
+	m_immediateContext->CopyResource(result, pBuffer);
+	return result;
+}
+
 
 bool Renderer::InitDevice(HWND hwnd)
 {

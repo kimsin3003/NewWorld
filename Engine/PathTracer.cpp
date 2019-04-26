@@ -6,7 +6,7 @@
 
 #define MAX_DEPTH 3
 XMVECTOR GetRandomHemiSphereDir(XMVECTOR planeNormal);
-RVector3 GetReflectedColor(RVector3 c1, RVector3 c2);
+RVector3 GetAbsorbedColor(RVector3 c1, RVector3 c2);
 XMVECTOR GetRandomDir();
 
 RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>& pbrObjects, int depth)
@@ -29,7 +29,7 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>
 			if (DirectX::XMVector3Equal(refractedDirVector, DirectX::XMVectorZero()))
 				return Black;
 			RVector3 refractedIncomingLightColor = GetPixelColor(RRay(hitData.hitPoint, refractedDirVector), pbrObjects, depth + 1);
-			return refractedIncomingLightColor;
+			return refractedIncomingLightColor * 0.9f;;
 		}
 		else
 		{
@@ -52,21 +52,20 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>
 
 			float randomCos = dotResult.x;
 			if (hitData.hitObject->PbrTransparent)
-				randomCos = -randomCos; 
+				randomCos = -randomCos;
 
-			XMFLOAT3 dist;
-			XMStoreFloat3(&dist, XMVector3Length(hitData.hitPoint - ray.GetOrigin()));
-
+// 			if (isDiffused)
+// 				incomingLightColor = incomingLightColor * ;
 			bool isAbsorbed = (double)rand() / (RAND_MAX) < hitData.hitObject->AbsorbRate ? true : false;
-			RVector3 reflectedColor = isAbsorbed ? GetReflectedColor(hitData.hitObject->Reflectance, incomingLightColor) : incomingLightColor;
-			RVector3 diffuseColor = hitData.hitObject->Emittance + reflectedColor * randomCos;
-			return diffuseColor;
+			RVector3 reflectedColor = isAbsorbed ? GetAbsorbedColor(hitData.hitObject->Reflectance, incomingLightColor) * randomCos : incomingLightColor;
+			RVector3 diffuseColor = hitData.hitObject->Emittance + reflectedColor;
+			return diffuseColor * 0.9f;
 		}
 	}
 	return Black;
 }
 
-RVector3 GetReflectedColor(RVector3 c1, RVector3 c2)
+RVector3 GetAbsorbedColor(RVector3 c1, RVector3 c2)
 {
 	return RVector3(c1.x * c2.x, c1.y * c2.y, c1.z * c2.z);
 }

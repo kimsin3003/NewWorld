@@ -15,6 +15,7 @@ public:
 	void RenderPbrSceneWithCS(HWND hWnd, double deltaTime);
 	void ShowResult(std::string fileName) const;
 	void Tick(double deltaTime);
+	class ID3D11Texture2D* GetFrameBuffer();
 private:
 	struct MatrixBuffer
 	{ 

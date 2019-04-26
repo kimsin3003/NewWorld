@@ -13,6 +13,7 @@ class SystemManager
 public:
 	void Initialize(class IGameManager* gameManager);
 	void Tick();
+	const class Renderer* GetRenderer() { return m_renderer; }
 
 private:
 	HINSTANCE m_hinstance;
