@@ -3,17 +3,18 @@
 #include <chrono>
 #include <random>
 #include "PbrObject.h"
+#include "RMath.h"
 
 #define MAX_DEPTH 3
 XMVECTOR GetRandomHemiSphereDir(XMVECTOR planeNormal);
 RVector3 GetAbsorbedColor(RVector3 c1, RVector3 c2);
 XMVECTOR GetRandomDir();
+XMVECTOR GetConeDir(XMVECTOR normal, float maxAngle);
+float GetCos(XMVECTOR v1, XMVECTOR v2);
+RVector3 Embient = { 0.0f, 0.0f, 0.0f };
 
 RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>& pbrObjects, int depth)
 {
-	RVector3 Black = { 0, 0, 0 };
-	if (depth > MAX_DEPTH)
-		return Black;
 
 	HitData hitData;
 	if (Intersection::GetHitData(&hitData, ray, pbrObjects))
@@ -22,12 +23,14 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>
 		{
 			return hitData.hitObject->Emittance;
 		}
+		else if (depth == MAX_DEPTH)
+			return Embient;
 
 		if (hitData.hitObject->PbrTransparent)
 		{
 			XMVECTOR refractedDirVector = DirectX::XMVector3Refract(ray.GetDir(), hitData.hitPlaneNormal, hitData.refractionRatio);
 			if (DirectX::XMVector3Equal(refractedDirVector, DirectX::XMVectorZero()))
-				return Black;
+				return Embient;
 			RVector3 refractedIncomingLightColor = GetPixelColor(RRay(hitData.hitPoint, refractedDirVector), pbrObjects, depth + 1);
 			return refractedIncomingLightColor * 0.9f;;
 		}
@@ -37,32 +40,37 @@ RVector3 PathTracer::GetPixelColor(RRay ray, const std::vector<class PbrObject*>
 			bool isDiffused = (double)rand() / (RAND_MAX) < hitData.hitObject->DiffuseRate ? true : false;
 			XMVECTOR incomingLightDir;
 
-			if (isDiffused)
+			if (hitData.hitObject->PbrColliderType == PBRColliderType::PLANE)
 			{
 				incomingLightDir = GetRandomHemiSphereDir(hitData.hitPlaneNormal);
 			}
 			else
 			{
 				incomingLightDir = XMVector3Reflect(ray.GetDir(), hitData.hitPlaneNormal);
+				incomingLightDir = GetConeDir(incomingLightDir, 2);
 			}
 
-			XMFLOAT3 dotResult;
 			RVector3 incomingLightColor = GetPixelColor(RRay(hitData.hitPoint, incomingLightDir), pbrObjects, depth + 1);
-			XMStoreFloat3(&dotResult, XMVector3Dot(incomingLightDir, hitData.hitPlaneNormal));
 
-			float randomCos = dotResult.x;
+			float cos = GetCos(incomingLightDir, hitData.hitPlaneNormal);
 			if (hitData.hitObject->PbrTransparent)
-				randomCos = -randomCos;
+				cos = -cos;
 
-// 			if (isDiffused)
-// 				incomingLightColor = incomingLightColor * ;
+
 			bool isAbsorbed = (double)rand() / (RAND_MAX) < hitData.hitObject->AbsorbRate ? true : false;
-			RVector3 reflectedColor = isAbsorbed ? GetAbsorbedColor(hitData.hitObject->Reflectance, incomingLightColor) * randomCos : incomingLightColor;
+			RVector3 reflectedColor = isAbsorbed ? GetAbsorbedColor(hitData.hitObject->Reflectance, incomingLightColor) * cos : incomingLightColor;
 			RVector3 diffuseColor = hitData.hitObject->Emittance + reflectedColor;
 			return diffuseColor * 0.9f;
 		}
 	}
-	return Black;
+	return Embient;
+}
+
+float GetCos(XMVECTOR v1, XMVECTOR v2)
+{
+	XMFLOAT3 dotResult;
+	XMStoreFloat3(&dotResult, XMVector3Dot(v1, v2));
+	return dotResult.x;
 }
 
 RVector3 GetAbsorbedColor(RVector3 c1, RVector3 c2)
@@ -81,6 +89,19 @@ XMVECTOR GetRandomDir()
 	std::uniform_int_distribution<int> distribution(1, RAND_MAX);
 
 	return XMVector3Normalize(XMLoadFloat3(&XMFLOAT3(distribution(generator) - RAND_MAX / 2, distribution(generator) - RAND_MAX / 2, distribution(generator) - RAND_MAX / 2)));
+}
+
+XMVECTOR GetConeDir(XMVECTOR normal, float maxAngle)
+{
+	XMVECTOR randomDir = GetRandomDir();
+	XMVECTOR angleToRotate = XMVector3AngleBetweenNormals(normal, randomDir) * maxAngle / 90.0f;
+	XMVECTOR axis = XMVector3Cross(normal, randomDir);
+
+	XMFLOAT3 angle;
+	XMStoreFloat3(&angle, angleToRotate);
+	XMVECTOR rotation = XMQuaternionRotationAxis(axis, angle.x);
+	XMVECTOR result = XMVector3Rotate(normal, rotation);
+	return result;
 }
 
 XMVECTOR GetRandomHemiSphereDir(XMVECTOR planeNormal)
