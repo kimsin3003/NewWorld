@@ -43,9 +43,9 @@ bool Intersection::GetHitData(HitData* hitData, RRay ray, std::vector<class PbrO
 				XMStoreFloat3(&dotResult, XMVector3Dot(ray.GetDir(), normal));
 
 				if (dotResult.x > 0) //물체 내부에서 밖으로
-					hitData->refractionRatio = gameObject->RefractionRate;
+					hitData->refractionRatio = gameObject->Material.RefractionRate;
 				else
-					hitData->refractionRatio = 1 / gameObject->RefractionRate;
+					hitData->refractionRatio = 1 / gameObject->Material.RefractionRate;
 
 				hitData->hitObject = gameObject;
 				hitData->hitPoint = hitPoint;

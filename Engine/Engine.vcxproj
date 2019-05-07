@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Intersection.cpp" />
+    <ClCompile Include="PbrMaterial.cpp" />
     <ClCompile Include="PbrObject.cpp" />
     <ClCompile Include="PbrPlane.cpp" />
     <ClCompile Include="PbrShaderCompiler.cpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="bitmap_image.h" />
     <ClInclude Include="ICollider.h" />
     <ClInclude Include="Intersection.h" />
+    <ClInclude Include="PbrMaterial.h" />
     <ClInclude Include="PbrObject.h" />
     <ClInclude Include="PbrPlane.h" />
     <ClInclude Include="PbrShaderCompiler.h" />

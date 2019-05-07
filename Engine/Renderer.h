@@ -37,7 +37,7 @@ private:
 	struct ID3D11DepthStencilView*					m_depthStencilView = nullptr;
 	int m_bufferWidth;
 	int m_bufferHeight;
-	RVector3* pixels = nullptr;
+	RColor* pixels = nullptr;
 	int* hitCountOnPixel = nullptr;
 	std::vector<std::thread>						m_threads;
 };

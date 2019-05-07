@@ -46,7 +46,7 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 	SetDepthStencilState();
 	SetRenderTargets();
 	SetViewports();
-	pixels = new RVector3[m_bufferWidth * m_bufferHeight];
+	pixels = new RColor[m_bufferWidth * m_bufferHeight];
 	hitCountOnPixel = new int[m_bufferWidth * m_bufferHeight];
 	for (int i = 0; i < m_bufferWidth * m_bufferHeight; i++)
 	{
@@ -70,7 +70,7 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 					for (int n = 0; n < screenHeight; n++)
 					{
 						RRay ray(m, n, screenWidth, screenHeight);
-						RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetPbrObjects(), 0);
+						RColor pixelColor = PathTracer::Trace(ray, ObjectManager->GetPbrObjects(), 0);
 
 						if (pixelColor.x > 0.1f || pixelColor.y > 0.1f || pixelColor.z > 0.1f)
 						{
@@ -168,7 +168,7 @@ void Renderer::ShowResult(std::string fileName) const
 	{
 		for (int n = 0; n < m_bufferHeight; n++)
 		{
-			RVector3 pixelColor = pixels[m * m_bufferHeight + n];
+			RColor pixelColor = pixels[m * m_bufferHeight + n];
 			if(hitCountOnPixel[m * m_bufferHeight + n] != 0)
 				pixelColor = pixelColor / hitCountOnPixel[m * m_bufferHeight + n];
 			INT r = pixelColor.x >= 1 ? 255 : pixelColor.x * 255;

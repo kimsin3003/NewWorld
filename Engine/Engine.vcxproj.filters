@@ -64,6 +64,9 @@
     <ClCompile Include="PbrShaderCompiler.cpp">
       <Filter>PBR\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="PbrMaterial.cpp">
+      <Filter>PBR</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IGameManager.h" />
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="PbrShaderCompiler.h">
       <Filter>PBR\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="PbrMaterial.h">
+      <Filter>PBR</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

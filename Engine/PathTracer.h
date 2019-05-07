@@ -6,6 +6,6 @@
 class PathTracer
 {
 public:
-	static RVector3 GetPixelColor(RRay ray, const std::vector<class PbrObject*>& pbrObjects, int depth);
+	static RColor Trace(RRay ray, const std::vector<class PbrObject*>& pbrObjects, int depth);
 };
 
