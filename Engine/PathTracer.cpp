@@ -55,10 +55,10 @@ RColor PathTracer::Trace(RRay ray, const std::vector<class PbrObject*>& pbrObjec
 			float reflectDirOutAngle = result.x;
 
 			float PDF = 1.0f / (M_PI); //probability density function value
-			RColor diffuseColor = material.Reflectance * randomDirIncome * cos(randomDirOutAngle) * (1 - material.ReflectRate);
+			//RColor diffuseColor = material.Reflectance * randomDirIncome * cos(randomDirOutAngle) * (1 - material.ReflectRate);
 			RColor specularColor = material.Reflectance * reflectDirIncome * material.SpecularPBRT(inAngle, reflectDirOutAngle) / PDF * material.ReflectRate;
 
-			return material.Emittance + diffuseColor + specularColor;
+			return material.Emittance + specularColor;
 
 // 			XMVECTOR specularLightDir = XMVector3Reflect(ray.GetDir(), hitData.hitPlaneNormal);
 // 			specularLightDir = GetConeDir(specularLightDir, 5);

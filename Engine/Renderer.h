@@ -10,12 +10,11 @@ class Renderer
 public:
 	~Renderer();
 	void Initialize(HWND hwnd, int bufferWidth, int bufferHeight);
-	void LoadLastResult();
 	void RenderPbrScene(HWND hWnd, double deltaTime);
 	void RenderPbrSceneWithCS(HWND hWnd, double deltaTime);
-	void ShowResult(std::string fileName) const;
+	void ShowResult() const;
 	void Tick(double deltaTime);
-	class ID3D11Texture2D* GetFrameBuffer();
+	struct ID3D11Texture2D* GetFrameBuffer();
 private:
 	struct MatrixBuffer
 	{ 
@@ -35,6 +34,7 @@ private:
 	struct ID3D11DepthStencilState*					m_depthStencilState = nullptr;
 	struct ID3D11Texture2D*							m_depthStencilTexture = nullptr;
 	struct ID3D11DepthStencilView*					m_depthStencilView = nullptr;
+	struct ID3D11ComputeShader* m_computeShader = nullptr;
 	int m_bufferWidth;
 	int m_bufferHeight;
 	RColor* pixels = nullptr;

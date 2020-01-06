@@ -3,7 +3,7 @@
 #pragma comment(lib, "Gdiplus.lib")
 #include <time.h>
 #include <dxgi.h>
-#include <D3D11.h>
+#include <d3d11.h>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include <iostream>
@@ -18,6 +18,7 @@
 #include "PathTracer.h"
 #include "RContext.h"
 #include "bitmap_image.h"
+#include "PbrShaderCompiler.h"
 
 Renderer::~Renderer()
 {
@@ -46,25 +47,31 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 	SetDepthStencilState();
 	SetRenderTargets();
 	SetViewports();
-	pixels = new RColor[m_bufferWidth * m_bufferHeight];
-	hitCountOnPixel = new int[m_bufferWidth * m_bufferHeight];
-	for (int i = 0; i < m_bufferWidth * m_bufferHeight; i++)
-	{
-		hitCountOnPixel[i] = 0;
-	}
-	srand(time(NULL));
+}
 
-	unsigned numOfThread = std::thread::hardware_concurrency();
-
-	m_threads.reserve(numOfThread);
-	for (int i = 0; i < numOfThread; i++)
+void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
+{
+	static double elapsedTime = 0;
+	elapsedTime += deltaTime;
+	if (elapsedTime > 1)
 	{
-		int withOfOneThread = m_bufferWidth / numOfThread;
-		int screenWidth = m_bufferWidth;
-		int screenHeight = m_bufferHeight;
-		m_threads.emplace_back([=] {
-			while (true)
-			{
+		pixels = new RColor[m_bufferWidth * m_bufferHeight];
+		hitCountOnPixel = new int[m_bufferWidth * m_bufferHeight];
+		for (int i = 0; i < m_bufferWidth * m_bufferHeight; i++)
+		{
+			hitCountOnPixel[i] = 0;
+		}
+		srand(time(NULL));
+
+		unsigned numOfThread = 1;// std::thread::hardware_concurrency();
+
+		m_threads.reserve(numOfThread);
+		for (int i = 0; i < numOfThread; i++)
+		{
+			int withOfOneThread = m_bufferWidth / numOfThread;
+			int screenWidth = m_bufferWidth;
+			int screenHeight = m_bufferHeight;
+			m_threads.emplace_back([=] {
 				for (int m = i * withOfOneThread; m < (i + 1) * withOfOneThread; m++)
 				{
 					for (int n = 0; n < screenHeight; n++)
@@ -79,90 +86,46 @@ void Renderer::Initialize(HWND hwnd, int bufferWidth, int bufferHeight)
 						}
 					}
 				}
-			}
-			
-		});
-	}
-	//LoadLastResult();
-}
 
-void Renderer::LoadLastResult()
-{
-
-	bitmap_image lastResult("result.bmp");
-	if (lastResult.pixel_count() != m_bufferHeight * m_bufferWidth)
-		return;
-
-	std::ifstream lastHitCountFile;
-	lastHitCountFile.open("lastHitCount.txt");
-	for (int m = 0; m < m_bufferWidth; m++)
-	{
-		for (int n = 0; n < m_bufferHeight; n++)
-		{
-			const unsigned int x = m;
-			const unsigned int y = n;
-
-			unsigned char red, green, blue;
-			lastResult.get_pixel(x, y, red, green, blue);
-			pixels[m * m_bufferHeight + n].x = red;
-			pixels[m * m_bufferHeight + n].y = green;
-			pixels[m * m_bufferHeight + n].z = blue;
-			std::string line;
-			if (getline(lastHitCountFile, line) && line != "")
-			{
-				try {
-					hitCountOnPixel[m * m_bufferHeight + n] = stoi(line);
-				}
-				catch (...) {
-					continue;
-				}
-			}
+			});
 		}
-	}
-	lastHitCountFile.close();
-}
-
-void Renderer::RenderPbrScene(HWND hWnd, double deltaTime)
-{
-	static double elapsedTime = 0;
-	elapsedTime += deltaTime;
-	if (elapsedTime > 1 / 60)
-	{
-		elapsedTime = 0;
-		ShowResult("result.bmp");
+		for (int i = 0; i < numOfThread; i++)
+		{
+			m_threads[i].join();
+		}
+		ShowResult();
 	}
 }
 
 void Renderer::RenderPbrSceneWithCS(HWND hWnd, double deltaTime)
 {
-	
-// 		int screenWidth = m_bufferWidth;
-// 		int screenHeight = m_bufferHeight;
-// 		threads.emplace_back([=] {
-// 			for (int m = i * withOfOneThread; m < (i + 1) * withOfOneThread; m++)
-// 			{
-// 				for (int n = 0; n < screenHeight; n++)
-// 				{
-// 					RRay ray(m, n, screenWidth, screenHeight);
-// 					RVector3 pixelColor = PathTracer::GetPixelColor(ray, ObjectManager->GetPbrObjects(), 0);
+	// Some service variables
+	ID3D11UnorderedAccessView* ppUAViewNULL[1] = { NULL };
+	ID3D11ShaderResourceView* ppSRVNULL[2] = { NULL, NULL };
+
+	if(m_computeShader == nullptr)
+		m_computeShader = PbrShaderCompiler::GetComputeShader(m_device, L"ComputeShader.hlsl");
+	//std::vector<PbrObject*>& objects = ObjectManager->GetPbrObjects();
+	//PbrShaderCompiler::CreateStructuredBuffer(m_device, objects.size(), )
+
+	// We now set up the shader and run it
+// 	m_immediateContext->CSSetShader(m_computeShader, NULL, 0);
+// 	m_immediateContext->CSSetShaderResources(0, 1, &m_srcDataGPUBufferView);
+// 	m_immediateContext->CSSetUnorderedAccessViews(0, 1, &m_destDataGPUBufferView,
+// 		NULL);
 // 
-// 					if (pixelColor.x > 0.1f || pixelColor.y > 0.1f || pixelColor.z > 0.1f)
-// 					{
-// 						pixels[m * screenHeight + n] += pixelColor;
-// 						hitCountOnPixel[m * screenHeight + n]++;
-// 					}
-// 				}
-// 			}
-// 		});
-// 	ShowResult("result.bmp");
+// 	m_immediateContext->Dispatch(32, 21, 1);
+// 
+// 	m_immediateContext->CSSetShader(NULL, NULL, 0);
+// 	m_immediateContext->CSSetUnorderedAccessViews(0, 1, ppUAViewNULL, NULL);
+// 	m_immediateContext->CSSetShaderResources(0, 2, ppSRVNULL);
+
 }
 
-void Renderer::ShowResult(std::string fileName) const
+void Renderer::ShowResult() const
 {
 
 	bitmap_image image(m_bufferWidth, m_bufferHeight);
-	std::ofstream lastHitCount;
-	lastHitCount.open("lastHitCount.txt", std::ios::trunc);
 
 	for (int m = 0; m < m_bufferWidth; m++)
 	{
@@ -182,12 +145,8 @@ void Renderer::ShowResult(std::string fileName) const
 			unsigned char green = GetGValue(rgbColor);
 			unsigned char blue = GetBValue(rgbColor);
 			image.set_pixel(m, n, red, green, blue);
-			lastHitCount << hitCountOnPixel[m * m_bufferHeight + n] + "\n";
 		}
 	}
-
-	image.save_image(fileName);
-	lastHitCount.close();
 }
 
 void Renderer::Tick(double deltaTime)
