@@ -1,6 +1,7 @@
 #pragma once
 #include <directxmath.h>
 #include <vector>
+#include <string>
 using namespace DirectX;
 
 class RGameObject

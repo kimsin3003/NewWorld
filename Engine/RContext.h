@@ -7,7 +7,8 @@
 #include "RMesh.h"
 #include "IGameManager.h"
 #include "SystemManager.h"
-#include "RInputManger.h"
+#include "RInputManager.h"
 
 extern RCameraManager* CameraManager;
 extern RObjectManager* ObjectManager;
+extern RInputManager* InputManager;

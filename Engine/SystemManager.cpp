@@ -4,7 +4,7 @@
 #include "RObjectManager.h"
 #include "RCameraManager.h"
 #include "Logger.h"
-#include "RInputManger.h"
+#include "RInputManager.h"
 #include "RContext.h"
 #include "IGameManager.h"
 
@@ -110,6 +110,12 @@ void SystemManager::Initialize(IGameManager* gameManager)
 		CameraManager->Initialize(1920, 1080, SCREEN_NEAR, SCREEN_DEPTH);
 	}
 
+	InputManager = new RInputManager();
+	if (InputManager)
+	{
+		InputManager->Initialize();
+	}
+
 	m_renderer = new RRenderer();
 	if(m_renderer)
 		m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
@@ -152,26 +158,33 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpar
 	switch (umsg)
 	{
 		// Check if a key has been pressed on the keyboard.
-	case WM_KEYDOWN:
-	{
-		// If a key is pressed send it to the input object so it can record that state.
-		RInputManager::KeyDown((unsigned int)wparam);
-		return 0;
-	}
-
-	// Check if a key has been released on the keyboard.
-	case WM_KEYUP:
-	{
-		// If a key is released then send it to the input object so it can unset the state for that key.
-		RInputManager::KeyUp((unsigned int)wparam);
-		return 0;
-	}
-
-	// Any other messages send to the default message handler as our application won't make use of them.
-	default:
-	{
-		return DefWindowProc(hwnd, umsg, wparam, lparam);
-	}
+		case WM_KEYDOWN:
+		{
+			// If a key is pressed send it to the input object so it can record that state.
+			InputManager->KeyDown((unsigned int)wparam);
+		}
+		// Check if a key has been released on the keyboard.
+		case WM_KEYUP:
+		{
+			// If a key is released then send it to the input object so it can unset the state for that key.
+			InputManager->KeyUp((unsigned int)wparam);
+		}
+		case WM_CHAR:
+		{
+			// If a key is released then send it to the input object so it can unset the state for that key.
+			InputManager->KeyDown((unsigned int)wparam);
+		}
+		case WM_MOUSEMOVE:
+		{
+			int x = LOWORD(lparam);
+			int y = HIWORD(lparam);
+			InputManager->SetMousePosition(x, y);
+		}
+		// Any other messages send to the default message handler as our application won't make use of them.
+		default:
+		{
+			return DefWindowProc(hwnd, umsg, wparam, lparam);
+		}
 	}
 }
 

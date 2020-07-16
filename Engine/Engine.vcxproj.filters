@@ -10,10 +10,10 @@
     <ClCompile Include="RResourceLoader.cpp" />
     <ClCompile Include="RRenderer.cpp" />
     <ClCompile Include="RObjectManager.cpp" />
-    <ClCompile Include="RInputManger.cpp" />
     <ClCompile Include="RCameraManager.cpp" />
     <ClCompile Include="RCamera.cpp" />
     <ClCompile Include="RContext.cpp" />
+    <ClCompile Include="RInputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger.h" />
@@ -27,9 +27,9 @@
     <ClInclude Include="RResourceLoader.h" />
     <ClInclude Include="RRenderer.h" />
     <ClInclude Include="RObjectManager.h" />
-    <ClInclude Include="RInputManger.h" />
     <ClInclude Include="RCameraManager.h" />
     <ClInclude Include="RCamera.h" />
+    <ClInclude Include="RInputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

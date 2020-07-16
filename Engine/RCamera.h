@@ -11,7 +11,7 @@ public:
 	void Initialize(float screenWidth, float screenHeight, float  screenNear, float screenDepth);
 
 	void SetPosition(float x, float y, float z);
-	void SetRotation(float x, float y, float z) { m_rotation.x = x; m_rotation.y = y; m_rotation.z = z; }
+	void SetRotation(float x, float y, float z);
 
 	XMFLOAT3 GetPosition() { return m_position; }
 	XMFLOAT3 GetRotation() { return m_rotation; }

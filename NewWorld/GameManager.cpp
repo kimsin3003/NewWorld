@@ -34,4 +34,5 @@ void GameManager::Initialize()
 
 void GameManager::Tick(double deltaTime)
 {
+	m_camMover.Tick(deltaTime);
 }

@@ -15,7 +15,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	SystemManager systemManager;
 	GameManager* gameManger = new GameManager();
 	systemManager.Initialize(gameManger);
-	RInputManager::Initialize();
 	while (!done)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
