@@ -5,7 +5,7 @@
 #include "RCamera.h"
 #include "Logger.h"
 
-static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::wstring filename, ID3D11ShaderResourceView** pSRV);
+static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::string filename, ID3D11ShaderResourceView** pSRV);
 
 void RMaterial::Initialize(struct ID3D11Device* device)
 {
@@ -133,7 +133,11 @@ void RMaterial::Initialize(struct ID3D11Device* device)
 	for (auto texInfo : m_textures)
 	{
 		if (texInfo.type == RTexture::DIFFUSE)
-			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_textureView);
+			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_diffuseTexture);
+		if (texInfo.type == RTexture::NORMAL)
+			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_normalTexture);
+		if (texInfo.type == RTexture::SPECULAR)
+			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_specularTexture);
 	}
 
 	Logger::Log("SamplerState 생성 성공");
@@ -172,7 +176,9 @@ void RMaterial::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX
 
 	SetPSConstBuffer(deviceContext);
 
-	deviceContext->PSSetShaderResources(0, 1, &m_textureView);
+	deviceContext->PSSetShaderResources(0, 1, &m_diffuseTexture);
+	deviceContext->PSSetShaderResources(0, 1, &m_diffuseTexture);
+	deviceContext->PSSetShaderResources(0, 1, &m_diffuseTexture);
 
 }
 
@@ -244,7 +250,7 @@ void RMaterial::SetPSConstBuffer(ID3D11DeviceContext* deviceContext)
 	deviceContext->PSSetConstantBuffers(bufferSlot, 1, &m_psConstBuffer);
 }
 
-static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::wstring filename, ID3D11ShaderResourceView** pSRV)
+static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::string filename, ID3D11ShaderResourceView** pSRV)
 {
 
 	TexMetadata imageMetadata;
@@ -252,18 +258,21 @@ static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::wstri
 	ScratchImage* pScratchImage = new ScratchImage();
 
 	HRESULT hr;
+	std::wstring fileName_w;
+	fileName_w.assign(filename.begin(), filename.end());
+	wprintf(fileName_w.c_str());
 
-	if (filename.find(L".dds") != std::string::npos)
+	if (fileName_w.find(L".dds") != std::string::npos)
 	{
-		hr = LoadFromDDSFile(filename.c_str(), DDS_FLAGS_NONE, &imageMetadata, *pScratchImage);
+		hr = LoadFromDDSFile(fileName_w.c_str(), DDS_FLAGS_NONE, &imageMetadata, *pScratchImage);
 	}
-	else if (filename.find(L".tga") != std::string::npos)
+	else if (fileName_w.find(L".tga") != std::string::npos)
 	{
-		hr = LoadFromTGAFile(filename.c_str(), &imageMetadata, *pScratchImage);
+		hr = LoadFromTGAFile(fileName_w.c_str(), &imageMetadata, *pScratchImage);
 	}
 	else
 	{
-		hr = LoadFromWICFile(filename.c_str(), WIC_FLAGS_NONE, &imageMetadata, *pScratchImage);
+		hr = LoadFromWICFile(fileName_w.c_str(), WIC_FLAGS_NONE, &imageMetadata, *pScratchImage);
 	}
 
 	if (SUCCEEDED(hr))

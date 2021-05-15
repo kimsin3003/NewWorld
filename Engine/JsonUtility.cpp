@@ -25,9 +25,14 @@ static Value MeshInfoToJsonValue(class RMesh* mesh, Document::AllocatorType& all
 		pos.AddMember("y", vertexInfo.Pos.y, allocator);
 		pos.AddMember("z", vertexInfo.Pos.z, allocator);
 
-		Value uv(kObjectType);
-		uv.AddMember("u", vertexInfo.UV.x, allocator);
-		uv.AddMember("v", vertexInfo.UV.y, allocator);
+		Value uvList(kArrayType);
+		for (int i = 0; i < vertexInfo.UV.size(); i++)
+		{
+			Value uv(kObjectType);
+			uv.AddMember("u", vertexInfo.UV[i].x, allocator);
+			uv.AddMember("v", vertexInfo.UV[i].y, allocator);
+			uvList.PushBack(uv, allocator);
+		}
 
 		Value normal(kObjectType);
 		normal.AddMember("x", vertexInfo.Normal.x, allocator);
@@ -36,7 +41,7 @@ static Value MeshInfoToJsonValue(class RMesh* mesh, Document::AllocatorType& all
 
 		Value vertex(kObjectType);
 		vertex.AddMember("pos", pos, allocator);
-		vertex.AddMember("uv", uv, allocator);
+		vertex.AddMember("uvList", uvList, allocator);
 		vertex.AddMember("normal", normal, allocator);
 
 		verticies.PushBack(vertex, allocator);
@@ -89,15 +94,22 @@ static RMesh* JsonValueToMesh(Value jsonValue)
 		{
 			const Value& vertex = itr->GetObject();
 			const Value& pos = vertex["pos"];
-			const Value& uv = vertex["uv"];
+			const Value& uvList = vertex["uvList"];
 			const Value& normal = vertex["normal"];
 
 			RVertex vertexInfo;
 			vertexInfo.Pos.x = pos["x"].GetFloat();
 			vertexInfo.Pos.y = pos["y"].GetFloat();
 			vertexInfo.Pos.z = pos["z"].GetFloat();
-			vertexInfo.UV.x = uv["u"].GetFloat();
-			vertexInfo.UV.y = uv["v"].GetFloat();
+
+
+			for (int i = 0; i < uvList.Size(); i++)
+			{
+				RVector2 uv;
+				uv.x = uvList[i]["u"].GetFloat();
+				uv.y = uvList[i]["v"].GetFloat();
+				vertexInfo.UV.push_back(uv);
+			}
 			vertexInfo.Normal.x = normal["x"].GetFloat();
 			vertexInfo.Normal.y = normal["y"].GetFloat();
 			vertexInfo.Normal.z = normal["z"].GetFloat();

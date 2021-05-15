@@ -7,9 +7,5 @@ using namespace fbxsdk;
 class RResourceLoader
 {
 public:
-	static bool LoadFBX(class RGameObject* outMeshes, std::string fbxFileName);
-private:
-	static void LoadVertexInformation(FbxMesh* pMesh, std::vector<struct RVertex>& outVertexVector, std::vector<unsigned int>& outIndexVector);
-	static void LoadUVInformation(FbxMesh* pMesh, std::vector<struct RVertex>& outVertexVector);
-	static void LoadNormalInformation(FbxMesh* pMesh, std::vector<RVertex>& outVertexVector);
+	static class RMesh* LoadFile(std::string fileName);
 };

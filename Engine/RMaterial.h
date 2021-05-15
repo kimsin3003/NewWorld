@@ -10,8 +10,9 @@ struct RTexture
 	{
 		DIFFUSE,
 		NORMAL,
+		SPECULAR
 	};
-	std::wstring filename;
+	std::string filename;
 	TextureType type;
 };
 
@@ -51,7 +52,9 @@ private:
 	struct	ID3D11PixelShader*			m_pixelShader		= nullptr;
 	struct	ID3D11InputLayout*			m_inputLayout		= nullptr;
 	struct	ID3D11SamplerState*			m_sampleState		= nullptr;
-	struct	ID3D11ShaderResourceView*	m_textureView		= nullptr;
+	struct	ID3D11ShaderResourceView* m_diffuseTexture = nullptr;
+	struct	ID3D11ShaderResourceView* m_normalTexture = nullptr;
+	struct	ID3D11ShaderResourceView* m_specularTexture = nullptr;
 	const	WCHAR*						m_vsFileName		= nullptr;
 	const	WCHAR*						m_psFileName		= nullptr;
 	struct	ID3D11Buffer*				m_vsConstBuffer		= nullptr;

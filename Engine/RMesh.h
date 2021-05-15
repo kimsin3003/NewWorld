@@ -3,11 +3,13 @@
 #include <vector>
 
 using namespace DirectX;
+using RVector3 = XMFLOAT3;
+using RVector2 = XMFLOAT2;
 struct RVertex
 {
-	XMFLOAT3 Pos;
-	XMFLOAT2 UV;
-	XMFLOAT3 Normal;
+	RVector3 Pos;
+	std::vector<RVector2> UV;
+	RVector3 Normal;
 };
 
 class RMesh

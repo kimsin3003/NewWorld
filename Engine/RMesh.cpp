@@ -1,5 +1,10 @@
 #include <d3d11.h>
 #include <string>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <vector>
+#include <iostream>
 #include "RMesh.h"
 #include "RMaterial.h"
 #include "Logger.h"
@@ -24,6 +29,7 @@ void RMesh::Initialize(struct ID3D11Device* device)
 		Logger::Log("IndexBuffer 생성 성공");
 	}
 }
+
 
 void RMesh::Render(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
