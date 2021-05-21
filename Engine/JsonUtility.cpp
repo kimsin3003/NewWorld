@@ -133,38 +133,38 @@ static RMesh* JsonValueToMesh(Value jsonValue)
 
 bool JsonUtility::ReadModelFromFile(class RGameObject* outGameObject, std::string filename)
 {
-	std::string jsonString = "";
-	std::ifstream myfile(filename);
-	if (myfile.is_open())
-	{
-		std::string line;
-		while (getline(myfile, line))
-		{
-			jsonString += line;
-		}
-		myfile.close();
-	}
-
-	if (jsonString == "")
-		return false;
-
-	Document document;
-	document.Parse(jsonString.c_str());
-
-	if (document.HasMember("meshes"))
-	{
-		Value& meshes = document["meshes"];
-		assert(meshes.IsArray());
-		for (SizeType i = 0; i < meshes.Size(); i++)
-		{
-			RMesh* mesh = JsonValueToMesh(meshes[i].GetObject());
-			if(mesh->Verticies.size() > 0 && mesh->Indicies.size() > 0)
-				outGameObject->Meshes.push_back(mesh);
-		}
-	}
-
-	if(outGameObject->Meshes.size() > 0)
-		return true;
+// 	std::string jsonString = "";
+// 	std::ifstream myfile(filename);
+// 	if (myfile.is_open())
+// 	{
+// 		std::string line;
+// 		while (getline(myfile, line))
+// 		{
+// 			jsonString += line;
+// 		}
+// 		myfile.close();
+// 	}
+// 
+// 	if (jsonString == "")
+// 		return false;
+// 
+// 	Document document;
+// 	document.Parse(jsonString.c_str());
+// 
+// 	if (document.HasMember("meshes"))
+// 	{
+// 		Value& meshes = document["meshes"];
+// 		assert(meshes.IsArray());
+// 		for (SizeType i = 0; i < meshes.Size(); i++)
+// 		{
+// 			RMesh* mesh = JsonValueToMesh(meshes.GetArray()[i].GetObject());
+// 			if(mesh->Verticies.size() > 0 && mesh->Indicies.size() > 0)
+// 				outGameObject->Meshes.push_back(mesh);
+// 		}
+// 	}
+// 
+// 	if(outGameObject->Meshes.size() > 0)
+// 		return true;
 
 	return false;
 }

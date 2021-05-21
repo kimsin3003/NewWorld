@@ -10,6 +10,32 @@
 #include <vector>
 #include <iostream>
 
+std::vector<RTexture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
+{
+	std::vector<RTexture> textures;
+	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+	{
+		aiString path;
+		mat->GetTexture(type, i, &path);
+		RTexture texture;
+		switch (type)
+		{
+		case aiTextureType_DIFFUSE:
+			texture.type = RTexture::TextureType::DIFFUSE;
+			break;
+		case aiTextureType_SPECULAR:
+			texture.type = RTexture::TextureType::SPECULAR;
+			break;
+		case aiTextureType_NORMALS:
+			texture.type = RTexture::TextureType::NORMAL;
+			break;
+		}
+		texture.filePath = path.data;
+		textures.push_back(texture);
+	}
+	return textures;
+}
+
 RMesh* LoadMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<RVertex> vertices;
@@ -39,17 +65,21 @@ RMesh* LoadMesh(aiMesh* mesh, const aiScene* scene)
 			result->Indicies.push_back(mesh->mFaces[f].mIndices[i]);
 		}
 	}
-
-	std::vector<RTexture> textures;
-	for (int i = 0; i < scene->mNumTextures; i++)
+	if (mesh->mMaterialIndex >= 0)
 	{
-		auto aiTexture = scene->mTextures[i];
-		RTexture texture;
-		texture.type = RTexture::DIFFUSE;
-		texture.filename = aiTexture->mFilename.C_Str();
-		textures.push_back(texture);
+		std::vector<RTexture> textures;
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		std::vector<RTexture> diffuseTextures = LoadMaterialTextures(material,
+			aiTextureType_DIFFUSE);
+		std::vector<RTexture> specularTextures = LoadMaterialTextures(material,
+			aiTextureType_SPECULAR);
+		std::vector<RTexture> normalTextures = LoadMaterialTextures(material,
+			aiTextureType_NORMALS);
+		textures.insert(textures.end(), diffuseTextures.begin(), diffuseTextures.end());
+		textures.insert(textures.end(), specularTextures.begin(), specularTextures.end());
+		textures.insert(textures.end(), normalTextures.begin(), normalTextures.end());
+		result->Mat = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", textures);
 	}
-	result->Mat = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", textures);
 
 	return result;
 }

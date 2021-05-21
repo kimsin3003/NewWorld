@@ -290,3 +290,4 @@ __pycache__/
 *.xsd.cs
 
 log.txt
+Debug

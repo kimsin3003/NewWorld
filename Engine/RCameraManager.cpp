@@ -10,7 +10,7 @@ void RCameraManager::Initialize(float screenWidth, float screenHeight, float scr
 	m_currentCamera = mainCamera;
 }
 
-class RCamera* RCameraManager::GetCurrentCamera()
+RCamera* RCameraManager::GetCurrentCamera()
 {
 	return m_currentCamera;
 }
