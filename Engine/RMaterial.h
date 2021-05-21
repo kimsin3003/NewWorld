@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <string>
 #include <directxmath.h>
+#include <vector>
 using namespace DirectX;
 
 struct RTexture

@@ -7,5 +7,5 @@ using namespace fbxsdk;
 class RResourceLoader
 {
 public:
-	static class RMesh* LoadFile(std::string fileName);
+	static bool LoadFile(std::string fileName, class RGameObject* gameObj);
 };
