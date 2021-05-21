@@ -1,6 +1,7 @@
 #include <d3d11.h>
 #include <D3Dcompiler.h>
-#include <DirectXTex.h>
+#include <DDSTextureLoader.h>
+#include <WICTextureLoader.h>
 #include "RMaterial.h"
 #include "RCamera.h"
 #include "Logger.h"
@@ -252,11 +253,6 @@ void RMaterial::SetPSConstBuffer(ID3D11DeviceContext* deviceContext)
 
 static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::string filename, ID3D11ShaderResourceView** pSRV)
 {
-
-	TexMetadata imageMetadata;
-
-	ScratchImage* pScratchImage = new ScratchImage();
-
 	HRESULT hr;
 	std::wstring fileName_w;
 	fileName_w.assign(filename.begin(), filename.end());
@@ -264,35 +260,12 @@ static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::strin
 
 	if (fileName_w.find(L".dds") != std::string::npos)
 	{
-		hr = LoadFromDDSFile(fileName_w.c_str(), DDS_FLAGS_NONE, &imageMetadata, *pScratchImage);
-	}
-	else if (fileName_w.find(L".tga") != std::string::npos)
-	{
-		hr = LoadFromTGAFile(fileName_w.c_str(), &imageMetadata, *pScratchImage);
+		hr = DirectX::CreateDDSTextureFromFile(device, fileName_w.c_str(), nullptr, pSRV);
 	}
 	else
 	{
-		hr = LoadFromWICFile(fileName_w.c_str(), WIC_FLAGS_NONE, &imageMetadata, *pScratchImage);
+		hr = DirectX::CreateWICTextureFromFile(device, fileName_w.c_str(), nullptr, pSRV);
 	}
-
-	if (SUCCEEDED(hr))
-	{
-
-		hr = CreateShaderResourceView(
-
-			device,
-
-			pScratchImage->GetImages(),
-
-			pScratchImage->GetImageCount(),
-
-			imageMetadata,
-
-			pSRV);
-
-	}
-
-	delete pScratchImage;
 
 	return hr;
 }

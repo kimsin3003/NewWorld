@@ -1,6 +1,11 @@
 #pragma once
 #include <vector>
 #include <queue>
+#include <Keyboard.h>
+#include <Mouse.h>
+#include <windows.h>
+
+using namespace DirectX;
 
 class RInputManager
 {
@@ -12,22 +17,10 @@ public:
 		int y;
 	};
 	void Initialize();
-	void Reset();
-	void KeyDown(unsigned int input);
-	void KeyUp(unsigned int input);
-	bool IsKeyDown(unsigned int key);
-	void SetMousePosition(int x, int y);
-	inline bool HasNewMouseMove() { return !m_mouseMoves.empty(); }
-	MouseMove GetNewMouseMove() { 
-		auto move = m_mouseMoves.front();
-		m_mouseMoves.pop();
-		return move; 
-	}
+	bool IsKeyDown(Keyboard::Keys key);
+	DirectX::Mouse::State GetMouseState();
 
 private:
-	bool m_keys[256];
-	std::vector<int> m_pressedKeys;
-	std::queue<MouseMove> m_mouseMoves;
-	int m_mouseX;
-	int m_mouseY;
+	std::unique_ptr<DirectX::Keyboard> m_keyboard;
+	std::unique_ptr<DirectX::Mouse> m_mouse;
 };

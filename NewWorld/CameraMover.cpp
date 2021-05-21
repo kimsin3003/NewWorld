@@ -1,6 +1,7 @@
 #include "CameraMover.h"
 #include "Engine/RContext.h"
 #include "Engine/RCamera.h"
+#include <Mouse.h>
 
 void CameraMover::Start()
 {
@@ -8,33 +9,45 @@ void CameraMover::Start()
 
 void CameraMover::Tick(double deltaTime)
 {
-	float speed = 0.001f;
-	if (InputManager->IsKeyDown(0x77) || InputManager->IsKeyDown(VK_UP))
+	float speed = 100 * deltaTime;
+	RCamera* camera = CameraManager->GetCurrentCamera();
+	auto curPos = camera->GetPosition();
+	auto curDir = camera->GetDirection();
+	auto curRight = camera->GetRight();
+	if (InputManager->IsKeyDown(Keyboard::W))
 	{
-		auto curPos = CameraManager->GetCurrentCamera()->GetPosition();
-		CameraManager->GetCurrentCamera()->SetPosition(curPos.x, curPos.y, curPos.z + speed);
+		RVector3 moveDist = curDir * speed;
+		camera->SetPosition(curPos + moveDist);
 	}
-	else if (InputManager->IsKeyDown(0x61) || InputManager->IsKeyDown(VK_LEFT))
+	else if (InputManager->IsKeyDown(Keyboard::A))
 	{
-		auto curPos = CameraManager->GetCurrentCamera()->GetPosition();
-		CameraManager->GetCurrentCamera()->SetPosition(curPos.x - speed, curPos.y, curPos.z);
+		RVector3 moveDist = curRight * speed;
+		camera->SetPosition(curPos - moveDist);
 	}
-	else if (InputManager->IsKeyDown(0x73) || InputManager->IsKeyDown(VK_DOWN))
+	else if (InputManager->IsKeyDown(Keyboard::S))
 	{
-		auto curPos = CameraManager->GetCurrentCamera()->GetPosition();
-		CameraManager->GetCurrentCamera()->SetPosition(curPos.x, curPos.y, curPos.z - speed);
+		RVector3 moveDist = curDir * speed;
+		camera->SetPosition(curPos.x, curPos.y, curPos.z - speed);
 	}
-	else if (InputManager->IsKeyDown(0x64) || InputManager->IsKeyDown(VK_RIGHT))
+	else if (InputManager->IsKeyDown(Keyboard::D))
 	{
-		auto curPos = CameraManager->GetCurrentCamera()->GetPosition();
-		CameraManager->GetCurrentCamera()->SetPosition(curPos.x + speed, curPos.y, curPos.z);
+		RVector3 moveDist = curRight * speed;
+		camera->SetPosition(curPos + moveDist);
 	}
+	else if (InputManager->IsKeyDown(Keyboard::E))
+	{
+		camera->SetPosition(curPos.x, curPos.y + speed, curPos.z);
+	}
+	else if (InputManager->IsKeyDown(Keyboard::Q))
+	{
+		camera->SetPosition(curPos.x, curPos.y - speed, curPos.z);
+	}
+	auto state = InputManager->GetMouseState();
 
-	if (InputManager->HasNewMouseMove())
+	if (state.positionMode == Mouse::MODE_RELATIVE)
 	{
 		float speed = 0.1f;
-		RInputManager::MouseMove move = InputManager->GetNewMouseMove();
-		auto curRot = CameraManager->GetCurrentCamera()->GetRotation();
-		CameraManager->GetCurrentCamera()->SetRotation(curRot.x + speed * move.y, curRot.y + speed * move.x, curRot.z);
+		auto curRot = camera->GetRotation();
+		camera->SetRotation(curRot.x + speed * state.y, curRot.y + speed * state.x, curRot.z);
 	}
 }

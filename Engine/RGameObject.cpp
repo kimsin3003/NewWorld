@@ -26,5 +26,5 @@ const DirectX::XMMATRIX RGameObject::GetWorldMatrix()
 
 void RGameObject::SetResource(std::string filename)
 {
-	Meshes.push_back(RResourceLoader::LoadFile(filename));
+	RResourceLoader::LoadFile(filename, this);
 }

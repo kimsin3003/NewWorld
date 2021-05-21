@@ -1,9 +1,9 @@
 #pragma once
 #include <directxmath.h>
 #include <vector>
+#include "RVector.h"
 
 using namespace DirectX;
-using RVector3 = XMFLOAT3;
 using RVector2 = XMFLOAT2;
 struct RVertex
 {

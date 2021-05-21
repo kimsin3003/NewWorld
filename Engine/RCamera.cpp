@@ -17,6 +17,12 @@ void RCamera::SetPosition(float x, float y, float z)
 	CreateViewMatrix();
 }
 
+void RCamera::SetPosition(RVector3 pos)
+{
+	m_position = pos.ToXMFloat();
+	CreateViewMatrix();
+}
+
 void RCamera::SetRotation(float x, float y, float z)
 {
 	m_rotation.x = x; m_rotation.y = y; m_rotation.z = z;
@@ -69,12 +75,14 @@ void RCamera::CreateViewMatrix()
 	XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
-	lookVector = DirectX::XMVector3TransformCoord(lookVector, rotationMatrix);
-	upVector = DirectX::XMVector3TransformCoord(upVector, rotationMatrix);
+	lookVector = XMVector3Normalize(DirectX::XMVector3TransformCoord(lookVector, rotationMatrix));
+	upVector = XMVector3Normalize(DirectX::XMVector3TransformCoord(upVector, rotationMatrix));
 
 	// Translate the rotated camera position to the location of the viewer.
-	lookVector = DirectX::XMVectorAdd(positionVector, lookVector);
+	XMVECTOR focusPos = DirectX::XMVectorAdd(positionVector, lookVector);
+	XMStoreFloat3(&m_dir, lookVector);
+	XMStoreFloat3(&m_right, XMVector3Normalize(XMVector3Cross(upVector, lookVector)));
 
 	// Finally create the view matrix from the three updated vectors.
-	m_viewMatrix = DirectX::XMMatrixLookAtLH(positionVector, lookVector, upVector);
+	m_viewMatrix = DirectX::XMMatrixLookAtLH(positionVector, focusPos, upVector);
 }

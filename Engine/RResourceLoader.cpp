@@ -86,24 +86,23 @@ RMesh* LoadMesh(aiMesh* mesh, const aiScene* scene)
 
 
 
-RMesh* ProcessNode(aiNode* node, const aiScene* scene)
+void ProcessNode(aiNode* node, const aiScene* scene, RGameObject* gameObj)
 {
 	// 노드의 모든 mesh들을 처리(만약 있다면)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		return LoadMesh(mesh, scene);
+		gameObj->Meshes.push_back(LoadMesh(mesh, scene));
 	}
 	// 그런 다음 각 자식들에게도 동일하게 적용
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		ProcessNode(node->mChildren[i], scene);
+		ProcessNode(node->mChildren[i], scene, gameObj);
 	}
-	return nullptr;
 }
 
 
-RMesh* RResourceLoader::LoadFile(std::string fileName)
+bool RResourceLoader::LoadFile(std::string fileName, RGameObject* gameObj)
 {
 	std::string fileDir = "../Resource/" + fileName;
 
@@ -118,11 +117,12 @@ RMesh* RResourceLoader::LoadFile(std::string fileName)
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
-		return nullptr;
+		return false;
 	}
 
 	auto node = scene->mRootNode;
-	return ProcessNode(node, scene);
+	ProcessNode(node, scene, gameObj);
+	return true;  
 }
 
 // 

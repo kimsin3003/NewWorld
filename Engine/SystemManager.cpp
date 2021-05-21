@@ -92,6 +92,7 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	SetForegroundWindow(m_hwnd);
 	SetFocus(m_hwnd);
 
+
 	// Hide the mouse cursor.
 	ShowCursor(true);
 
@@ -114,6 +115,8 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	if (InputManager)
 	{
 		InputManager->Initialize();
+		DirectX::Mouse::Get().SetWindow(m_hwnd);
+		DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	}
 
 	m_renderer = new RRenderer();
@@ -127,65 +130,37 @@ void SystemManager::Initialize(IGameManager* gameManager)
 	return;
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	switch (umessage)
+	switch (message)
 	{
-		// Check if the window is being destroyed.
-	case WM_DESTROY:
-	{
-		PostQuitMessage(0);
-		return 0;
+	case WM_ACTIVATEAPP:
+		Keyboard::ProcessMessage(message, wParam, lParam);
+		break;
+
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		Keyboard::ProcessMessage(message, wParam, lParam);
+		break;
+	case WM_INPUT:
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEWHEEL:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_MOUSEHOVER:
+		Mouse::ProcessMessage(message, wParam, lParam);
+		break;
 	}
 
-	// Check if the window is being closed.
-	case WM_CLOSE:
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	// All other messages pass to the message handler in the system class.
-	default:
-	{
-		return MessageHandler(hwnd, umessage, wparam, lparam);
-	}
-	}
-}
-
-LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
-{
-	switch (umsg)
-	{
-		// Check if a key has been pressed on the keyboard.
-		case WM_KEYDOWN:
-		{
-			// If a key is pressed send it to the input object so it can record that state.
-			InputManager->KeyDown((unsigned int)wparam);
-		}
-		// Check if a key has been released on the keyboard.
-		case WM_KEYUP:
-		{
-			// If a key is released then send it to the input object so it can unset the state for that key.
-			InputManager->KeyUp((unsigned int)wparam);
-		}
-		case WM_CHAR:
-		{
-			// If a key is released then send it to the input object so it can unset the state for that key.
-			InputManager->KeyDown((unsigned int)wparam);
-		}
-		case WM_MOUSEMOVE:
-		{
-			int x = LOWORD(lparam);
-			int y = HIWORD(lparam);
-			InputManager->SetMousePosition(x, y);
-		}
-		// Any other messages send to the default message handler as our application won't make use of them.
-		default:
-		{
-			return DefWindowProc(hwnd, umsg, wparam, lparam);
-		}
-	}
+	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
 

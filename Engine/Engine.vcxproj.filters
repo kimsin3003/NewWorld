@@ -14,6 +14,7 @@
     <ClCompile Include="RCamera.cpp" />
     <ClCompile Include="RContext.cpp" />
     <ClCompile Include="RInputManager.cpp" />
+    <ClCompile Include="RVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="RCameraManager.h" />
     <ClInclude Include="RCamera.h" />
     <ClInclude Include="RInputManager.h" />
+    <ClInclude Include="RVector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
