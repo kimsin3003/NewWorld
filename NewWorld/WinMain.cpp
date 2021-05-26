@@ -12,9 +12,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	// Loop until there is a quit message from the window or the user.
 	done = false;
 
-	SystemManager systemManager;
+	SysManager = new SystemManager();
 	GameManager* gameManger = new GameManager();
-	systemManager.Initialize(gameManger);
+	SysManager->Initialize(gameManger);
 	while (!done)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -29,9 +29,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 		}
 		else
 		{
-			systemManager.Tick();
+			SysManager->Tick();
 		}
 
 	}
+	delete SysManager;
 	return 0;
 }

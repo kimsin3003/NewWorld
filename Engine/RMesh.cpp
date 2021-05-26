@@ -1,5 +1,4 @@
 #include <d3d11.h>
-#include <string>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -93,6 +92,57 @@ void RMesh::CreateIndexBuffer(struct ID3D11Device* device)
 	if (FAILED(hr))
 	{
 		Logger::Log(hr);
+	}
+}
+
+void RMesh::Load(const struct aiMesh* mesh, const struct aiScene* scene, std::string path)
+{
+	std::vector<RVertex> vertices;
+	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+	{
+		RVertex vertex;
+		// vertex 위치, 법선, 텍스처 좌표를 처리
+		vertex.Pos = RVector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+		if (mesh->HasNormals())
+		{
+			vertex.Normal = RVector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+		}
+
+		if (mesh->HasTangentsAndBitangents())
+		{
+			vertex.Tangent = RVector3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+			vertex.Binormal = RVector3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+		}
+
+		// 		vertex.UV.clear();
+		// 		int j = 0;
+		// 		while (mesh->HasTextureCoords(j))
+		// 		{
+		// 			vertex.UV.emplace_back();
+		// 			vertex.UV[j].x = mesh->mTextureCoords[j][i].x;
+		// 			vertex.UV[j].y = mesh->mTextureCoords[j][i].y;
+		// 			j++;
+		// 		}
+		if (mesh->HasTextureCoords(0))
+		{
+			vertex.UV.x = mesh->mTextureCoords[0][i].x;
+			vertex.UV.y = mesh->mTextureCoords[0][i].y;
+		}
+		Verticies.push_back(vertex);
+	}
+
+	for (int f = 0; f < mesh->mNumFaces; f++)
+	{
+		for (int i = 0; i < mesh->mFaces[f].mNumIndices; i++)
+		{
+			Indicies.push_back(mesh->mFaces[f].mIndices[i]);
+		}
+	}
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		Mat = new RMaterial(L"Default_VS.hlsl", L"Default_PS.hlsl", path);
+		Mat->Load(scene, material);
 	}
 }
 

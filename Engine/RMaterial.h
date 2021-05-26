@@ -7,14 +7,15 @@ using namespace DirectX;
 
 struct RTexture
 {
-	enum TextureType
+	enum RTextureType
 	{
 		DIFFUSE,
 		NORMAL,
 		SPECULAR
 	};
-	std::string filename;
-	TextureType type;
+	std::string filePath;
+	RTextureType type;
+	struct ID3D11ShaderResourceView* rv;
 };
 
 class RMaterial
@@ -35,31 +36,35 @@ public:
 	{
 		XMFLOAT4 lightIntensity; //앞의 4byte만 쓰자.
 		XMFLOAT4 ambientColor;
+		XMMATRIX world;
 	};
-	RMaterial(const WCHAR* vsFileName, const WCHAR* psFileName, std::vector<RTexture> textures) : m_vsFileName(vsFileName), m_psFileName(psFileName), m_textures(textures) {}
+	RMaterial(const WCHAR* vsFileName, const WCHAR* psFileName, std::string directory) : m_vsFileName(vsFileName), m_psFileName(psFileName), m_directory(directory) {}
 	bool IsInitialized() { return m_vertexShader && m_pixelShader && m_inputLayout; }
-	void Initialize(struct ID3D11Device* device);
-	void Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
-	void SetShaderParameters(struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+	void Render(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+	
+	void Load(const struct aiScene* scene, const struct aiMaterial* aiMat);
 
-	void SetVSConstBuffer(XMMATRIX &worldMatrix, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, ID3D11DeviceContext* deviceContext);
-	void SetPSConstBuffer(ID3D11DeviceContext* deviceContext);
+	void LoadTextureType(const struct aiScene* scene, const struct aiMaterial* aiMat, RTexture::RTextureType type);
 
 	virtual ~RMaterial();
 
+private:
+	void SetShaderParameters(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+
+	void SetVSConstBuffer(XMMATRIX &worldMatrix, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
+	void SetPSConstBuffer();
+	ID3D11ShaderResourceView* CreateShaderResourceView(const struct aiScene* scene, std::string fileName);
 private:
 
 	struct	ID3D11VertexShader*			m_vertexShader		= nullptr;
 	struct	ID3D11PixelShader*			m_pixelShader		= nullptr;
 	struct	ID3D11InputLayout*			m_inputLayout		= nullptr;
 	struct	ID3D11SamplerState*			m_sampleState		= nullptr;
-	struct	ID3D11ShaderResourceView* m_diffuseTexture = nullptr;
-	struct	ID3D11ShaderResourceView* m_normalTexture = nullptr;
-	struct	ID3D11ShaderResourceView* m_specularTexture = nullptr;
 	const	WCHAR*						m_vsFileName		= nullptr;
 	const	WCHAR*						m_psFileName		= nullptr;
 	struct	ID3D11Buffer*				m_vsConstBuffer		= nullptr;
 	struct	ID3D11Buffer*				m_psConstBuffer		= nullptr;
-	std::vector<RTexture>				m_textures;
+	std::vector<RTexture*>				m_textures;
+	static std::vector<RTexture*>		m_loadedTextures;
+	std::string m_directory;
 };
-

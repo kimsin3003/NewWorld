@@ -119,9 +119,9 @@ void SystemManager::Initialize(IGameManager* gameManager)
 		DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 	}
 
-	m_renderer = new RRenderer();
-	if(m_renderer)
-		m_renderer->Initialize(m_hwnd, screenWidth, screenHeight);
+	Renderer = new RRenderer();
+	if(Renderer)
+		Renderer->Initialize(m_hwnd, screenWidth, screenHeight);
 
 	m_gameManager = gameManager;
 	if (m_gameManager)
@@ -173,7 +173,7 @@ void SystemManager::Tick()
 		m_gameManager->Tick(diff.count());
 	if(ObjectManager)
 		ObjectManager->Tick(diff.count());
-	if(m_renderer)
-		m_renderer->Tick(CameraManager, ObjectManager, diff.count());
+	if(Renderer)
+		Renderer->Tick(CameraManager, ObjectManager, diff.count());
 }
 

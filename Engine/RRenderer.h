@@ -8,6 +8,8 @@ class RRenderer
 public:
 	void Initialize(HWND hwnd, float bufferWidth, float bufferHeight);
 	void Tick(class RCameraManager* cameraManager, class RObjectManager* objectManager, double deltaTime);
+	struct ID3D11DeviceContext* GetDeviceContext() { return m_immediateContext; }
+	struct ID3D11Device* GetDevice() { return m_device; }
 private:
 	struct MatrixBuffer
 	{ 

@@ -35,7 +35,7 @@ void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* 
 		return;
 	elapsedTime = 0;
 
-	float clearColor[4] = { 0, 1.0f, 0, 1.0f };
+	float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, clearColor);
 	m_immediateContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
@@ -51,7 +51,7 @@ void RRenderer::Tick(class RCameraManager* cameraManager, class RObjectManager* 
 				RMaterial* mat = mesh->Mat;
 				if (mat)
 				{
-					mat->Render(m_device, m_immediateContext, gameObject->GetWorldMatrix(), currentCamera->GetViewMatrix(), currentCamera->GetProjectionMatrix());
+					mat->Render(gameObject->GetWorldMatrix(), currentCamera->GetViewMatrix(), currentCamera->GetProjectionMatrix());
 				}
 				mesh->Render(m_device, m_immediateContext);
 			}
@@ -123,7 +123,7 @@ bool RRenderer::InitDevice(HWND hwnd)
 
 void RRenderer::SetRenderTargets()
 {
-	ID3D11Texture2D* backBuffer = NULL;
+	ID3D11Texture2D* backBuffer = nullptr;
 	HRESULT hr = m_swapChain->GetBuffer(0,							 // 후면 버퍼 인덱스, 여러개일 때 중요, 지금은 1개 이므로 0.
 		__uuidof(ID3D11Texture2D),
 		(LPVOID*)&backBuffer);

@@ -2,6 +2,10 @@
 #include "RMesh.h"
 #include "RMaterial.h"
 #include "RResourceLoader.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <iostream>
 
 RGameObject::~RGameObject()
 {
@@ -24,7 +28,41 @@ const DirectX::XMMATRIX RGameObject::GetWorldMatrix()
 	return worldMatrix;
 }
 
-void RGameObject::SetResource(std::string filename)
+void RGameObject::SetResource(std::string filenPath)
 {
-	RResourceLoader::LoadFile(filename, this);
+	std::string path = filenPath.substr(0, filenPath.find_last_of("/\\"));
+
+	Assimp::Importer import;
+	const aiScene* scene = import.ReadFile(filenPath,
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType |
+		aiProcess_FlipUVs);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+		return;
+	}
+
+	auto node = scene->mRootNode;
+	ProcessNode(node, scene, path);
+}
+
+void RGameObject::ProcessNode(const struct aiNode* node, const struct aiScene* scene, std::string path)
+{
+	// 노드의 모든 mesh들을 처리(만약 있다면)
+	for (unsigned int i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+		RMesh* mesh = new RMesh();
+		mesh->Load(aiMesh, scene, "../Resource/");
+		Meshes.push_back(mesh);
+	}
+	// 그런 다음 각 자식들에게도 동일하게 적용
+	for (unsigned int i = 0; i < node->mNumChildren; i++)
+	{
+		ProcessNode(node->mChildren[i], scene, path);
+	}
 }

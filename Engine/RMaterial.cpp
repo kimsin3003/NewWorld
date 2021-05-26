@@ -2,15 +2,46 @@
 #include <D3Dcompiler.h>
 #include <DDSTextureLoader.h>
 #include <WICTextureLoader.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include "RMaterial.h"
 #include "RCamera.h"
 #include "Logger.h"
+#include "RContext.h"
 
-static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::string filename, ID3D11ShaderResourceView** pSRV);
 
-void RMaterial::Initialize(struct ID3D11Device* device)
+std::vector<RTexture*>		RMaterial::m_loadedTextures;
+
+void RMaterial::Render(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
-	ID3D10Blob *vsBlob, *psBlob, *errorblob;
+	SetShaderParameters(worldMatrix, viewMatrix, projectionMatrix);
+
+	auto deviceContext = Renderer->GetDeviceContext();
+
+	deviceContext->IASetInputLayout(m_inputLayout);
+
+	if (m_vertexShader)
+	{
+		deviceContext->VSSetShader(m_vertexShader, 0, 0);
+	}
+
+	if (m_pixelShader)
+	{
+		deviceContext->PSSetShader(m_pixelShader, 0, 0);
+	}
+
+	if (m_sampleState)
+	{
+		deviceContext->PSSetSamplers(0, 1, &m_sampleState);
+	}
+
+
+}
+
+void RMaterial::Load(const struct aiScene* scene, const struct aiMaterial* aiMat)
+{
+	ID3D10Blob* vsBlob, * psBlob, * errorblob;
 	HRESULT hr = D3DCompileFromFile(m_vsFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", NULL, NULL, &vsBlob, &errorblob);
 	if (FAILED(hr))
 	{
@@ -27,7 +58,7 @@ void RMaterial::Initialize(struct ID3D11Device* device)
 	}
 
 	// encapsulate both shaders into shader objects
-	hr = device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &m_vertexShader);
+	hr = Renderer->GetDevice()->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), 0, &m_vertexShader);
 	if (FAILED(hr))
 	{
 		Logger::Log("VertexShader 생성 오류");
@@ -49,7 +80,7 @@ void RMaterial::Initialize(struct ID3D11Device* device)
 		return;
 	}
 
-	hr = device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &m_pixelShader);
+	hr = Renderer->GetDevice()->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), 0, &m_pixelShader);
 	if (FAILED(hr))
 	{
 		Logger::Log("PixelShader 생성 오류");
@@ -63,9 +94,12 @@ void RMaterial::Initialize(struct ID3D11Device* device)
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Tangent", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Binormal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
+	auto device = Renderer->GetDevice();
 	hr = device->CreateInputLayout(ied, sizeof(ied) / sizeof(D3D11_INPUT_ELEMENT_DESC), vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &m_inputLayout);
 	if (FAILED(hr))
 	{
@@ -131,62 +165,83 @@ void RMaterial::Initialize(struct ID3D11Device* device)
 		Logger::Log(hr);
 		return;
 	}
-	for (auto texInfo : m_textures)
-	{
-		if (texInfo.type == RTexture::DIFFUSE)
-			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_diffuseTexture);
-		if (texInfo.type == RTexture::NORMAL)
-			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_normalTexture);
-		if (texInfo.type == RTexture::SPECULAR)
-			CreateShaderResourceViewFromFile(device, texInfo.filename, &m_specularTexture);
-	}
 
 	Logger::Log("SamplerState 생성 성공");
+
+	LoadTextureType(scene, aiMat, RTexture::DIFFUSE);
 }
 
-void RMaterial::Render(struct ID3D11Device* device, struct ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+aiTextureType ConvertType(RTexture::RTextureType type)
 {
-	if (!IsInitialized())
-		Initialize(device);
-
-	SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
-
-	deviceContext->IASetInputLayout(m_inputLayout);
-
-	if (m_vertexShader)
+	switch (type)
 	{
-		deviceContext->VSSetShader(m_vertexShader, 0, 0);
+	case RTexture::DIFFUSE:
+		return aiTextureType::aiTextureType_DIFFUSE;
+	case RTexture::NORMAL:
+		return aiTextureType::aiTextureType_NORMALS;
+	case RTexture::SPECULAR:
+		return aiTextureType::aiTextureType_SPECULAR;
 	}
-
-	if (m_pixelShader)
-	{
-		deviceContext->PSSetShader(m_pixelShader, 0, 0);
-	}
-
-	if (m_pixelShader)
-	{
-		deviceContext->PSSetSamplers(0, 1, &m_sampleState);
-	}
-
-
+	return aiTextureType::aiTextureType_NONE;
 }
 
-void RMaterial::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+void RMaterial::LoadTextureType(const struct aiScene* scene, const struct aiMaterial* aiMat, RTexture::RTextureType type)
 {
-	SetVSConstBuffer(worldMatrix, viewMatrix, projectionMatrix, deviceContext);
+	aiTextureType aiType = ConvertType(type);
+	for (UINT i = 0; i < aiMat->GetTextureCount(aiType); i++) {
+		aiString str;
+		aiMat->GetTexture(aiType, i, &str);
+		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+		bool skip = false;
+		for (UINT j = 0; j < m_textures.size(); j++) {
+			if (std::strcmp(m_loadedTextures[j]->filePath.c_str(), str.C_Str()) == 0) {
+				m_textures.push_back(m_loadedTextures[j]);
+				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
+				break;
+			}
+		}
+		if (!skip) {   // If texture hasn't been loaded already, load it
+			RTexture* texture = new RTexture();	
+			texture->filePath = str.C_Str();
+			texture->rv = CreateShaderResourceView(scene, str.C_Str());
+			m_textures.push_back(texture);
+			m_loadedTextures.push_back(texture);
+		}
+	}
+}
 
-	SetPSConstBuffer(deviceContext);
+void RMaterial::SetShaderParameters(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+{
+	SetVSConstBuffer(worldMatrix, viewMatrix, projectionMatrix);
 
-	deviceContext->PSSetShaderResources(0, 1, &m_diffuseTexture);
-	deviceContext->PSSetShaderResources(0, 1, &m_diffuseTexture);
-	deviceContext->PSSetShaderResources(0, 1, &m_diffuseTexture);
+	SetPSConstBuffer();
+
+	auto deviceContext = Renderer->GetDeviceContext();
+
+	for (auto texture : m_textures)
+	{
+		switch (texture->type)
+		{
+		case RTexture::DIFFUSE:
+			deviceContext->PSSetShaderResources(0, 1, &texture->rv);
+			break;
+		case RTexture::NORMAL:
+			deviceContext->PSSetShaderResources(1, 1, &texture->rv);
+			break;
+		case RTexture::SPECULAR:
+			deviceContext->PSSetShaderResources(2, 1, &texture->rv);
+			break;
+		}
+	}
 
 }
 
-void RMaterial::SetVSConstBuffer(XMMATRIX &worldMatrix, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, ID3D11DeviceContext* deviceContext)
+void RMaterial::SetVSConstBuffer(XMMATRIX &worldMatrix, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE vsMappedResource;
+
+	auto deviceContext = Renderer->GetDeviceContext();
 
 	// 행렬을 transpose하여 셰이더에서 사용할 수 있게 합니다.
 	worldMatrix = DirectX::XMMatrixTranspose(worldMatrix);
@@ -222,10 +277,11 @@ void RMaterial::SetVSConstBuffer(XMMATRIX &worldMatrix, XMMATRIX &viewMatrix, XM
 	deviceContext->VSSetConstantBuffers(bufferSlot, 1, &m_vsConstBuffer);
 }
 
-void RMaterial::SetPSConstBuffer(ID3D11DeviceContext* deviceContext)
+void RMaterial::SetPSConstBuffer()
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE psMappedResource;
+	auto deviceContext = Renderer->GetDeviceContext();
 	result = deviceContext->Map(m_psConstBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &psMappedResource);
 	if (FAILED(result))
 	{
@@ -238,7 +294,7 @@ void RMaterial::SetPSConstBuffer(ID3D11DeviceContext* deviceContext)
 
 	// 상수 버퍼에 행렬을 복사합니다.
 	psConstDataPtr->lightIntensity = XMFLOAT4(1, 0, 0, 0);
-	psConstDataPtr->ambientColor = XMFLOAT4(0.1, 0.1, 0.3, 0);
+	psConstDataPtr->ambientColor = XMFLOAT4(0.1, 0.1, 0.1, 0);
 
 	// 상수 버퍼의 잠금을 풉니다.
 	deviceContext->Unmap(m_psConstBuffer, 0);
@@ -251,23 +307,69 @@ void RMaterial::SetPSConstBuffer(ID3D11DeviceContext* deviceContext)
 	deviceContext->PSSetConstantBuffers(bufferSlot, 1, &m_psConstBuffer);
 }
 
-static HRESULT CreateShaderResourceViewFromFile(ID3D11Device* device, std::string filename, ID3D11ShaderResourceView** pSRV)
-{
+ID3D11ShaderResourceView* LoadEmbeddedTexture(const aiTexture* embeddedTexture) {
 	HRESULT hr;
-	std::wstring fileName_w;
-	fileName_w.assign(filename.begin(), filename.end());
-	wprintf(fileName_w.c_str());
+	ID3D11ShaderResourceView* texture = nullptr;
 
-	if (fileName_w.find(L".dds") != std::string::npos)
-	{
-		hr = DirectX::CreateDDSTextureFromFile(device, fileName_w.c_str(), nullptr, pSRV);
-	}
-	else
-	{
-		hr = DirectX::CreateWICTextureFromFile(device, fileName_w.c_str(), nullptr, pSRV);
+	if (embeddedTexture->mHeight != 0) {
+		// Load an uncompressed ARGB8888 embedded texture
+		D3D11_TEXTURE2D_DESC desc;
+		desc.Width = embeddedTexture->mWidth;
+		desc.Height = embeddedTexture->mHeight;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA subresourceData;
+		subresourceData.pSysMem = embeddedTexture->pcData;
+		subresourceData.SysMemPitch = embeddedTexture->mWidth * 4;
+		subresourceData.SysMemSlicePitch = embeddedTexture->mWidth * embeddedTexture->mHeight * 4;
+
+		ID3D11Texture2D* texture2D = nullptr;
+		hr = Renderer->GetDevice()->CreateTexture2D(&desc, &subresourceData, &texture2D);
+		if (FAILED(hr))
+			MessageBoxA(SysManager->GetHWND(), "CreateTexture2D failed!", "Error!", MB_ICONERROR | MB_OK);
+
+		hr = Renderer->GetDevice()->CreateShaderResourceView(texture2D, nullptr, &texture);
+		if (FAILED(hr))
+			MessageBoxA(SysManager->GetHWND(), "CreateShaderResourceView failed!", "Error!", MB_ICONERROR | MB_OK);
+
+		return texture;
 	}
 
-	return hr;
+	// mHeight is 0, so try to load a compressed texture of mWidth bytes
+	const size_t size = embeddedTexture->mWidth;
+
+	hr = CreateWICTextureFromMemory(Renderer->GetDevice(), Renderer->GetDeviceContext(), reinterpret_cast<const unsigned char*>(embeddedTexture->pcData), size, nullptr, &texture);
+	if (FAILED(hr))
+		MessageBoxA(SysManager->GetHWND(), "Texture couldn't be created from memory!", "Error!", MB_ICONERROR | MB_OK);
+
+	return texture;
+}
+
+ID3D11ShaderResourceView* RMaterial::CreateShaderResourceView(const struct aiScene* scene, std::string fileName)
+{
+	const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(fileName.c_str());
+	if (embeddedTexture != nullptr) {
+		return LoadEmbeddedTexture(embeddedTexture);
+	}
+	else {
+		std::string filename = m_directory + '/' + fileName;
+		std::wstring filenamews = std::wstring(filename.begin(), filename.end());
+		ID3D11ShaderResourceView* rv = nullptr;
+		HRESULT hr = CreateWICTextureFromFile(Renderer->GetDevice(), filenamews.c_str(), nullptr, &rv);
+		if (FAILED(hr))
+		{
+			MessageBoxA(SysManager->GetHWND(), "Texture couldn't be loaded", "Error!", MB_ICONERROR | MB_OK);
+		}
+		return rv;
+	}
 }
 
 RMaterial::~RMaterial()

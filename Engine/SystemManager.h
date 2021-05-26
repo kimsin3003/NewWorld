@@ -14,12 +14,13 @@ public:
 	~SystemManager() { Logger::Finalize(); }
 	void Initialize(class IGameManager* gameManager);
 	void Tick();
+	HWND GetHWND() { return m_hwnd; };
+
 
 private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 	std::chrono::time_point<std::chrono::system_clock> m_lastTime;
-	class RRenderer* m_renderer = nullptr;
 	class IGameManager* m_gameManager = nullptr;
 };
 
